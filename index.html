@@ -407,6 +407,22 @@ textarea.inp{padding:12px 14px;min-height:96px;resize:vertical}
 .addr-search button{white-space:nowrap}
 .loc-privacy{display:flex;gap:8px;align-items:center;margin:8px 0;font-size:13px;color:var(--ink2)}
 .loc-privacy select{font-size:13px;padding:4px 8px;border-radius:6px;border:1px solid var(--line)}
+/* Partners */
+.partner-card{display:flex;flex-direction:column}
+.partner-head{display:flex;align-items:flex-start;gap:12px;flex-wrap:wrap}
+.partner-ava{width:48px;height:48px;border-radius:14px;background:var(--brand-t);display:grid;place-items:center;flex-shrink:0;overflow:hidden}
+.partner-ava img{width:100%;height:100%;object-fit:cover}
+.partner-ava .i{width:24px;height:24px;color:var(--brand-d)}
+.partner-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:auto;padding-top:14px}
+.partner-cats{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+.partner-cats-sm{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px}
+.partner-cat-chip{display:flex;align-items:center;gap:6px;padding:10px 16px;border-radius:12px;background:var(--bg2);color:var(--ink);font:500 14px/1.3 var(--ff);text-decoration:none;transition:background .15s,box-shadow .15s;border:1px solid var(--line)}
+.partner-cat-chip:hover{background:var(--brand-t);border-color:var(--brand);box-shadow:0 2px 8px rgba(27,107,74,.1)}
+.partner-cat-chip .i{width:20px;height:20px;color:var(--brand-d)}
+.partner-grid{margin-top:4px}
+.partner-link{display:inline-flex;align-items:center;gap:6px;margin-top:16px;padding:10px 16px;border-radius:10px;background:var(--bg2);color:var(--ink2);font-size:14px;text-decoration:none;border:1px solid var(--line);transition:background .15s}
+.partner-link:hover{background:var(--brand-t);color:var(--brand-d)}
+.partner-link .i{width:18px;height:18px;color:var(--brand)}
 </style>
 </head>
 <body>
@@ -539,6 +555,16 @@ const TASKS_CRM=[
   {id:'t4',text:'Связаться с Анной Л. по ипотеке',due:'2026-10-26',done:false,deal:'d2'},
   {id:'t5',text:'Обновить актуальность квартиры Джал',due:'2026-10-23',done:true,deal:'d1'}
 ];
+/* ---------- партнёры (услуги) ---------- */
+const PARTNER_CATS={
+  cleaning:{name:'Клининг',icon:'broom'},
+  repair:{name:'Ремонт',icon:'wrench'},
+  handyman:{name:'Муж на час',icon:'tool'},
+  legal:{name:'Юридическое сопровождение',icon:'scale'},
+  accounting:{name:'Бухгалтерское сопровождение',icon:'briefcase'}
+};
+let PARTNERS=[];
+
 function clientOf(id){return CLIENTS.find(c=>c.id===id)||CLIENTS[0]}
 function dealsOf(clientId){return DEALS.filter(d=>d.clientId===clientId)}
 function dealClient(d){return clientOf(d.clientId).name}
@@ -551,9 +577,9 @@ const S = {
   f:{deal:'rent',type:'',district:'',rooms:'',pmin:'',pmax:'',amin:'',verified:true,mine:false,sort:'new',view:'list'},
   apply:{status:'draft'}, home:{deal:'rent'}
 };
-try{const x=JSON.parse(localStorage.getItem('lt2')||'null'); if(x){S.role=x.role||'guest';S.cur=x.cur||'KGS';S.favs=x.favs||[];S.mineExtra=x.mineExtra||[];S.apply=x.apply||S.apply;S.reqExtra=x.reqExtra||[]}}catch(e){}
-S.reqExtra=S.reqExtra||[];
-function save(){try{localStorage.setItem('lt2',JSON.stringify({role:S.role,cur:S.cur,favs:S.favs,mineExtra:S.mineExtra,apply:S.apply,reqExtra:S.reqExtra}))}catch(e){}}
+try{const x=JSON.parse(localStorage.getItem('lt2')||'null'); if(x){S.role=x.role||'guest';S.cur=x.cur||'KGS';S.favs=x.favs||[];S.mineExtra=x.mineExtra||[];S.apply=x.apply||S.apply;S.reqExtra=x.reqExtra||[];S.partnersExtra=x.partnersExtra||[]}}catch(e){}
+S.reqExtra=S.reqExtra||[];S.partnersExtra=S.partnersExtra||[];
+function save(){try{localStorage.setItem('lt2',JSON.stringify({role:S.role,cur:S.cur,favs:S.favs,mineExtra:S.mineExtra,apply:S.apply,reqExtra:S.reqExtra,partnersExtra:S.partnersExtra}))}catch(e){}}
 
 /* =========================================================
    УТИЛИТЫ
@@ -593,7 +619,14 @@ const I={
   partner:'<svg class="i" viewBox="0 0 24 24"><path d="M16.5 9.4l-9-5.19M21 16V8l-9-5-9 5v8l9 5 9-5z"/><path d="M3.27 6.96L12 12.01l8.73-5.05M12 22.08V12"/></svg>',
   agency:'<svg class="i" viewBox="0 0 24 24"><path d="M3 21h18M3 7v14M21 7v14M7 11h2M7 15h2M15 11h2M15 15h2M11 21V3h2v18"/></svg>',
   analytics:'<svg class="i" viewBox="0 0 24 24"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>',
-  settings:'<svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>'
+  settings:'<svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>',
+  broom:'<svg class="i" viewBox="0 0 24 24"><path d="M12 2v8M5 22l2-10h10l2 10M9 10h6"/></svg>',
+  wrench:'<svg class="i" viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg>',
+  tool:'<svg class="i" viewBox="0 0 24 24"><path d="M15 12l-8.5 8.5a2.12 2.12 0 01-3-3L12 9M18 6l3-3M15 9l3-3M10.5 13.5L8 11"/></svg>',
+  scale:'<svg class="i" viewBox="0 0 24 24"><path d="M12 3v18M5 7l7-4 7 4M3 13l2-6 2 6a4 4 0 01-4 0zM17 13l2-6 2 6a4 4 0 01-4 0z"/></svg>',
+  briefcase:'<svg class="i" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2M12 12v.01"/></svg>',
+  shield:'<svg class="i" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>',
+  services:'<svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M8 12l2 2 4-4"/></svg>'
 };
 function verifiedBadge(){return `<span class="badge ok">${I.check} Проверен</span>`}
 
@@ -805,7 +838,18 @@ function pHome(){
       <div class="step"><div class="n">2</div><h3>Проверка документов</h3><p>Сверяем право собственности и совпадение с объявлением. Если что-то не сходится, объект остаётся «На проверке».</p></div>
       <div class="step"><div class="n">3</div><h3>Метка «Проверен» и свежесть</h3><p>У каждого объекта две даты: когда опубликован и на какое число цена подтверждена агентом.</p></div>
     </div>
-  </div></section>`;
+  </div></section>
+
+  ${(()=>{const ps=allPartners();return ps.length?`<section class="sec tight"><div class="wrap">
+    <div class="sec-head"><div><h2>Наши проверенные партнёры</h2><p>Специалисты, которым мы доверяем. Наши партнёры помогут с уборкой, ремонтом, бытовыми задачами, юридическим и бухгалтерским сопровождением.</p></div><a class="btn" href="#/partners">Все партнёры</a></div>
+    <div class="partner-cats-sm">${Object.entries(PARTNER_CATS).map(([k,v])=>`<a class="partner-cat-chip" href="#/partners">${I[v.icon]}<span>${esc(v.name)}</span></a>`).join('')}</div>
+    ${ps.length?`<div class="grid g2 partner-grid">${ps.slice(0,4).map(partnerCard).join('')}</div>`:''}
+    ${ps.length>4?`<div style="text-align:center;margin-top:16px"><a class="btn primary" href="#/partners">Все партнёры</a></div>`:''}
+  </div></section>`:
+  `<section class="sec tight"><div class="wrap">
+    <div class="sec-head"><div><h2>Наши проверенные партнёры</h2><p>Специалисты, которым мы доверяем. Наши партнёры помогут с уборкой, ремонтом, бытовыми задачами, юридическим и бухгалтерским сопровождением.</p></div><a class="btn" href="#/partners">Подробнее</a></div>
+    <div class="partner-cats-sm">${Object.entries(PARTNER_CATS).map(([k,v])=>`<a class="partner-cat-chip" href="#/partners">${I[v.icon]}<span>${esc(v.name)}</span></a>`).join('')}</div>
+  </div></section>`})()}`;
 }
 function reqCard(r){
   const rent=r.deal==='rent';
@@ -831,7 +875,8 @@ function pObject(id){
     <div class="card panel"><div class="row wrapf" style="margin-bottom:12px">${l.verified?verifiedBadge():'<span class="badge warn">На проверке</span>'}<span class="badge" style="background:var(--bg)">${TYPES[l.type]}</span></div>
       <h1 style="font-size:clamp(22px,3vw,30px)">${esc(l.title)}</h1><p class="muted" style="margin-top:8px">${esc(l.district)}, ${esc(l.street)}</p>
       <p style="margin-top:18px;max-width:68ch">${esc(l.desc)}</p>
-      <div class="chips" style="margin-top:16px">${l.feat.map(x=>`<span class="badge" style="background:var(--bg)">${esc(x)}</span>`).join('')}</div></div>
+      <div class="chips" style="margin-top:16px">${l.feat.map(x=>`<span class="badge" style="background:var(--bg)">${esc(x)}</span>`).join('')}</div>
+      <a class="partner-link" href="#/partners">${I.services} Услуги наших партнёров — клининг, ремонт, юридическая помощь</a></div>
     <div class="card panel"><h2>Об объекте</h2><dl class="kv" style="margin:0">
       <div><dt>Комнат</dt><dd>${l.rooms===0?'Студия':l.rooms}</dd></div><div><dt>Площадь</dt><dd>${l.area} м²</dd></div>
       <div><dt>Этаж</dt><dd>${l.floors>1?`${l.floor} из ${l.floors}`:'1'}</dd></div><div><dt>Цена за м²</dt><dd>${S.cur==='USD'?'$'+nf(ppm):nf(ppm*CONFIG.rate)+' сом'}</dd></div>
@@ -903,6 +948,23 @@ function calcMort(){
   $('#mout').innerHTML=`<h2>Ежемесячный платёж</h2><div class="big price" style="font-size:36px">${moneyTxt(pay)}</div>
   <dl class="kv" style="margin:18px 0 0;grid-template-columns:1fr"><div><dt>Сумма кредита</dt><dd>${moneyTxt(P)}</dd></div><div><dt>Всего выплат</dt><dd>${moneyTxt(tot)}</dd></div><div><dt>Переплата</dt><dd>${moneyTxt(Math.max(0,tot-P))}</dd></div></dl>
   <p class="note" style="margin-top:14px">Расчёт приблизительный (аннуитетный платёж). Это не предложение банка.</p>`;
+}
+function allPartners(){return PARTNERS.concat(S.partnersExtra).filter(p=>p.published)}
+function partnerCard(p){
+  const cat=PARTNER_CATS[p.cat];
+  return `<article class="card panel partner-card"><div class="partner-head"><span class="partner-ava">${p.logo?`<img src="${esc(p.logo)}" alt="">`:(cat?I[cat.icon]:I.services)}</span><div class="grow"><h3 style="font-size:17px;margin:0">${esc(p.name)}</h3>${cat?`<span class="badge info" style="margin-top:4px">${cat.icon?I[cat.icon]:''}${esc(cat.name)}</span>`:''}</div><span class="badge ok">${I.shield} Проверенный партнёр</span></div>
+    ${p.desc?`<p style="font-size:14px;color:var(--ink2);margin:12px 0 0">${esc(p.desc)}</p>`:''}
+    ${p.city||p.districts?`<div class="muted" style="font-size:13px;margin-top:8px">${I.map} ${esc(p.city||'Бишкек')}${p.districts?' · '+esc(p.districts):''}</div>`:''}
+    <div class="partner-actions">${p.phone?`<a class="btn sm" href="tel:${p.phone.replace(/[^+\\d]/g,'')}">${I.phone} ${esc(p.phone)}</a>`:''}${p.whatsapp?`<a class="btn sm" href="https://wa.me/${p.whatsapp}" target="_blank" rel="noopener">${I.chat} WhatsApp</a>`:''}${p.website?`<a class="btn sm" href="${esc(p.website)}" target="_blank" rel="noopener">Сайт</a>`:''}</div></article>`;
+}
+function pPartners(){
+  const ps=allPartners();
+  const catFilter=S.partnerCat||'';
+  const shown=catFilter?ps.filter(p=>p.cat===catFilter):ps;
+  return `<div class="wrap"><div class="sec" style="padding-bottom:20px"><div class="sec-head"><div><h1 style="font-size:clamp(26px,3.4vw,38px)">Наши проверенные партнёры</h1><p>Специалисты, которым мы доверяем. Наши партнёры помогут с уборкой, ремонтом, бытовыми задачами, юридическим и бухгалтерским сопровождением.</p></div></div>
+    <div class="partner-cats"><button class="chip" data-a="pcat" data-v="" aria-pressed="${!catFilter}">Все</button>${Object.entries(PARTNER_CATS).map(([k,v])=>`<button class="chip" data-a="pcat" data-v="${k}" aria-pressed="${catFilter===k}">${I[v.icon]} ${esc(v.name)}</button>`).join('')}</div>
+    ${shown.length?`<div class="grid g2 partner-grid">${shown.map(partnerCard).join('')}</div>`:`<div class="card empty" style="padding:40px;text-align:center"><h3>Информация о партнёрах скоро появится</h3><p class="ink2" style="max-width:40ch;margin:8px auto 0">Мы проверяем каждого партнёра перед публикацией. Здесь появятся компании и специалисты, которых рекомендует Liberterra.</p></div>`}
+  </div></div>`;
 }
 function gate(msg){return `<div class="wrap"><div class="card gate"><div class="logo-mark" style="width:52px;height:52px;border-radius:16px 16px 16px 6px"><svg viewBox="0 0 24 24" style="width:28px;height:28px"><path d="M5 12.500l4.500 4.500L19 7.500"/></svg></div><h1 style="font-size:24px">${msg}</h1><p class="ink2">Кабинет с общим каталогом, комиссиями и задачами доступен одобренным агентам.</p><div class="row wrapf" style="justify-content:center"><button class="btn primary" data-a="role" data-v="agent">Посмотреть как агент (демо)</button><a class="btn" href="#/agents">Как стать агентом</a></div></div></div>`}
 function myObjects(){return allListings().filter(l=>l.mine)}
@@ -979,8 +1041,11 @@ function pCabinet(tab){
       ${TASKS_CRM.map(t=>`<div class="task-item"><input type="checkbox" class="task-check" ${t.done?'checked':''} disabled><span class="task-text${t.done?' done':''}">${esc(t.text)}</span><span class="task-due">${dfmt(t.due)}</span></div>`).join('')}</div>`;
 
   } else if(tab==='partners'){
-    body=`<div class="card panel"><h2>Партнёры</h2><p class="ink2" style="max-width:60ch;margin-top:8px">Здесь будут ваши партнёры — агенты, с которыми вы делите сделки и объекты. Комиссия по каждому объекту задаётся его автором при публикации.</p>
-      <div style="margin-top:18px">${AGENTS.filter(a=>a.id!=='a1').slice(0,3).map(a=>`<div class="row between wrapf" style="padding:12px 0;border-bottom:1px solid var(--line)"><div class="row" style="gap:12px"><span class="ava">${esc(a.name[0])}</span><div><b>${esc(a.name)}</b><div class="muted" style="font-size:13px">${esc(a.agency)} · ${a.deals} сделок</div></div></div><span class="badge ${a.cert?'ok':'warn'}">${a.cert?'Сертифицирован':'Без сертификата'}</span></div>`).join('')}</div></div>`;
+    const ps=PARTNERS.concat(S.partnersExtra);
+    body=`<div class="card panel"><div class="row between wrapf" style="margin-bottom:14px"><h2 style="margin:0">Проверенные партнёры (услуги)</h2><button class="btn primary sm" data-a="newPartner">${I.plus} Добавить партнёра</button></div>
+      <p class="ink2" style="max-width:60ch;margin-bottom:18px">Управление компаниями и специалистами, которых Liberterra рекомендует клиентам. Только администратор может опубликовать карточку и присвоить статус «Проверенный партнёр».</p>
+      ${ps.length?`<div class="scroll-x"><table class="tbl"><thead><tr><th>Название</th><th>Категория</th><th>Город</th><th>Статус</th><th></th></tr></thead><tbody>${ps.map(p=>{const cat=PARTNER_CATS[p.cat];return `<tr><td><b>${esc(p.name)}</b>${p.desc?`<div class="muted" style="font-size:13px">${esc(p.desc.slice(0,50))}${p.desc.length>50?'…':''}</div>`:''}</td><td>${cat?`<span class="badge info">${esc(cat.name)}</span>`:'-'}</td><td>${esc(p.city||'Бишкек')}</td><td>${p.published?'<span class="badge ok">Опубликован</span>':'<span class="badge warn">Черновик</span>'}</td><td><button class="btn sm" data-a="editPartner" data-id="${p.id}">Ред.</button> <button class="btn sm ${p.published?'':'primary'}" data-a="togglePartner" data-id="${p.id}">${p.published?'Снять':'Опубликовать'}</button></td></tr>`}).join('')}</tbody></table></div>`:
+      `<p class="ink2" style="text-align:center;padding:24px">Партнёров пока нет. Добавьте первого.</p>`}</div>`;
 
   } else if(tab==='agencies'){
     body=`<div class="card panel"><h2>Агентства</h2><p class="ink2" style="max-width:60ch;margin-top:8px">Агентства-партнёры Liberterra. Агенты внутри агентства видят общие объекты и делят комиссию по правилам агентства.</p>
@@ -1051,7 +1116,7 @@ function pAdd(){
 /* =========================================================
    РОУТЕР
    ========================================================= */
-const NAV=[['/','Главная'],['/catalog','Объекты'],['/requests','Заявки'],['/agents','Агенты'],['/mortgage','Ипотека']];
+const NAV=[['/','Главная'],['/catalog','Объекты'],['/requests','Заявки'],['/agents','Агенты'],['/partners','Партнёры'],['/mortgage','Ипотека']];
 function render(){
   const h=(location.hash.slice(1)||'/').split('?')[0],[,pg,arg]=h.split('/'),page='/'+(pg||'');
   let html='',title='Liberterra';
@@ -1062,6 +1127,7 @@ function render(){
     case 'requests':html=pRequests();title='Заявки';break;
     case 'agents':html=pAgents();title='Агенты';break;
     case 'mortgage':html=pMortgage();title='Ипотека';break;
+    case 'partners':html=pPartners();title='Партнёры';break;
     case 'cabinet':html=pCabinet(arg);title='Кабинет';break;
     case 'add':html=isAgent()?pAdd():gate('Размещать объекты могут агенты');title='Добавить объект';break;
     default:html=pHome();
@@ -1104,6 +1170,7 @@ const A={
   pin(t){S.mapSel=+t.dataset.id;refreshResults()},
   searchArea(){if(!_map)return;S._mapBounds=_map.getBounds();const btn=document.querySelector('.search-area-btn');if(btn)btn.classList.remove('show');refreshResults()},
   geocode(){const q=document.getElementById('addrQ');if(q&&q.value.trim())geocodeAddr(q.value.trim())},
+  pcat(t){S.partnerCat=t.dataset.v;render()},
   drawer(){$('#overlay').innerHTML=`<div class="drawer-bg" data-a="close"></div><div class="drawer" role="dialog" aria-modal="true" aria-label="Фильтры"><div class="row between" style="margin-bottom:14px"><h3>Фильтры</h3><button class="icon-btn" data-a="close" aria-label="Закрыть">✕</button></div><div class="fgroup" id="drawerBody" style="gap:18px;display:grid">${filtersHTML()}</div><button class="btn primary block" style="margin-top:18px" data-a="close">Показать ${filtered().length}</button></div>`},
   close(){$('#overlay').innerHTML='';refreshResults()},
   day(t){S.book.day=t.dataset.v;document.querySelectorAll('[data-a=day]').forEach(b=>b.setAttribute('aria-pressed',b===t))},
@@ -1205,7 +1272,41 @@ const A={
         <button class="btn primary" type="submit">Добавить клиента (демо)</button>
       </form>
     </div></div>`},
-  ncneed(t){document.querySelectorAll('[data-a=ncneed]').forEach(b=>b.setAttribute('aria-pressed',b===t))}
+  ncneed(t){document.querySelectorAll('[data-a=ncneed]').forEach(b=>b.setAttribute('aria-pressed',b===t))},
+  newPartner(){
+    $('#overlay').innerHTML=`<div class="modal-bg" data-a="closeModal"><div class="modal" onclick="event.stopPropagation()"><button class="modal-close" data-a="closeModal">&times;</button><h2>Добавить партнёра</h2>
+      <form class="form" data-form="partner">
+        <div class="field"><label>Название компании или имя</label><input class="inp" name="name" required placeholder="ООО «Чистый дом»"></div>
+        <div class="field"><label>Категория</label><select class="sel" name="cat">${Object.entries(PARTNER_CATS).map(([k,v])=>`<option value="${k}">${v.name}</option>`).join('')}</select></div>
+        <div class="field"><label>Описание услуг</label><textarea class="inp" name="desc" placeholder="Краткое описание услуг"></textarea></div>
+        <div class="cols2"><div class="field"><label>Город</label><input class="inp" name="city" value="Бишкек"></div><div class="field"><label>Районы обслуживания</label><input class="inp" name="districts" placeholder="Все районы"></div></div>
+        <div class="cols2"><div class="field"><label>Телефон</label><input class="inp" name="phone" inputmode="tel" placeholder="+996"></div><div class="field"><label>WhatsApp</label><input class="inp" name="whatsapp" placeholder="996555000000"></div></div>
+        <div class="field"><label>Сайт</label><input class="inp" name="website" placeholder="https://"></div>
+        <div class="field"><label>URL логотипа</label><input class="inp" name="logo" placeholder="https://..."></div>
+        <button class="btn primary block">Сохранить как черновик</button>
+      </form></div></div>`;
+  },
+  editPartner(t){
+    const id=t.dataset.id,p=PARTNERS.concat(S.partnersExtra).find(x=>x.id===id);
+    if(!p)return;
+    $('#overlay').innerHTML=`<div class="modal-bg" data-a="closeModal"><div class="modal" onclick="event.stopPropagation()"><button class="modal-close" data-a="closeModal">&times;</button><h2>Редактировать партнёра</h2>
+      <form class="form" data-form="editpartner" data-id="${esc(id)}">
+        <div class="field"><label>Название</label><input class="inp" name="name" required value="${esc(p.name)}"></div>
+        <div class="field"><label>Категория</label><select class="sel" name="cat">${Object.entries(PARTNER_CATS).map(([k,v])=>`<option value="${k}" ${p.cat===k?'selected':''}>${v.name}</option>`).join('')}</select></div>
+        <div class="field"><label>Описание</label><textarea class="inp" name="desc">${esc(p.desc||'')}</textarea></div>
+        <div class="cols2"><div class="field"><label>Город</label><input class="inp" name="city" value="${esc(p.city||'Бишкек')}"></div><div class="field"><label>Районы</label><input class="inp" name="districts" value="${esc(p.districts||'')}"></div></div>
+        <div class="cols2"><div class="field"><label>Телефон</label><input class="inp" name="phone" value="${esc(p.phone||'')}"></div><div class="field"><label>WhatsApp</label><input class="inp" name="whatsapp" value="${esc(p.whatsapp||'')}"></div></div>
+        <div class="field"><label>Сайт</label><input class="inp" name="website" value="${esc(p.website||'')}"></div>
+        <div class="field"><label>URL логотипа</label><input class="inp" name="logo" value="${esc(p.logo||'')}"></div>
+        <button class="btn primary block">Сохранить изменения</button>
+      </form></div></div>`;
+  },
+  togglePartner(t){
+    const id=t.dataset.id;
+    if(!isAgent()){toast('Только администратор может публиковать партнёров');return}
+    const p=S.partnersExtra.find(x=>x.id===id);
+    if(p){p.published=!p.published;save();render();toast(p.published?'Партнёр опубликован':'Партнёр снят с публикации')}
+  }
 };
 document.addEventListener('click',e=>{const t=e.target.closest('[data-a]');if(!t)return;const fn=A[t.dataset.a];if(fn)fn(t,e)});
 document.addEventListener('input',e=>{
@@ -1225,6 +1326,11 @@ document.addEventListener('submit',e=>{
   if(k==='inquiry'){toast('Вопрос подготовлен для агента. Это демо: данные никуда не отправлены');f.reset()}
   if(k==='request'){const id=100+S.reqExtra.length+1;S.reqExtra.push({id,deal:S.rdeal||'rent',who:d.who,district:d.district,budget:+d.budget||0,note:d.note||'Без пожеланий',answers:0,date:CONFIG.today.toISOString().slice(0,10)});save();toast('Заявка опубликована (демо)');render()}
   if(k==='apply'){S.apply.status='sent';save();toast('Заявка отправлена. Мы позвоним для интервью (демо)');render()}
+  if(k==='partner'){if(!isAgent()){toast('Только администратор может добавлять партнёров');return}
+    const id='p'+(Date.now()%100000);S.partnersExtra.push({id,name:d.name,cat:d.cat,desc:d.desc||'',city:d.city||'Бишкек',districts:d.districts||'',phone:d.phone||'',whatsapp:d.whatsapp||'',website:d.website||'',logo:d.logo||'',published:false});
+    save();$('#overlay').innerHTML='';toast('Партнёр сохранён как черновик. Опубликуйте в таблице.');render()}
+  if(k==='editpartner'){const id=f.dataset.id,p=S.partnersExtra.find(x=>x.id===id);
+    if(p){Object.assign(p,{name:d.name,cat:d.cat,desc:d.desc||'',city:d.city||'',districts:d.districts||'',phone:d.phone||'',whatsapp:d.whatsapp||'',website:d.website||'',logo:d.logo||''});save();$('#overlay').innerHTML='';toast('Изменения сохранены');render()}}
   if(k==='add'){const id=200+S.mineExtra.length+1,deal=S.adeal||'rent',r=+d.rooms;
     const commOwner=parseFloat(d.commOwner),commCloser=parseFloat(d.commCloser);
     if(isNaN(commOwner)||isNaN(commCloser)||commOwner<0||commCloser<0||commOwner>100||commCloser>100){toast('Укажите корректные проценты комиссии (от 0 до 100)');return}
