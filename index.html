@@ -239,18 +239,33 @@ textarea.inp{padding:12px 14px;min-height:96px;resize:vertical}
 .tbl th{text-align:left;font-weight:600;color:var(--mute);font-size:13px;padding:10px 12px;border-bottom:1px solid var(--line)}
 .tbl td{padding:14px 12px;border-bottom:1px solid var(--line);vertical-align:middle}
 .tbl tr:last-child td{border-bottom:0}
+.tbl tr[data-a]:hover td{background:var(--brand-t);cursor:pointer}
+.tbl tr[data-a]{transition:background .1s}
 .scroll-x{overflow:auto}
 /* kanban */
 .kanban{display:flex;gap:14px;overflow-x:auto;padding-bottom:12px;min-height:340px}
-.kanban-col{min-width:240px;max-width:260px;flex:0 0 240px;background:var(--bg);border-radius:var(--r-card);padding:12px}
-.kanban-col h4{font-size:13px;font-weight:700;color:var(--mute);text-transform:uppercase;letter-spacing:.04em;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}
+.kanban-col{min-width:240px;max-width:260px;flex:0 0 240px;background:var(--bg);border-radius:var(--r-card);padding:14px}
+.kanban-col h4{font-size:12px;font-weight:700;color:var(--mute);text-transform:uppercase;letter-spacing:.05em;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;padding-bottom:10px;border-bottom:2px solid var(--line)}
+.kanban-col:nth-child(1) h4{border-color:var(--info);color:var(--info)}
+.kanban-col:nth-child(2) h4{border-color:var(--brand);color:var(--brand)}
+.kanban-col:nth-child(3) h4{border-color:#8B5CF6;color:#8B5CF6}
+.kanban-col:nth-child(4) h4{border-color:var(--warn);color:#B45309}
+.kanban-col:nth-child(5) h4{border-color:#EC4899;color:#EC4899}
+.kanban-col:nth-child(6) h4{border-color:var(--ok);color:var(--ok)}
 .kanban-col h4 .cnt{background:var(--line);color:var(--ink2);font-size:11px;padding:2px 8px;border-radius:var(--r-pill);font-weight:600}
-.k-card{background:#fff;border-radius:12px;padding:12px;margin-bottom:8px;border:1px solid var(--line);cursor:grab;box-shadow:var(--shadow-sm)}
-.k-card:hover{box-shadow:var(--shadow-md)}
-.k-card .k-title{font-weight:600;font-size:14px;margin-bottom:4px}
-.k-card .k-client{font-size:13px;color:var(--ink2)}
-.k-card .k-amount{font-size:13px;font-weight:600;color:var(--brand-d);margin-top:6px}
-.k-card .k-date{font-size:12px;color:var(--mute);margin-top:4px}
+.k-card{background:#fff;border-radius:12px;padding:14px;margin-bottom:10px;border:1px solid var(--line);cursor:pointer;box-shadow:var(--shadow-sm);transition:box-shadow .15s,transform .15s}
+.k-card:hover{box-shadow:var(--shadow-md);transform:translateY(-1px)}
+.k-card:active{transform:translateY(0)}
+.k-card .k-head{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:6px}
+.k-card .k-title{font-weight:600;font-size:14px;line-height:1.3;flex:1}
+.k-card .k-type{font-size:11px;font-weight:600;padding:2px 8px;border-radius:var(--r-pill);white-space:nowrap}
+.k-card .k-type.rent{background:#E0F2FE;color:#0369A1}
+.k-card .k-type.sale{background:#FEF3C7;color:#92400E}
+.k-card .k-client{font-size:13px;color:var(--ink2);display:flex;align-items:center;gap:6px}
+.k-card .k-client::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--brand);flex:none}
+.k-card .k-bottom{display:flex;justify-content:space-between;align-items:center;margin-top:8px;padding-top:8px;border-top:1px solid var(--line)}
+.k-card .k-amount{font-size:14px;font-weight:700;color:var(--brand-d)}
+.k-card .k-date{font-size:12px;color:var(--mute)}
 /* dashboard metrics */
 .metric-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
 .metric{padding:18px;border-radius:16px;background:#fff;border:1px solid var(--line)}
@@ -268,13 +283,16 @@ textarea.inp{padding:12px 14px;min-height:96px;resize:vertical}
 /* side-nav groups */
 .side-nav .nav-group{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--mute);padding:16px 12px 4px}
 /* modal */
-.modal-bg{position:fixed;inset:0;background:rgba(18,20,26,.5);z-index:80;display:grid;place-items:center;padding:20px}
-.modal{background:#fff;border-radius:22px;max-width:640px;width:100%;max-height:88vh;overflow:auto;padding:28px;box-shadow:var(--shadow-lg);position:relative}
-.modal h2{margin-bottom:18px}
-.modal .close-modal{position:absolute;top:16px;right:16px;background:none;border:none;font-size:20px;color:var(--mute);cursor:pointer;padding:4px 8px}
+.modal-bg{position:fixed;inset:0;background:rgba(18,20,26,.55);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);z-index:80;display:grid;place-items:center;padding:20px;animation:fadeIn .15s ease}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.modal{background:#fff;border-radius:22px;max-width:640px;width:100%;max-height:88vh;overflow:auto;padding:32px;box-shadow:0 24px 80px rgba(0,0,0,.18);position:relative;animation:slideUp .2s ease}
+.modal h2{margin-bottom:18px;font-family:var(--f-display)}
+.modal .close-modal{position:absolute;top:16px;right:16px;background:var(--bg);border:none;font-size:18px;color:var(--ink2);cursor:pointer;padding:6px 10px;border-radius:10px;transition:background .15s}
+.modal .close-modal:hover{background:var(--line)}
 /* detail card */
-.detail-header{display:flex;gap:16px;align-items:flex-start;margin-bottom:20px}
-.detail-header .ava{width:48px;height:48px;font-size:20px}
+.detail-header{display:flex;gap:16px;align-items:center;margin-bottom:22px}
+.detail-header .ava{width:52px;height:52px;font-size:22px;border:2px solid var(--brand-t);box-shadow:0 2px 8px rgba(27,107,74,.12)}
 .detail-meta{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;margin-bottom:20px}
 .detail-meta .dm{padding:12px;border-radius:12px;background:var(--bg)}
 .detail-meta .dm .lbl{font-size:12px;font-weight:600;color:var(--mute);text-transform:uppercase;letter-spacing:.04em}
@@ -290,11 +308,15 @@ textarea.inp{padding:12px 14px;min-height:96px;resize:vertical}
 .activity-item .a-date{font-size:12px;color:var(--mute)}
 .activity-item .a-text{font-size:14px;margin-top:2px}
 /* stage progress */
-.stage-bar{display:flex;gap:4px;margin-bottom:20px}
-.stage-dot{flex:1;height:6px;border-radius:3px;background:var(--line)}
-.stage-dot.done{background:var(--brand)}
-.stage-dot.current{background:var(--brand);opacity:.6}
-.stage-label{font-size:13px;color:var(--mute);margin-bottom:8px}
+.stage-bar{display:flex;gap:3px;margin-bottom:20px}
+.stage-step{flex:1;text-align:center}
+.stage-step .s-bar{height:6px;border-radius:3px;background:var(--line);margin-bottom:4px}
+.stage-step.done .s-bar{background:var(--brand)}
+.stage-step.current .s-bar{background:var(--brand);opacity:.65}
+.stage-step .s-name{font-size:10px;color:var(--mute);font-weight:500}
+.stage-step.done .s-name{color:var(--brand-d)}
+.stage-step.current .s-name{color:var(--brand);font-weight:700}
+.stage-label{font-size:14px;color:var(--ink2);margin-bottom:10px;font-weight:500}
 /* form improvements */
 .form .field{margin-bottom:16px}
 .form .lbl{display:block;font-size:13px;font-weight:600;color:var(--ink2);margin-bottom:6px}
@@ -347,6 +369,8 @@ textarea.inp{padding:12px 14px;min-height:96px;resize:vertical}
   .tabbar a[aria-current=page]{color:var(--brand-dd)}
   .tabbar svg{width:22px;height:22px}
   .toast{bottom:calc(84px + var(--safe-b))}
+  .fab-mobile{position:fixed;right:16px;bottom:calc(80px + var(--safe-b));z-index:55;width:56px;height:56px;border-radius:50%;background:var(--brand);color:#fff;border:none;font-size:28px;box-shadow:0 4px 16px rgba(27,107,74,.35);cursor:pointer;display:grid;place-items:center;transition:transform .15s}
+  .fab-mobile:active{transform:scale(.92)}
   .hero h1{max-width:none}
   .band{padding:24px;border-radius:22px}
   .panel{padding:18px}
@@ -848,7 +872,7 @@ function pCabinet(tab){
 
   } else if(tab==='deals'){
     body=`<div class="row between wrapf" style="margin-bottom:14px"><h2 style="margin:0">Сделки</h2><button class="btn primary sm" data-a="newDeal">${I.plus} Новая сделка</button></div>
-      <div class="kanban">${DEAL_STAGES.filter(st=>!['Закрыта','Потеряна'].includes(st)).map(st=>{const si=DEAL_STAGE_INFO[st],cards=DEALS.filter(d=>d.stage===st);return `<div class="kanban-col"><h4>${esc(st)} <span class="cnt">${cards.length}</span></h4>${cards.map(d=>`<div class="k-card" data-a="openDeal" data-id="${d.id}" style="cursor:pointer"><div class="k-title">${esc(d.title)}</div><div class="k-client">${esc(dealClient(d))}</div><div class="k-amount">$${nf(d.amount)}</div><div class="k-date">${dfmt(d.updated)}</div></div>`).join('')||'<p class="muted" style="font-size:13px;text-align:center;padding:12px">Пусто</p>'}</div>`}).join('')}</div>
+      <div class="kanban">${DEAL_STAGES.filter(st=>!['Закрыта','Потеряна'].includes(st)).map(st=>{const si=DEAL_STAGE_INFO[st],cards=DEALS.filter(d=>d.stage===st);return `<div class="kanban-col"><h4>${esc(st)} <span class="cnt">${cards.length}</span></h4>${cards.map(d=>`<div class="k-card" data-a="openDeal" data-id="${d.id}"><div class="k-head"><div class="k-title">${esc(d.title)}</div><span class="k-type ${d.deal||'sale'}">${d.deal==='rent'?'Аренда':'Продажа'}</span></div><div class="k-client">${esc(dealClient(d))}</div><div class="k-bottom"><span class="k-amount">$${nf(d.amount)}</span><span class="k-date">${dfmt(d.updated)}</span></div></div>`).join('')||'<p class="muted" style="font-size:13px;text-align:center;padding:12px">Пусто</p>'}</div>`}).join('')}</div>
       <div class="card panel" style="margin-top:18px"><h3>Завершённые сделки</h3><div class="scroll-x"><table class="tbl"><thead><tr><th>Сделка</th><th>Клиент</th><th>Сумма</th><th>Статус</th><th>Причина</th><th>Дата</th></tr></thead><tbody>${DEALS.filter(d=>['Закрыта','Потеряна'].includes(d.stage)).map(d=>`<tr style="cursor:pointer" data-a="openDeal" data-id="${d.id}"><td><b>${esc(d.title)}</b></td><td>${esc(dealClient(d))}</td><td>$${nf(d.amount)}</td><td><span class="badge ${d.stage==='Закрыта'?'ok':'warn'}">${esc(d.stage)}</span></td><td>${d.lossReason?esc(d.lossReason):d.commission?'Комиссия $'+nf(d.commission):'-'}</td><td>${dfmt(d.updated)}</td></tr>`).join('')||'<tr><td colspan="6" class="muted">Пока нет завершённых сделок.</td></tr>'}</tbody></table></div></div>`;
 
   } else if(tab==='clients'){
@@ -1004,7 +1028,7 @@ const A={
       <button class="close-modal" data-a="closeModal">✕</button>
       <div class="detail-header"><span class="ava lg">${esc(c.name[0])}</span><div><h2 style="margin:0">${esc(d.title)}</h2><p class="muted">${esc(dealClient(d))} · ${d.deal==='rent'?'Аренда':'Продажа'}</p></div></div>
       <div class="stage-label">Этап: <b>${esc(d.stage)}</b> — ${esc(si.desc||'')}</div>
-      <div class="stage-bar">${DEAL_STAGES.slice(0,6).map((s,i)=>`<div class="stage-dot${i<stageIdx?' done':i===stageIdx?' current':''}"></div>`).join('')}</div>
+      <div class="stage-bar">${DEAL_STAGES.slice(0,6).map((s,i)=>`<div class="stage-step${i<stageIdx?' done':i===stageIdx?' current':''}"><div class="s-bar"></div><div class="s-name">${esc(s)}</div></div>`).join('')}</div>
       <div class="detail-meta">
         <div class="dm"><div class="lbl">Сумма</div><div class="val">$${nf(d.amount)}</div></div>
         <div class="dm"><div class="lbl">Источник</div><div class="val">${esc(d.source||'-')}</div></div>
