@@ -820,8 +820,8 @@ function pHome(){
   const reqs=REQUESTS.concat(S.reqExtra).slice().sort((a,b)=>b.id-a.id).slice(0,4);
   return `<section class="hero"><div class="wrap">
     <div>
-      <h1>Недвижимость Бишкека без фейков</h1>
-      <p class="lead">Каждый объект мы проверяем до публикации: собственника, документы и цену. Если объект в каталоге, он настоящий.</p>
+      <h1>Купить, продать, снять или сдать</h1>
+      <p class="lead">Недвижимость в Кыргызстане. Смотрите объекты и заявки: найдите жильё или узнайте, что ищут покупатели и арендаторы.</p>
       <form class="search" id="homeSearch" aria-label="Поиск недвижимости">
         <div class="tabs" role="group" aria-label="Тип сделки"><button type="button" class="pill-tab" data-a="hdeal" data-v="rent" aria-pressed="${f.deal==='rent'}">Снять</button><button type="button" class="pill-tab" data-a="hdeal" data-v="sale" aria-pressed="${f.deal==='sale'}">Купить</button></div>
         <div class="fields">
