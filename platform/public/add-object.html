@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <script src="/telegram-membership.js?v=20260915-1"></script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Добавить объект недвижимости в каталог Liberterra.">
+  <title>Добавить объект — Liberterra</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600&family=Manrope:wght@700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/style.css?v=20261005-login-eye-1">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
+  <script src="/catalog-translations.js?v=20260820-1" defer></script>
+  <script src="/i18n.js?v=20261009-public-owner-contacts-1" defer></script>
+  <link rel="stylesheet" href="/site-theme.css?v=20260930-nav-3">
+  <link rel="stylesheet" href="/form-refresh.css?v=20261001-header-1">
+  <link rel="stylesheet" href="/placement-review.css?v=20261018-1">
+<script src="/site-theme.js?v=20260930-nav-3" defer></script>
+<link rel="stylesheet" href="/public-v20.css"><script src="/reference-translations.js" defer></script><script src="/public-copy.js" defer></script><script src="/reference-translator.js" defer></script><script src="/public-v20.js" defer></script>  <link rel="stylesheet" href="/v20-global.css?v=20261022-1">
+</head>
+<body class="v20 submission-page add-object-page" data-require-registration="true">
+  <header class="site-header internal-header">
+    <div class="wrap header-inner">
+      <a class="brand" href="/" aria-label="Liberterra"><img class="brand-logo" src="assets/liberterra-logo-adapted.png?v=20260813-1" alt="Liberterra"></a>
+      <a class="submission-back" href="/profile.html" data-smart-back>← Назад</a>
+    </div>
+  </header>
+
+  <main class="submission-main">
+    <section class="submission-intro"><span class="submission-eyebrow">Новый объект / Шаг 1</span><h1>Как добавим объявление?</h1><p>Сначала выберите способ. Перед размещением вы проверите все сведения.</p></section>
+<div class="public-add-options"><section class="panel lalafo-import" aria-labelledby="lalafoImportTitle"><h2 id="lalafoImportTitle">По ссылке</h2><p>Перенесите сведения из своего объявления на Lalafo или House.</p><label for="lalafoImportUrl">Ссылка на объявление<input id="lalafoImportUrl" type="url" inputmode="url" placeholder="https://…"></label><button id="placementImportChoice" type="button">Вставить ссылку</button><button id="lalafoImportButton" type="button">Подготовить импорт →</button><p id="lalafoImportStatus" class="lalafo-import-status" role="status" aria-live="polite">Импорт не публикует объект автоматически.</p></section><section class="panel"><h2>Вручную</h2><p>Укажите адрес, характеристики, стоимость и добавьте фотографии.</p><button id="placementManualChoice" type="button">Заполнить самостоятельно →</button><p>Контакт собственника и документы не становятся публичными без отдельного разрешения.</p></section></div>
+<form class="submission-form" id="objectSubmissionForm" hidden enctype="multipart/form-data" novalidate>
+      <label class="submission-honeypot" aria-hidden="true">Ваш сайт<input name="website" tabindex="-1" autocomplete="off"></label>
+      <input type="hidden" name="source_url" id="submissionSourceUrl">
+      <input type="hidden" name="import_raw" id="submissionImportRaw">
+      <input type="hidden" name="review_version" value="1">
+
+      <fieldset>
+        <legend>Объект</legend>
+        <div class="submission-grid two">
+          <label><span>Что хотите сделать *</span><select name="deal" required><option value="Аренда">Сдать в аренду</option><option value="Продажа">Продать</option></select></label>
+          <label><span>Тип объекта *</span><select name="object_type" required><option value="">Выберите</option><option>Квартира</option><option>Дом</option><option>Комната</option><option>Коммерческая недвижимость</option><option>Земельный участок</option></select></label>
+          <label><span>Район или ориентир</span><input name="district" id="submissionDistrict" list="submissionDistricts" placeholder="Начните вводить название"></label>
+          <label><span>Пересечение улиц или адрес *</span><input name="address" required maxlength="240" placeholder="Например: Токтогула / Исанова"></label>
+        </div>
+        <datalist id="submissionDistricts"></datalist>
+        <div class="submission-location">
+          <div class="submission-location-heading"><div><strong>Точка на карте</strong><span>Нажмите на карту — так объект будет виден в режиме карты.</span></div><button type="button" id="clearSubmissionLocation" hidden>Убрать точку</button></div>
+          <div id="submissionLocationMap" class="submission-location-map" aria-label="Выбор расположения объекта"></div>
+          <input type="hidden" name="latitude" id="submissionLatitude">
+          <input type="hidden" name="longitude" id="submissionLongitude">
+          <p id="submissionLocationStatus">Точка пока не выбрана</p>
+        </div>
+        <div class="submission-grid four">
+          <label><span>Комнат</span><input name="rooms" inputmode="numeric" maxlength="10" placeholder="2"></label>
+          <label><span>Площадь, м²</span><input name="area" inputmode="decimal" maxlength="20" placeholder="65"></label>
+          <label><span>Этаж</span><input name="floor" inputmode="numeric" pattern="[0-9]{1,3}" maxlength="3" placeholder="3"></label>
+          <label><span>Этажей в доме</span><input name="total_floors" inputmode="numeric" pattern="[0-9]{1,3}" maxlength="3" placeholder="9"></label>
+        </div>
+        <div class="submission-price-row">
+          <label><span>Цена *</span><input name="price" required inputmode="numeric" maxlength="30" placeholder="75000"></label>
+          <label><span>Валюта *</span><select name="price_currency" required><option value="сом">сом</option><option value="$">$</option></select></label>
+          <label><span>Расчёт *</span><select name="price_basis" required><option value="object">за весь объект</option><option value="m2">за м²</option></select></label>
+        </div>
+        <label><span>Описание</span><textarea id="submissionDescription" name="description" maxlength="700" rows="5" placeholder="Состояние, мебель, коммуникации и другие важные детали" aria-describedby="submissionDescriptionHelp"></textarea><small id="submissionDescriptionHelp">Только важные особенности и условия · <output id="submissionDescriptionCount">0 / 700</output></small></label>
+      </fieldset>
+
+      <fieldset>
+        <legend>Фотографии</legend>
+        <p class="submission-help">Добавьте от 1 до 5 фотографий. JPG, PNG или WebP, не более 8 МБ каждая.</p>
+        <label class="photo-picker" for="submissionPhotos"><strong>📷 Выбрать фотографии</strong><span id="submissionPhotoLabel">Файлы не выбраны</span></label>
+        <input class="photo-input" id="submissionPhotos" name="photos" type="file" accept="image/jpeg,image/png,image/webp" multiple>
+        <div class="photo-preview" id="submissionPhotoPreview" aria-live="polite"></div>
+      </fieldset>
+
+      <fieldset class="admin-attribution" id="adminAttributionField" hidden>
+        <legend>Размещение администратором</legend>
+        <label><span>Опубликовать от имени агента</span><select name="admin_listing_agent_id" id="adminListingAgent"><option value="">От своего имени</option></select></label>
+        <p class="submission-help" id="adminAttributionHelp">Объект появится в разделе «Мои объявления» выбранного агента. Агент сможет редактировать его в своём кабинете.</p>
+      </fieldset>
+
+      <fieldset>
+        <legend>Контакты собственника</legend>
+        <div class="submission-grid two">
+          <label><span>Кто размещает объявление? *</span><select name="poster_type" id="submissionPosterType" required><option value="Собственник">Собственник</option><option value="Агент">Агент</option></select></label>
+          <label id="submissionContractField" hidden><span>Есть подписанный договор с собственником?</span><select name="contract_status" id="submissionContractStatus"><option value="Нет">Нет</option><option value="Есть">Есть</option></select></label>
+          <label><span>Имя *</span><input name="owner_name" required maxlength="120" autocomplete="name" placeholder="Как к вам обращаться"></label>
+          <label><span>Телефон *</span><input name="phone" required maxlength="40" autocomplete="tel" inputmode="tel" placeholder="+996 555 000 000"></label>
+        </div>
+        <label class="consent-row"><input type="checkbox" name="consent" value="yes" required><span>Я подтверждаю право на размещение объекта и обработку контактов собственника для работы с объявлением. Контакт собственника предназначен для закрытой карточки. Публичный контакт агента определяется по его проверенному профилю.</span></label>
+      </fieldset>
+
+      <div class="submission-result" id="submissionResult" role="alert" hidden></div>
+      <button type="button" id="placementReviewButton">Проверить черновик перед отправкой</button>
+      <section id="placementReview" class="placement-review" aria-labelledby="placementReviewTitle" hidden>
+        <h2 id="placementReviewTitle">Проверка черновика</h2>
+        <p>Значения по умолчанию тоже требуют проверки. Данные пока находятся только на этой странице: обновление страницы удалит черновик.</p>
+        <ul id="placementSummary"></ul>
+        <p id="placementIssues" role="status" tabindex="-1"></p>
+        <label><input type="checkbox" id="placementConfirmed" name="review_confirmed" value="yes"><span>Я проверил цену, валюту, тип сделки, адрес, комнаты, площадь, этаж и фотографии. Объект доступен для указанной сделки.</span></label>
+      </section>
+      <button class="submission-submit" type="submit">Отправить на проверку</button>
+      <p class="submission-alternative">Удобнее в Telegram? <a href="https://t.me/Liberterra_kg_bot" target="_blank" rel="noopener">Добавить через бота</a></p>
+    </form>
+  </main>
+  <script src="/listing-format.js?v=20261006-audit-1" defer></script>
+  <script src="/script.js?v=20261006-audit-1" defer></script>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  
+  <script src="/user-registration.js?v=20261011-register-retry-1"></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+  <script src="/add-object.js?v=20261018-review-2" defer></script>
+  <script src="/placement-review.js?v=20261018-2" defer></script>
+  <script src="/back-navigation.js?v=20260814-1"></script>
+  
+<script src="/add-layout-v20.js"></script>  <script src="/v20-global.js?v=20261022-1" defer></script>
+</body>
+</html>

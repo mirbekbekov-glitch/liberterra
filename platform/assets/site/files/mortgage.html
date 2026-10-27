@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <script src="/telegram-membership.js?v=20260915-1"></script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Информация о банках и ипотеке в Кыргызстане. Расчёт платежа по введённым вами условиям.">
+  <title>Банки и ипотека — Liberterra</title>
+  <link rel="canonical" href="https://liberterra.kg/mortgage.html">
+  <meta name="robots" content="index,follow">
+  <meta name="google-site-verification" content="RPCjp3q0kU6JrCc7pMn9TwHehUJZtbWFuxfLoQ43N7E">
+  <meta property="og:title" content="Банки и ипотека — Liberterra">
+  <meta property="og:description" content="Информация о банках и ипотеке в Кыргызстане. Расчёт платежа по введённым вами условиям.">
+  <meta property="og:url" content="https://liberterra.kg/mortgage.html">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://liberterra.kg/assets/liberterra-mark-adapted.png">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Liberterra">
+  <meta name="twitter:description" content="Каталог недвижимости в Бишкеке: аренда, покупка и продажа.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://hidden-pine-cbff.mirbekbekov.workers.dev" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600&family=Manrope:wght@700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/style.css?v=20260908-agents-mobile-entry-1" data-liberterra-main-styles="true">
+  
+  <script src="/catalog-translations.js?v=20260820-1" defer></script>
+  <script src="/i18n.js?v=20261021-public-v20-1" defer></script>
+  
+  
+<link rel="stylesheet" href="/dual-price.css?v=20260920-1">
+<script src="/dual-price.js?v=20260920-2" defer></script>
+<link rel="stylesheet" href="/site-theme.css?v=20260930-nav-3">
+<script src="/site-theme.js?v=20261021-public-v20-1" defer></script>
+
+
+<link rel="stylesheet" href="/home-v20.css"><link rel="stylesheet" href="/public-v20.css"><script src="/reference-translations.js" defer></script><script src="/public-copy.js" defer></script><script src="/reference-translator.js" defer></script><script src="/public-v20.js" defer></script>  <link rel="stylesheet" href="/v20-global.css?v=20261022-1">
+</head>
+<body class="v20 public-tools-page">
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a class="brand" href="/" aria-label="Liberterra">
+        <span class="brand-wordmark" translate="no">Liberterra</span>
+      </a>
+      <nav class="home-navigation" aria-label="Разделы сайта">
+        <a href="/newbuildings.html">Новостройки</a><a href="/agents.html">Агенты</a>
+        <a href="/requests.html">Заявки</a>
+      </nav>
+      <div class="header-controls">
+        <a class="header-directory" href="/agents.html">Агенты</a>
+        <a class="header-profile" href="/profile.html">Профиль</a>
+        <a class="header-action" href="add-object.html">Разместить объект</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="public-tools"><section id="mortgage"><span class="eyebrow">Банки и ипотека</span><h1>Рассчитайте свой сценарий</h1><div class="wb-warning">Банки не подключены. Эксклюзивное сотрудничество — цель будущих переговоров, а не действующее соглашение.</div><p>Предварительный аннуитетный расчёт по вашим данным. Ставка в форме — ввод пользователя, не предложение банка. Окончательные условия проверяет банк.</p><div class="two"><form id="mortgageForm" class="panel"><label><span>Стоимость объекта</span>, <span data-currency-unit>USD</span><input id="mtPrice" data-money-input type="number" min="0.01" value="100000"></label><label>Взнос задаётся<select id="mtDownMode"><option value="percent">Процентом</option><option value="amount">Суммой</option></select></label><label id="mtPercentLabel">Первоначальный взнос, %<input id="mtDownPercent" type="number" min="0" max="100" step="0.01" value="20"></label><label id="mtAmountLabel" hidden><span>Первоначальный взнос</span>, <span data-currency-unit>USD</span><input id="mtDownAmount" data-money-input type="number" min="0" value="20000"></label><div class="row form"><label>Годовая ставка, %<input id="mtRate" type="number" min="0" max="100" step="0.01" value="0"></label><label>Срок, месяцев<input id="mtMonths" type="number" min="1" max="600" step="1" value="120"></label></div><h3>Допрасходы по кредиту</h3><label><span>Комиссия банку · один раз</span>, <span data-currency-unit>USD</span><input id="mtFeeOnce" data-money-input type="number" min="0" value="0"></label><label><span>Комиссия банку · каждый месяц</span>, <span data-currency-unit>USD</span><input id="mtFeeMonthly" data-money-input type="number" min="0" value="0"></label><label><span>Страхование · за каждый начатый год кредита</span>, <span data-currency-unit>USD</span><input id="mtInsurance" data-money-input type="number" min="0" value="0"></label><p class="small">Страхование считается отдельно от выплат банку. Комиссии не прибавляются к сумме кредита и не финансируются.</p><button class="primary">Пересчитать</button></form><div class="panel"><h2>Результаты сценария</h2><div id="mortgageResults" aria-live="polite"></div><p class="small">Все суммы справочные. Досрочное погашение, плавающая ставка, штрафы, налоги и банковское округление каждого платежа не моделируются.</p></div></div><div class="panel wb-space"><h2>Будущие банковские предложения</h2><p>Карточки появятся после согласования сотрудничества и подтверждения условий. Названий, логотипов и обещаний одобрения в демо нет.</p><p>В карточке банка нужны источник, дата актуальности, валюта кредита, ставка, срок, взнос, комиссии, страхование и требования. Заявка — только выбранному банку после отдельного разрешения на конкретные данные.</p><button disabled>Заявки в банки пока недоступны</button></div></section></main>
+
+
+  <div class="detail-modal" id="objectModal" hidden>
+    <button class="modal-backdrop" type="button" data-close-modal aria-label="Закрыть карточку"></button>
+    <article class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <button class="modal-close" type="button" data-close-modal aria-label="Закрыть">×</button>
+      <div id="modalContent"></div>
+    </article>
+  </div>
+
+  <footer class="site-footer">
+    <div class="wrap footer-inner">
+      <span>Liberterra</span>
+      <div class="footer-contacts">
+        <a href="tel:+996500804402">Аренда: 0500 804 402</a>
+        <a href="tel:+996500804402">Продажа: 0500 804 402</a>
+      </div>
+      <a href="https://t.me/Liberterra_kg_bot" target="_blank" rel="noopener">Telegram-бот</a>
+    </div>
+  </footer>
+
+  
+  <script>
+    if (/[?&#]tgWebApp(?:Version|Platform)=/i.test(`${window.location.search}${window.location.hash}`)) {
+      document.write('<script src="https://telegram.org/js/telegram-web-app.js"><\/script>');
+    }
+  </script>
+
+<script src="/agent-access.js?v=20260928-public-cache-1" defer></script>
+
+
+  <script src="/listing-format.js?v=20261006-audit-1" defer></script>
+  <script src="/contact-gate.js?v=20261003-session-fix-1" defer></script>
+  
+  
+<script src="/calculator-math.js"></script><script src="/calculators.js"></script>  <script src="/v20-global.js?v=20261022-1" defer></script>
+</body>
+</html>

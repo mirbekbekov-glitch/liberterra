@@ -1,5 +1,7 @@
 # CLAUDE.md
 
+For the verified live-platform source and CRM development, start with `platform/README.md` and `platform/AGENTS.md`. The single-file demo instructions below describe only the historical root `index.html`; they do not apply to the Worker and Apps Script source inside `platform/`.
+
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 ## Project

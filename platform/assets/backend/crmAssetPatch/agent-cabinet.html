@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <script src="/telegram-membership.js?v=20260915-1"></script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Кабинет агента — Liberterra</title>
+  <meta name="description" content="Личный рабочий кабинет агента Liberterra.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600&family=Manrope:wght@700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/api/crm/style.css?v=20261017-private-agent-crm-1" data-liberterra-main-styles="true">
+  <script src="/catalog-translations.js?v=20260820-1" defer></script>
+  <script src="/i18n.js?v=20260929-theme-2" defer></script>
+<link rel="stylesheet" href="/site-theme.css?v=20260930-nav-3">
+<script src="/site-theme.js?v=20260930-nav-3" defer></script>
+</head>
+<body class="agent-crm-page">
+  <header class="crm-header">
+    <div class="wrap crm-header-inner">
+      <a class="brand" href="/" aria-label="Liberterra">
+        <img class="brand-logo" src="/assets/liberterra-logo-adapted.png" alt="Liberterra">
+      </a>
+      <a class="crm-catalog-link" href="/profile.html" data-smart-back>← Назад</a>
+    </div>
+  </header>
+
+  <main class="wrap crm-main" id="agentCabinet">
+    <section class="crm-page-heading">
+      <div>
+        <p class="crm-eyebrow">Рабочая зона</p>
+        <h1>Кабинет агента</h1>
+        <p data-crm-agent-summary>Загружаем ваши объекты и заметки...</p>
+      </div>
+      <a class="crm-public-link" data-crm-public-link href="/agent-public.html" hidden>Моя публичная витрина</a>
+    </section>
+
+    <div class="crm-access-state" data-crm-loading role="status">
+      Проверяем доступ агента...
+    </div>
+
+    <div data-crm-content hidden>
+      <section class="crm-counters" aria-label="Статистика объектов" data-crm-counters></section>
+
+      <div class="crm-tabs" role="tablist" aria-label="Разделы кабинета">
+        <button class="crm-tab is-active" id="crmObjectsTab" type="button" role="tab" aria-selected="true" aria-controls="crmObjectsPanel" data-crm-tab="objects">Мои объекты</button>
+        <button class="crm-tab" id="crmClientsTab" type="button" role="tab" aria-selected="false" aria-controls="crmClientsPanel" data-crm-tab="clients">Мои клиенты</button>
+        <button class="crm-tab" id="crmNotesTab" type="button" role="tab" aria-selected="false" aria-controls="crmNotesPanel" data-crm-tab="notes">Заметки</button>
+        <button class="crm-tab" id="crmPrivateAccessTab" type="button" role="tab" aria-selected="false" aria-controls="crmPrivateAccessPanel" data-crm-tab="private-access">Доступ к данным</button>
+      </div>
+
+      <section class="crm-panel" id="crmObjectsPanel" role="tabpanel" aria-labelledby="crmObjectsTab" data-crm-panel="objects">
+        <div class="crm-panel-heading">
+          <div>
+            <h2>Мои объекты</h2>
+            <p>Редактируйте данные и поддерживайте статус актуальным.</p>
+          </div>
+          <a class="crm-primary-link" href="/add-object.html">Разместить объект</a>
+        </div>
+        <div class="crm-object-list" data-crm-objects></div>
+      </section>
+
+      <section class="crm-panel" id="crmClientsPanel" role="tabpanel" aria-labelledby="crmClientsTab" data-crm-panel="clients" hidden>
+        <div class="crm-panel-heading">
+          <div>
+            <h2>Мои клиенты по объектам</h2>
+            <p>Здесь видны ваши активные закрепления с точным временем.</p>
+          </div>
+        </div>
+        <div class="crm-client-list" data-crm-clients></div>
+      </section>
+
+      <section class="crm-panel" id="crmNotesPanel" role="tabpanel" aria-labelledby="crmNotesTab" data-crm-panel="notes" hidden>
+        <div class="crm-panel-heading">
+          <div>
+            <h2>Приватные заметки</h2>
+            <p>Эти записи видны только вам.</p>
+          </div>
+        </div>
+        <div class="crm-note-list" data-crm-notes></div>
+      </section>
+
+      <section class="crm-panel" id="crmPrivateAccessPanel" role="tabpanel" aria-labelledby="crmPrivateAccessTab" data-crm-panel="private-access" hidden>
+        <div class="crm-panel-heading"><div><p class="crm-eyebrow">Закрытая CRM</p><h2>Запросы доступа</h2><p>Разрешайте коллегам только выбранные контакты и документы. Доступ можно отозвать.</p></div></div>
+        <div class="crm-private-access-list" data-crm-private-access><div class="crm-empty"><strong>Загружаем запросы</strong></div></div>
+      </section>
+    </div>
+  </main>
+
+  <dialog class="crm-dialog" data-crm-edit-dialog aria-labelledby="crmEditTitle">
+    <form method="dialog" class="crm-dialog-form" data-crm-edit-form>
+      <div class="crm-dialog-heading">
+        <div>
+          <p class="crm-eyebrow">Редактирование объекта</p>
+          <h2 id="crmEditTitle">Изменить данные</h2>
+        </div>
+        <button class="crm-icon-button" type="button" data-crm-dialog-close aria-label="Закрыть">×</button>
+      </div>
+      <input type="hidden" name="object_id">
+      <label class="crm-field">
+        <span>Цена</span>
+        <input name="price" inputmode="decimal" autocomplete="off">
+      </label>
+      <label class="crm-field">
+        <span>Заголовок</span>
+        <input name="title" maxlength="240">
+      </label>
+      <label class="crm-field">
+        <span>Район или адрес</span>
+        <input name="district" maxlength="240">
+      </label>
+      <label class="crm-field">
+        <span>Описание</span>
+        <textarea name="description" rows="5" maxlength="700"></textarea>
+        <small>До 700 символов. Оставьте только важные особенности и условия.</small>
+      </label>
+      <p class="crm-form-message" data-crm-edit-message role="alert" hidden></p>
+      <div class="crm-dialog-actions">
+        <button class="crm-secondary-button" type="button" data-crm-dialog-close>Отмена</button>
+        <button class="crm-primary-button" type="submit">Сохранить изменения</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="https://telegram.org/js/telegram-web-app.js" defer></script>
+  <script src="/analytics.js?v=20260826-user-tracking-1" defer></script>
+  <script src="/api/crm/agent-access.js?v=20261018-crm-session-retry-1" defer></script>
+  <script src="/api/crm/agent-cabinet.js?v=20261017-private-agent-crm-1" defer></script>
+  <script src="/back-navigation.js?v=20260814-1"></script>
+  
+</body>
+</html>

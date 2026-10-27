@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="ru"><head>
+<script src="/telegram-membership.js?v=20260915-1"></script><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Помощь с договором аренды — Liberterra</title>
+<link rel="stylesheet" href="/style.css?v=20261005-login-eye-1">
+<style>#contractHelpForm .submission-consent{display:flex;align-items:flex-start;gap:12px;margin-top:18px}#contractHelpForm .submission-consent input{width:20px;min-width:20px;height:20px;margin-top:3px;accent-color:#982d43}#contractHelpForm input,#contractHelpForm textarea,#contractHelpForm select{min-width:0;max-width:100%}</style>
+<script src="/catalog-translations.js?v=20260820-1" defer></script>
+<script src="/i18n.js?v=20260929-theme-2" defer></script>
+<link rel="stylesheet" href="/site-theme.css?v=20260930-nav-3">
+<script src="/site-theme.js?v=20260930-nav-3" defer></script>
+<link rel="stylesheet" href="/public-v20.css"><script src="/reference-translations.js" defer></script><script src="/public-copy.js" defer></script><script src="/reference-translator.js" defer></script><script src="/public-v20.js" defer></script>  <link rel="stylesheet" href="/v20-global.css?v=20261022-1">
+</head><body class="v20 submission-page" data-require-registration="true">
+<nav class="submission-page-nav wrap"><a href="/miniapp.html">На главную</a></nav>
+<main class="submission-main wrap">
+<section class="submission-intro"><h1>Помощь с договором аренды</h1><p>Поможем согласовать условия аренды, подготовить договор, акт приёма-передачи и опись имущества.</p><p>Стоимость и сроки согласуем до начала работы. Юридическая проверка в эту услугу не входит.</p></section>
+<form class="submission-form" id="contractHelpForm">
+<fieldset><legend>Ваша задача</legend><div class="submission-grid two">
+<label><span>Что нужно?</span><select name="task" required><option value="prepare">Подготовить договор аренды</option><option value="change">Внести изменения</option><option value="handover">Оформить передачу квартиры</option></select></label>
+<label><span>Где нашли объект?</span><select name="source" required><option value="liberterra">Liberterra</option><option value="other">Другой объект</option></select></label>
+<label><span>Ссылка или номер объекта (необязательно)</span><input name="object" maxlength="200"></label>
+<label><span>Описание ситуации (необязательно)</span><textarea name="description" maxlength="1000" rows="4"></textarea></label>
+</div><p>Не указывайте паспортные данные и не отправляйте документы в этой форме.</p></fieldset>
+<fieldset><legend>Как с вами связаться</legend><div class="submission-grid two">
+<label><span>Имя</span><input name="name" autocomplete="name" maxlength="100" required></label>
+<label><span>Телефон или Telegram</span><input name="contact" maxlength="100" required></label>
+</div><label class="submission-consent"><input type="checkbox" name="consent" required><span>Согласен передать данные заявки администратору Liberterra и назначенному агенту для связи по этой заявке. Заявка не публикуется в каталоге.</span></label></fieldset>
+<p id="contractHelpResult" role="status" hidden></p><button class="submission-submit" type="submit">Получить помощь</button>
+</form></main>
+<script src="https://telegram.org/js/telegram-web-app.js"></script><script src="/user-registration.js?v=20261011-register-retry-1"></script><script src="/contract-help.js?v=20260923-1" defer></script>
+  <script src="/v20-global.js?v=20261022-1" defer></script>
+</body></html>
