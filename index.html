@@ -8,6 +8,11 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=Unbounded:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.Default.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/leaflet.markercluster.min.js"></script>
 <style>
 :root{
   --ink:#12141A; --ink2:#4B5260; --mute:#6F7686; --line:#E3E6EB; --bg:#F3F4F6; --card:#fff;
@@ -376,6 +381,32 @@ textarea.inp{padding:12px 14px;min-height:96px;resize:vertical}
   .panel{padding:18px}
 }
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+/* Leaflet map */
+#lmap{width:100%;height:480px;border-radius:var(--r-card);border:1px solid var(--line);z-index:0}
+@media(max-width:699px){#lmap{height:60vh;min-height:320px}}
+.lmap-wrap{position:relative}
+.lmap-wrap .search-area-btn{position:absolute;top:12px;left:50%;transform:translateX(-50%);z-index:600;background:#fff;color:var(--ink);border:1.5px solid var(--line);border-radius:20px;padding:8px 18px;font:600 14px/1 var(--ff);cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.12);display:none}
+.lmap-wrap .search-area-btn.show{display:block}
+.lmap-popup{font:14px/1.4 var(--ff);min-width:200px;max-width:260px}
+.lmap-popup .pop-title{font-weight:700;font-size:15px;margin-bottom:4px;color:var(--ink)}
+.lmap-popup .pop-price{font-weight:700;font-size:17px;color:var(--brand-d);margin-bottom:6px}
+.lmap-popup .pop-meta{font-size:13px;color:var(--ink2);margin-bottom:8px}
+.lmap-popup .pop-comm{font-size:12px;color:var(--brand);font-weight:600;margin-bottom:6px;padding:4px 8px;background:var(--brand-t);border-radius:6px}
+.lmap-popup .pop-link{display:inline-block;padding:6px 14px;border-radius:8px;background:var(--brand);color:#fff;font-weight:600;font-size:13px;text-decoration:none}
+.lmap-popup .pop-link:hover{background:var(--brand-d)}
+.price-marker{background:var(--ink);color:#fff;font:700 12px/1 var(--ff);padding:5px 9px;border-radius:8px 8px 8px 2px;white-space:nowrap;box-shadow:0 2px 6px rgba(0,0,0,.2)}
+.price-marker.rent{background:var(--brand-d)}
+.price-marker.sale{background:#c0392b}
+.leaflet-popup-content-wrapper{border-radius:14px!important;box-shadow:0 4px 20px rgba(0,0,0,.15)!important}
+.leaflet-popup-tip{box-shadow:0 4px 20px rgba(0,0,0,.1)!important}
+.map-noloc{padding:20px;background:var(--bg2);border-radius:var(--r-card);text-align:center;color:var(--ink2);font-size:14px;margin-top:12px}
+.map-toggle-row{display:flex;gap:8px;align-items:center;margin-bottom:12px}
+.map-toggle-row .seg{margin-left:auto}
+.addr-search{display:flex;gap:8px;margin-bottom:12px}
+.addr-search input{flex:1}
+.addr-search button{white-space:nowrap}
+.loc-privacy{display:flex;gap:8px;align-items:center;margin:8px 0;font-size:13px;color:var(--ink2)}
+.loc-privacy select{font-size:13px;padding:4px 8px;border-radius:6px;border:1px solid var(--line)}
 </style>
 </head>
 <body>
@@ -428,8 +459,8 @@ const CONFIG = {
 };
 const MONTHS = ['янв','фев','мар','апр','мая','июн','июл','авг','сен','окт','ноя','дек'];
 const DISTRICTS = {
-  'Центр':{x:50,y:46}, 'Джал':{x:68,y:60}, 'Юг-2':{x:46,y:72}, 'Асанбай':{x:70,y:78}, 'Восток-5':{x:84,y:50},
-  'Тунгуч':{x:22,y:60}, 'Академгородок':{x:56,y:26}, 'Улан-2':{x:78,y:34}, 'Аламедин':{x:30,y:30}, 'Кок-Жар':{x:14,y:42}
+  'Центр':{x:50,y:46,lat:42.874,lng:74.589}, 'Джал':{x:68,y:60,lat:42.838,lng:74.627}, 'Юг-2':{x:46,y:72,lat:42.832,lng:74.582}, 'Асанбай':{x:70,y:78,lat:42.825,lng:74.633}, 'Восток-5':{x:84,y:50,lat:42.865,lng:74.670},
+  'Тунгуч':{x:22,y:60,lat:42.840,lng:74.540}, 'Академгородок':{x:56,y:26,lat:42.890,lng:74.600}, 'Улан-2':{x:78,y:34,lat:42.885,lng:74.650}, 'Аламедин':{x:30,y:30,lat:42.895,lng:74.555}, 'Кок-Жар':{x:14,y:42,lat:42.880,lng:74.510}
 };
 const TYPES = {apartment:'Квартира', house:'Дом', commercial:'Коммерческая'};
 
@@ -442,18 +473,18 @@ const AGENTS = [
   {id:'a5',name:'Тимур А.',agency:'Liberterra',rating:5.0,deals:9,dir:['Продажа'],cert:true,since:'2025',phone:'+996 555 000 105',tg:'demo_agent_5',inhouse:true}
 ];
 let LISTINGS = [
-  {id:1,deal:'rent',type:'apartment',title:'2-комнатная квартира, Джал',district:'Джал',street:'ул. Малдыбаева',rooms:2,area:55,floor:4,floors:9,usd:450,verified:true,agent:'a1',pub:'2026-10-02',act:'2026-10-22',hue:200,feat:['Мебель','Кондиционер','Стиральная машина','Бойлер'],views:1296,contacts:6,favs:3,mine:true,desc:'Светлая квартира после ремонта. Окна во двор, тихий подъезд, рядом школа и остановка. Заселение от 1 месяца, депозит обсуждается.'},
-  {id:2,deal:'sale',type:'apartment',title:'3-комнатная квартира, Юг-2',district:'Юг-2',street:'ул. Ибраимова',rooms:3,area:78,floor:6,floors:10,usd:98000,verified:true,agent:'a3',pub:'2026-09-28',act:'2026-10-20',hue:20,feat:['Евроремонт','Лоджия','Парковка во дворе'],views:842,contacts:4,favs:9,desc:'Просторная трёхкомнатная в кирпичном доме. Раздельный санузел, большая кухня-гостиная, документы готовы к сделке.'},
-  {id:3,deal:'rent',type:'apartment',title:'Студия в центре',district:'Центр',street:'ул. Токтогула',rooms:0,area:28,floor:7,floors:12,usd:320,verified:true,agent:'a2',pub:'2026-10-15',act:'2026-10-23',hue:340,feat:['Мебель','Интернет','Лифт'],views:511,contacts:7,favs:5,mine:true,desc:'Компактная студия в пешей доступности от парка и кафе. Подходит для одного или пары.'},
-  {id:4,deal:'sale',type:'house',title:'Дом с участком, Аламедин',district:'Аламедин',street:'ул. Садовая',rooms:5,area:140,floor:1,floors:2,usd:185000,verified:true,agent:'a1',pub:'2026-09-12',act:'2026-10-18',hue:120,feat:['Участок 6 соток','Гараж','Отопление газ'],views:975,contacts:5,favs:14,mine:true,desc:'Двухэтажный дом в тихом районе. Участок ухоженный, есть гараж и летняя кухня.'},
-  {id:5,deal:'rent',type:'apartment',title:'1-комнатная квартира, Асанбай',district:'Асанбай',street:'ул. Алма-Атинская',rooms:1,area:40,floor:3,floors:5,usd:280,verified:true,agent:'a4',pub:'2026-10-10',act:'2026-10-21',hue:260,feat:['Мебель','Балкон'],views:402,contacts:3,favs:2,desc:'Уютная однокомнатная в зелёном дворе, рядом рынок и маршрутки.'},
-  {id:6,deal:'sale',type:'apartment',title:'2-комнатная квартира, Восток-5',district:'Восток-5',street:'мкр Восток-5',rooms:2,area:62,floor:5,floors:9,usd:72500,verified:true,agent:'a5',pub:'2026-10-05',act:'2026-10-22',hue:40,feat:['Косметический ремонт','Лифт'],views:633,contacts:2,favs:6,desc:'Тёплая квартира на солнечной стороне. Рядом детский сад и школа.'},
-  {id:7,deal:'rent',type:'commercial',title:'Офис 100 м², бизнес-центр',district:'Центр',street:'пр. Чуй',rooms:4,area:100,floor:8,floors:10,usd:1500,verified:true,agent:'a3',pub:'2026-09-30',act:'2026-10-19',hue:215,feat:['Офисная отделка','Общий вход','Охрана'],views:288,contacts:2,favs:1,desc:'Кабинетная планировка, 4 кабинета и переговорная. Парковка у здания.'},
-  {id:8,deal:'sale',type:'apartment',title:'1-комнатная квартира, Тунгуч',district:'Тунгуч',street:'мкр Тунгуч',rooms:1,area:45,floor:2,floors:9,usd:54000,verified:true,agent:'a2',pub:'2026-10-17',act:'2026-10-24',hue:170,feat:['Свежий ремонт'],views:190,contacts:1,favs:2,mine:true,desc:'Небольшая квартира с новым ремонтом, подойдёт для первой покупки или сдачи в аренду.'},
-  {id:9,deal:'rent',type:'house',title:'Дом, Кок-Жар',district:'Кок-Жар',street:'ул. Весенняя',rooms:4,area:120,floor:1,floors:2,usd:900,verified:true,agent:'a1',pub:'2026-10-08',act:'2026-10-23',hue:95,feat:['Двор','Отопление газ','Парковка'],views:344,contacts:3,favs:4,desc:'Дом для семьи в тихом районе. Есть двор и место под две машины.'},
-  {id:10,deal:'sale',type:'apartment',title:'3-комнатная квартира, Академгородок',district:'Академгородок',street:'ул. Академика Раззакова',rooms:3,area:95,floor:4,floors:6,usd:135000,verified:true,agent:'a3',pub:'2026-09-20',act:'2026-10-17',hue:300,feat:['Дизайнерский ремонт','Два санузла','Кладовая'],views:1120,contacts:8,favs:21,desc:'Квартира в зелёном районе с чистым воздухом. Продуманная планировка, высокие потолки.'},
-  {id:11,deal:'rent',type:'apartment',title:'2-комнатная квартира, Улан-2',district:'Улан-2',street:'мкр Улан-2',rooms:2,area:60,floor:8,floors:12,usd:400,verified:false,agent:'a4',pub:'2026-10-22',act:'2026-10-22',hue:10,feat:['Мебель','Лифт'],views:64,contacts:0,favs:0,desc:'Объект ожидает проверки собственника и документов.'},
-  {id:12,deal:'sale',type:'commercial',title:'Помещение 75 м² на первой линии',district:'Центр',street:'ул. Исанова',rooms:3,area:75,floor:1,floors:5,usd:210000,verified:true,agent:'a5',pub:'2026-09-25',act:'2026-10-16',hue:355,feat:['Витринные окна','Отдельный вход'],views:410,contacts:3,favs:7,desc:'Помещение с высоким пешеходным потоком под магазин, кофейню или офис.'}
+  {id:1,deal:'rent',type:'apartment',title:'2-комнатная квартира, Джал',district:'Джал',street:'ул. Малдыбаева',rooms:2,area:55,floor:4,floors:9,usd:450,verified:true,agent:'a1',pub:'2026-10-02',act:'2026-10-22',hue:200,feat:['Мебель','Кондиционер','Стиральная машина','Бойлер'],views:1296,contacts:6,favs:3,mine:true,lat:42.8395,lng:74.6290,desc:'Светлая квартира после ремонта. Окна во двор, тихий подъезд, рядом школа и остановка. Заселение от 1 месяца, депозит обсуждается.'},
+  {id:2,deal:'sale',type:'apartment',title:'3-комнатная квартира, Юг-2',district:'Юг-2',street:'ул. Ибраимова',rooms:3,area:78,floor:6,floors:10,usd:98000,verified:true,agent:'a3',pub:'2026-09-28',act:'2026-10-20',hue:20,feat:['Евроремонт','Лоджия','Парковка во дворе'],views:842,contacts:4,favs:9,lat:42.8335,lng:74.5840,desc:'Просторная трёхкомнатная в кирпичном доме. Раздельный санузел, большая кухня-гостиная, документы готовы к сделке.'},
+  {id:3,deal:'rent',type:'apartment',title:'Студия в центре',district:'Центр',street:'ул. Токтогула',rooms:0,area:28,floor:7,floors:12,usd:320,verified:true,agent:'a2',pub:'2026-10-15',act:'2026-10-23',hue:340,feat:['Мебель','Интернет','Лифт'],views:511,contacts:7,favs:5,mine:true,lat:42.8760,lng:74.5920,desc:'Компактная студия в пешей доступности от парка и кафе. Подходит для одного или пары.'},
+  {id:4,deal:'sale',type:'house',title:'Дом с участком, Аламедин',district:'Аламедин',street:'ул. Садовая',rooms:5,area:140,floor:1,floors:2,usd:185000,verified:true,agent:'a1',pub:'2026-09-12',act:'2026-10-18',hue:120,feat:['Участок 6 соток','Гараж','Отопление газ'],views:975,contacts:5,favs:14,mine:true,lat:42.8970,lng:74.5580,desc:'Двухэтажный дом в тихом районе. Участок ухоженный, есть гараж и летняя кухня.'},
+  {id:5,deal:'rent',type:'apartment',title:'1-комнатная квартира, Асанбай',district:'Асанбай',street:'ул. Алма-Атинская',rooms:1,area:40,floor:3,floors:5,usd:280,verified:true,agent:'a4',pub:'2026-10-10',act:'2026-10-21',hue:260,feat:['Мебель','Балкон'],views:402,contacts:3,favs:2,lat:42.8265,lng:74.6350,desc:'Уютная однокомнатная в зелёном дворе, рядом рынок и маршрутки.'},
+  {id:6,deal:'sale',type:'apartment',title:'2-комнатная квартира, Восток-5',district:'Восток-5',street:'мкр Восток-5',rooms:2,area:62,floor:5,floors:9,usd:72500,verified:true,agent:'a5',pub:'2026-10-05',act:'2026-10-22',hue:40,feat:['Косметический ремонт','Лифт'],views:633,contacts:2,favs:6,lat:42.8668,lng:74.6720,desc:'Тёплая квартира на солнечной стороне. Рядом детский сад и школа.'},
+  {id:7,deal:'rent',type:'commercial',title:'Офис 100 м², бизнес-центр',district:'Центр',street:'пр. Чуй',rooms:4,area:100,floor:8,floors:10,usd:1500,verified:true,agent:'a3',pub:'2026-09-30',act:'2026-10-19',hue:215,feat:['Офисная отделка','Общий вход','Охрана'],views:288,contacts:2,favs:1,lat:42.8720,lng:74.5850,desc:'Кабинетная планировка, 4 кабинета и переговорная. Парковка у здания.'},
+  {id:8,deal:'sale',type:'apartment',title:'1-комнатная квартира, Тунгуч',district:'Тунгуч',street:'мкр Тунгуч',rooms:1,area:45,floor:2,floors:9,usd:54000,verified:true,agent:'a2',pub:'2026-10-17',act:'2026-10-24',hue:170,feat:['Свежий ремонт'],views:190,contacts:1,favs:2,mine:true,lat:42.8415,lng:74.5420,desc:'Небольшая квартира с новым ремонтом, подойдёт для первой покупки или сдачи в аренду.'},
+  {id:9,deal:'rent',type:'house',title:'Дом, Кок-Жар',district:'Кок-Жар',street:'ул. Весенняя',rooms:4,area:120,floor:1,floors:2,usd:900,verified:true,agent:'a1',pub:'2026-10-08',act:'2026-10-23',hue:95,feat:['Двор','Отопление газ','Парковка'],views:344,contacts:3,favs:4,lat:42.8820,lng:74.5130,desc:'Дом для семьи в тихом районе. Есть двор и место под две машины.'},
+  {id:10,deal:'sale',type:'apartment',title:'3-комнатная квартира, Академгородок',district:'Академгородок',street:'ул. Академика Раззакова',rooms:3,area:95,floor:4,floors:6,usd:135000,verified:true,agent:'a3',pub:'2026-09-20',act:'2026-10-17',hue:300,feat:['Дизайнерский ремонт','Два санузла','Кладовая'],views:1120,contacts:8,favs:21,lat:42.8915,lng:74.6030,desc:'Квартира в зелёном районе с чистым воздухом. Продуманная планировка, высокие потолки.'},
+  {id:11,deal:'rent',type:'apartment',title:'2-комнатная квартира, Улан-2',district:'Улан-2',street:'мкр Улан-2',rooms:2,area:60,floor:8,floors:12,usd:400,verified:false,agent:'a4',pub:'2026-10-22',act:'2026-10-22',hue:10,feat:['Мебель','Лифт'],views:64,contacts:0,favs:0,lat:42.8870,lng:74.6520,desc:'Объект ожидает проверки собственника и документов.'},
+  {id:12,deal:'sale',type:'commercial',title:'Помещение 75 м² на первой линии',district:'Центр',street:'ул. Исанова',rooms:3,area:75,floor:1,floors:5,usd:210000,verified:true,agent:'a5',pub:'2026-09-25',act:'2026-10-16',hue:355,feat:['Витринные окна','Отдельный вход'],views:410,contacts:3,favs:7,lat:42.8745,lng:74.5960,desc:'Помещение с высоким пешеходным потоком под магазин, кофейню или офис.'}
 ];
 let REQUESTS = [
   {id:1,deal:'rent',who:'Ищу 2-комнатную',district:'Джал',budget:450,note:'Для семьи, с мебелью, от 1 года',answers:3,date:'2026-10-23'},
@@ -620,6 +651,7 @@ function filtered(){
   if(f.amin) r=r.filter(l=>l.area>=+f.amin);
   if(f.verified) r=r.filter(l=>l.verified);
   if(f.mine&&isAgent()) r=r.filter(l=>l.mine);
+  if(S._mapBounds&&f.view==='map'){const b=S._mapBounds;r=r.filter(l=>l.lat&&l.lng&&b.contains([l.lat,l.lng]))}
   const s=f.sort;
   r.sort((a,b)=>s==='pa'?a.usd-b.usd:s==='pd'?b.usd-a.usd:s==='ar'?b.area-a.area:new Date(b.act)-new Date(a.act));
   return r;
@@ -650,23 +682,73 @@ function resultsHTML(){
       <div class="seg" role="group" aria-label="Вид">
         <button data-a="view" data-v="list" aria-pressed="${f.view==='list'}" aria-label="Списком">${I.list}</button>
         <button data-a="view" data-v="grid" aria-pressed="${f.view==='grid'}" aria-label="Плитками">${I.grid}</button>
-        <button data-a="view" data-v="map" aria-pressed="${f.view==='map'}" aria-label="На схеме">${I.map}</button>
+        <button data-a="view" data-v="map" aria-pressed="${f.view==='map'}" aria-label="На карте">${I.map}</button>
       </div></div></div>${body}`;
 }
 function plural(n,w){const a=n%10,b=n%100;return a===1&&b!==11?w[0]:a>=2&&a<=4&&(b<10||b>=20)?w[1]:w[2]}
+let _map=null,_markers=null,_searchAreaBtn=false;
 function mapHTML(r){
-  const sel=S.mapSel&&r.find(x=>x.id===S.mapSel);
-  const pins=r.map(l=>{const d=DISTRICTS[l.district]||{x:50,y:50};const j=((l.id*37)%9-4)*1.4;
-    return `<button class="pin" style="left:${d.x+j}%;top:${d.y+((l.id*13)%7-3)*1.2}%" data-a="pin" data-id="${l.id}" aria-pressed="${S.mapSel===l.id}" aria-label="${esc(l.title)}">${S.cur==='USD'?'$'+nf(l.usd):nf(l.usd*CONFIG.rate/1000)+'к'}</button>`}).join('');
-  return `<div class="mapbox"><svg class="map" viewBox="0 0 100 62" preserveAspectRatio="none" aria-hidden="true" style="aspect-ratio:100/62">
-    <rect width="100" height="62" fill="#E8EEF2"/>
-    <path d="M0 8Q30 4 60 10T100 6V0H0z" fill="#DCE6EC"/>
-    <path d="M6 36L94 36M50 6L50 58M22 10L80 56M10 50L88 20" stroke="#fff" stroke-width="1.400" fill="none"/>
-    <path d="M0 24Q40 26 100 22" stroke="#C5D7E3" stroke-width="2.200" fill="none"/>
-    <rect x="38" y="22" width="26" height="14" rx="6" fill="#D5E6D4" opacity=".7"/>
-  </svg>${Object.entries(DISTRICTS).map(([n,d])=>`<span class="dl" style="left:${d.x}%;top:${d.y+5}%">${n}</span>`).join('')}<span class="mapnote">Условная схема, не в масштабе</span>${pins}
-  ${sel?`<div class="mapcard"><div class="row"><div class="grow"><div class="price" style="font-size:18px">${money(sel.usd,sel.deal==='rent')}</div><a class="title" href="#/object/${sel.id}">${esc(sel.title)}</a><div class="muted" style="font-size:13px">${sel.area} м², ${esc(sel.district)}</div></div><a class="btn sm primary" href="#/object/${sel.id}">Открыть</a></div></div>`:''}
-  </div>`;
+  const withCoords=r.filter(l=>l.lat&&l.lng);
+  const noCoords=r.filter(l=>!l.lat||!l.lng);
+  return `<div class="lmap-wrap"><div id="lmap"></div><button class="search-area-btn" data-a="searchArea">Искать в этой области</button></div>
+  ${noCoords.length?`<div class="map-noloc">${noCoords.length} ${plural(noCoords.length,['объект','объекта','объектов'])} без координат — ${isAgent()?'добавьте адрес при редактировании':'показаны только в списке'}</div>`:''}`;
+}
+function initMap(listings){
+  if(_map){_map.remove();_map=null}
+  const el=document.getElementById('lmap');
+  if(!el||typeof L==='undefined')return;
+  _map=L.map('lmap',{zoomControl:true,attributionControl:true}).setView([42.87,74.59],13);
+  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{
+    maxZoom:19,attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+  }).addTo(_map);
+  _markers=L.markerClusterGroup({maxClusterRadius:50,spiderfyOnMaxZoom:true,showCoverageOnHover:false,
+    iconCreateFunction:function(cluster){const n=cluster.getChildCount();return L.divIcon({html:'<div style="background:var(--brand);color:#fff;font:700 13px/1 var(--ff);border-radius:50%;width:'+(n>9?40:34)+'px;height:'+(n>9?40:34)+'px;display:grid;place-items:center;box-shadow:0 2px 8px rgba(27,107,74,.4)">'+n+'</div>',className:'',iconSize:[n>9?40:34,n>9?40:34]})}
+  });
+  const withCoords=listings.filter(l=>l.lat&&l.lng);
+  withCoords.forEach(l=>{
+    const priceLabel=S.cur==='USD'?'$'+nf(l.usd):nf(Math.round(l.usd*CONFIG.rate/1000))+'к';
+    const icon=L.divIcon({html:`<div class="price-marker ${l.deal}">${priceLabel}</div>`,className:'',iconAnchor:[0,0]});
+    let mlat=l.lat,mlng=l.lng;
+    if(!isAgent()&&l.locPrivacy==='approx'){const dd=DISTRICTS[l.district];if(dd){mlat=dd.lat+(Math.random()-.5)*.008;mlng=dd.lng+(Math.random()-.5)*.012}}
+    const m=L.marker([mlat,mlng],{icon});
+    const commHTML=isAgent()&&(l.commOwner||l.commCloser)?`<div class="pop-comm">Комиссия: ${l.commOwner||'?'}% / ${l.commCloser||'?'}%</div>`:'';
+    const roomsTxt=l.rooms===0?'Студия':l.rooms?l.rooms+' комн.':'';
+    m.bindPopup(`<div class="lmap-popup"><div class="pop-price">${money(l.usd,l.deal==='rent')}</div><div class="pop-title">${esc(l.title)}</div><div class="pop-meta">${roomsTxt}${roomsTxt&&l.area?' · ':''}${l.area?l.area+' м²':''} · ${esc(l.district)}</div>${commHTML}<a class="pop-link" href="#/object/${l.id}">Открыть</a></div>`,{maxWidth:280,closeButton:true});
+    _markers.addLayer(m);
+  });
+  _map.addLayer(_markers);
+  if(withCoords.length){const b=_markers.getBounds();_map.fitBounds(b,{padding:[30,30],maxZoom:15})}
+  _map.on('moveend',function(){const btn=document.querySelector('.search-area-btn');if(btn)btn.classList.add('show')});
+}
+function getMapBounds(){if(!_map)return null;return _map.getBounds()}
+let _addMap=null,_addMarker=null;
+function initAddMap(){
+  const el=document.getElementById('addMap');
+  if(!el||typeof L==='undefined')return;
+  if(_addMap){_addMap.remove();_addMap=null}
+  _addMap=L.map('addMap').setView([42.87,74.59],13);
+  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'&copy; OpenStreetMap'}).addTo(_addMap);
+  _addMap.on('click',function(e){
+    if(_addMarker)_addMap.removeLayer(_addMarker);
+    _addMarker=L.marker(e.latlng,{draggable:true}).addTo(_addMap);
+    document.getElementById('addLat').value=e.latlng.lat.toFixed(6);
+    document.getElementById('addLng').value=e.latlng.lng.toFixed(6);
+    _addMarker.on('dragend',function(){const p=_addMarker.getLatLng();document.getElementById('addLat').value=p.lat.toFixed(6);document.getElementById('addLng').value=p.lng.toFixed(6)});
+  });
+}
+function geocodeAddr(q){
+  fetch('https://nominatim.openstreetmap.org/search?format=json&q='+encodeURIComponent(q+', Бишкек')+'&limit=1')
+    .then(r=>r.json()).then(data=>{
+      if(!data.length){toast('Адрес не найден');return}
+      const lat=+data[0].lat,lng=+data[0].lon;
+      if(_addMap){_addMap.setView([lat,lng],16);
+        if(_addMarker)_addMap.removeLayer(_addMarker);
+        _addMarker=L.marker([lat,lng],{draggable:true}).addTo(_addMap);
+        document.getElementById('addLat').value=lat.toFixed(6);
+        document.getElementById('addLng').value=lng.toFixed(6);
+        _addMarker.on('dragend',function(){const p=_addMarker.getLatLng();document.getElementById('addLat').value=p.lat.toFixed(6);document.getElementById('addLng').value=p.lng.toFixed(6)});
+      }
+    }).catch(()=>toast('Ошибка поиска адреса'));
 }
 
 /* =========================================================
@@ -945,6 +1027,13 @@ function pAdd(){
     <div class="field"><span class="lbl">Направление</span><div class="chips" role="group"><button type="button" class="chip" data-a="adeal" data-v="rent" aria-pressed="true">Аренда</button><button type="button" class="chip" data-a="adeal" data-v="sale" aria-pressed="false">Продажа</button></div></div>
     <div class="cols2"><div class="field"><label for="a1">Тип</label><select id="a1" class="sel" name="type">${Object.entries(TYPES).map(([k,v])=>`<option value="${k}">${v}</option>`).join('')}</select></div><div class="field"><label for="a2">Район</label><select id="a2" class="sel" name="district">${Object.keys(DISTRICTS).map(d=>`<option>${d}</option>`).join('')}</select></div></div>
     <div class="field"><label for="a3">Улица или микрорайон</label><input id="a3" class="inp" name="street" required placeholder="ул. Токтогула"></div>
+    <div class="field"><span class="lbl">Местоположение на карте</span>
+      <div class="addr-search"><input id="addrQ" class="inp" placeholder="Введите адрес для поиска" aria-label="Поиск адреса"><button type="button" class="btn sm" data-a="geocode">Найти</button></div>
+      <div id="addMap" style="height:280px;border-radius:var(--r-card);border:1px solid var(--line);margin-bottom:8px"></div>
+      <input type="hidden" name="lat" id="addLat"><input type="hidden" name="lng" id="addLng">
+      <div class="loc-privacy"><span>Показать адрес:</span><select name="locPrivacy" id="locPriv"><option value="exact">Точное местоположение</option><option value="approx" selected>Приблизительное (район)</option></select></div>
+      <div class="hint">Кликните на карту или найдите адрес, чтобы поставить метку. Если «Приблизительное» — гостям покажут только район.</div>
+    </div>
     <div class="cols2"><div class="field"><label for="a4">Комнат (0 — студия)</label><input id="a4" class="inp" name="rooms" inputmode="numeric" required value="2"></div><div class="field"><label for="a5">Площадь, м²</label><input id="a5" class="inp" name="area" inputmode="numeric" required></div></div>
     <div class="cols2"><div class="field"><label for="a6">Этаж</label><input id="a6" class="inp" name="floor" inputmode="numeric" value="3"></div><div class="field"><label for="a7">Этажей в доме</label><input id="a7" class="inp" name="floors" inputmode="numeric" value="9"></div></div>
     <div class="field"><label for="a8">Цена, $ <span class="muted" id="ahint">в месяц</span></label><input id="a8" class="inp" name="usd" inputmode="numeric" required></div>
@@ -985,13 +1074,15 @@ function render(){
   $('#tabbar').innerHTML=tb.map(([p,t,ic])=>`<a href="#${p}" ${page===p||(p!=='/'&&page.startsWith(p))?'aria-current="page"':''}>${ic}${t}</a>`).join('');
   syncChrome();
   if(pg==='mortgage')calcMort();
+  if(pg==='catalog'&&S.f.view==='map')setTimeout(()=>initMap(filtered()),0);
+  if(pg==='add')setTimeout(initAddMap,0);
   window.scrollTo(0,0);
 }
 function syncChrome(){
   document.querySelectorAll('[data-a=cur]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===S.cur));
   document.querySelectorAll('[data-a=role]').forEach(b=>{if(b.closest('.top'))b.setAttribute('aria-pressed',b.dataset.v===S.role)});
 }
-function refreshResults(){const r=$('#results');if(r){r.innerHTML=resultsHTML()}const f=$('#filters');if(f&&document.activeElement&&f.contains(document.activeElement)){}else if(f){f.innerHTML='<h3>Фильтры</h3>'+filtersHTML()}}
+function refreshResults(){const r=$('#results');if(r){r.innerHTML=resultsHTML();if(S.f.view==='map')setTimeout(()=>initMap(filtered()),0)}const f=$('#filters');if(f&&document.activeElement&&f.contains(document.activeElement)){}else if(f){f.innerHTML='<h3>Фильтры</h3>'+filtersHTML()}}
 function refreshFilters(){const f=$('#filters');if(f)f.innerHTML='<h3>Фильтры</h3>'+filtersHTML();const d=$('#drawerBody');if(d)d.innerHTML=filtersHTML()}
 
 /* =========================================================
@@ -1008,9 +1099,11 @@ const A={
   tocat(t){if(t.dataset.v)S.f.deal=t.dataset.v},
   byagent(){S.f.verified=true},
   f(t){const k=t.dataset.k;S.f[k]=t.dataset.v;refreshFilters();refreshResults();if(S.f.view==='map'){}},
-  reset(){S.f={...S.f,type:'',district:'',rooms:'',pmin:'',pmax:'',amin:'',verified:true,mine:false};refreshFilters();refreshResults()},
-  view(t){S.f.view=t.dataset.v;S.mapSel=null;refreshResults()},
+  reset(){S.f={...S.f,type:'',district:'',rooms:'',pmin:'',pmax:'',amin:'',verified:true,mine:false};S._mapBounds=null;refreshFilters();refreshResults()},
+  view(t){S.f.view=t.dataset.v;S.mapSel=null;S._mapBounds=null;refreshResults()},
   pin(t){S.mapSel=+t.dataset.id;refreshResults()},
+  searchArea(){if(!_map)return;S._mapBounds=_map.getBounds();const btn=document.querySelector('.search-area-btn');if(btn)btn.classList.remove('show');refreshResults()},
+  geocode(){const q=document.getElementById('addrQ');if(q&&q.value.trim())geocodeAddr(q.value.trim())},
   drawer(){$('#overlay').innerHTML=`<div class="drawer-bg" data-a="close"></div><div class="drawer" role="dialog" aria-modal="true" aria-label="Фильтры"><div class="row between" style="margin-bottom:14px"><h3>Фильтры</h3><button class="icon-btn" data-a="close" aria-label="Закрыть">✕</button></div><div class="fgroup" id="drawerBody" style="gap:18px;display:grid">${filtersHTML()}</div><button class="btn primary block" style="margin-top:18px" data-a="close">Показать ${filtered().length}</button></div>`},
   close(){$('#overlay').innerHTML='';refreshResults()},
   day(t){S.book.day=t.dataset.v;document.querySelectorAll('[data-a=day]').forEach(b=>b.setAttribute('aria-pressed',b===t))},
@@ -1135,7 +1228,8 @@ document.addEventListener('submit',e=>{
   if(k==='add'){const id=200+S.mineExtra.length+1,deal=S.adeal||'rent',r=+d.rooms;
     const commOwner=parseFloat(d.commOwner),commCloser=parseFloat(d.commCloser);
     if(isNaN(commOwner)||isNaN(commCloser)||commOwner<0||commCloser<0||commOwner>100||commCloser>100){toast('Укажите корректные проценты комиссии (от 0 до 100)');return}
-    S.mineExtra.push({id,deal,type:d.type,title:`${r===0?'Студия':r+'-комнатная'} ${TYPES[d.type].toLowerCase()}, ${d.district}`,district:d.district,street:d.street,rooms:r,area:+d.area,floor:+d.floor||1,floors:+d.floors||1,usd:+d.usd,verified:false,agent:'a1',pub:CONFIG.today.toISOString().slice(0,10),act:CONFIG.today.toISOString().slice(0,10),hue:(id*47)%360,feat:[],views:0,contacts:0,favs:0,mine:true,desc:d.desc||'Описание появится после проверки.',commOwner,commCloser});
+    const addLat=parseFloat(d.lat),addLng=parseFloat(d.lng),locPrivacy=d.locPrivacy||'approx';
+    S.mineExtra.push({id,deal,type:d.type,title:`${r===0?'Студия':r+'-комнатная'} ${TYPES[d.type].toLowerCase()}, ${d.district}`,district:d.district,street:d.street,rooms:r,area:+d.area,floor:+d.floor||1,floors:+d.floors||1,usd:+d.usd,verified:false,agent:'a1',pub:CONFIG.today.toISOString().slice(0,10),act:CONFIG.today.toISOString().slice(0,10),hue:(id*47)%360,feat:[],views:0,contacts:0,favs:0,mine:true,desc:d.desc||'Описание появится после проверки.',commOwner,commCloser,...(!isNaN(addLat)&&!isNaN(addLng)?{lat:addLat,lng:addLng,locPrivacy}:{})});
     save();toast('Объект отправлен на проверку (демо)');location.hash='#/cabinet/objects'}
 });
 window.addEventListener('hashchange',()=>{$('#overlay').innerHTML='';render()});
