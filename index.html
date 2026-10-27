@@ -423,6 +423,20 @@ textarea.inp{padding:12px 14px;min-height:96px;resize:vertical}
 .partner-link{display:inline-flex;align-items:center;gap:6px;margin-top:16px;padding:10px 16px;border-radius:10px;background:var(--bg2);color:var(--ink2);font-size:14px;text-decoration:none;border:1px solid var(--line);transition:background .15s}
 .partner-link:hover{background:var(--brand-t);color:var(--brand-d)}
 .partner-link .i{width:18px;height:18px;color:var(--brand)}
+.check-banner{display:flex;gap:40px;align-items:center;padding:40px;border-radius:16px;background:linear-gradient(135deg,var(--brand) 0%,#134F36 100%);color:#fff}
+.check-info{flex:1}.check-info h2{color:#fff;margin:0 0 12px}.check-info p{color:rgba(255,255,255,.85);margin:0 0 20px;max-width:52ch}
+.check-list{list-style:none;padding:0;margin:0 0 24px;display:grid;gap:8px}.check-list li{display:flex;align-items:center;gap:8px;font-size:15px;color:rgba(255,255,255,.95)}
+.check-list .i{width:18px;height:18px;color:#68E8A5;flex-shrink:0}
+.check-list li svg{width:18px;height:18px;flex-shrink:0;stroke:#68E8A5;fill:none;stroke-width:2.5}
+.check-info .btn{background:#fff;color:var(--brand);font-weight:600}.check-info .btn:hover{background:rgba(255,255,255,.9)}
+.check-info .btn .i{width:18px;height:18px;color:var(--brand)}
+.check-visual{flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.check-seal{display:flex;flex-direction:column;align-items:center;gap:10px;padding:32px;border-radius:50%;width:160px;height:160px;background:rgba(255,255,255,.12);justify-content:center;text-align:center;font-size:13px;font-weight:600;line-height:1.3}
+.check-seal .i{width:36px;height:36px;color:#68E8A5}
+@media(max-width:700px){.check-banner{flex-direction:column;padding:28px 20px}.check-visual{display:none}}
+.quiz-opts{display:grid;gap:12px;margin-top:20px}.quiz-opt{display:flex;align-items:center;gap:10px;justify-content:center;padding:16px;font-size:16px;border:1px solid var(--line);background:var(--bg2);border-radius:12px;cursor:pointer;transition:background .15s}
+.quiz-opt:hover{background:var(--brand-t);border-color:var(--brand)}
+.quiz-opt .i{width:22px;height:22px}
 </style>
 </head>
 <body>
@@ -626,7 +640,9 @@ const I={
   scale:'<svg class="i" viewBox="0 0 24 24"><path d="M12 3v18M5 7l7-4 7 4M3 13l2-6 2 6a4 4 0 01-4 0zM17 13l2-6 2 6a4 4 0 01-4 0z"/></svg>',
   briefcase:'<svg class="i" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2M12 12v.01"/></svg>',
   shield:'<svg class="i" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>',
-  services:'<svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M8 12l2 2 4-4"/></svg>'
+  services:'<svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M8 12l2 2 4-4"/></svg>',
+  user:'<svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>',
+  agent:'<svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/><path d="M15 3l2 2-2 2"/></svg>'
 };
 function verifiedBadge(){return `<span class="badge ok">${I.check} Проверен</span>`}
 
@@ -840,6 +856,23 @@ function pHome(){
     </div>
   </div></section>
 
+  <section class="sec"><div class="wrap"><div class="check-banner">
+    <div class="check-info">
+      <h2>Юридическая проверка недвижимости</h2>
+      <p>Проверим объект недвижимости, предоставим письменное заключение о возможных рисках и рекомендации по их сокращению.</p>
+      <ul class="check-list">
+        <li>${I.check} Проверка правоустанавливающих документов</li>
+        <li>${I.check} Проверка обременений и арестов</li>
+        <li>${I.check} Проверка истории переходов права</li>
+        <li>${I.check} Письменное заключение с рекомендациями</li>
+      </ul>
+      <button class="btn primary" data-a="openCheck">${I.scale} Заказать проверку</button>
+    </div>
+    <div class="check-visual">
+      <div class="check-seal">${I.shield}<span>Liberterra<br>Юридическая<br>проверка</span></div>
+    </div>
+  </div></div></section>
+
   ${(()=>{const ps=allPartners();return ps.length?`<section class="sec tight"><div class="wrap">
     <div class="sec-head"><div><h2>Наши проверенные партнёры</h2><p>Специалисты, которым мы доверяем. Наши партнёры помогут с уборкой, ремонтом, бытовыми задачами, юридическим и бухгалтерским сопровождением.</p></div><a class="btn" href="#/partners">Все партнёры</a></div>
     <div class="partner-cats-sm">${Object.entries(PARTNER_CATS).map(([k,v])=>`<a class="partner-cat-chip" href="#/partners">${I[v.icon]}<span>${esc(v.name)}</span></a>`).join('')}</div>
@@ -965,6 +998,23 @@ function pPartners(){
     <div class="partner-cats"><button class="chip" data-a="pcat" data-v="" aria-pressed="${!catFilter}">Все</button>${Object.entries(PARTNER_CATS).map(([k,v])=>`<button class="chip" data-a="pcat" data-v="${k}" aria-pressed="${catFilter===k}">${I[v.icon]} ${esc(v.name)}</button>`).join('')}</div>
     ${shown.length?`<div class="grid g2 partner-grid">${shown.map(partnerCard).join('')}</div>`:`<div class="card empty" style="padding:40px;text-align:center"><h3>Информация о партнёрах скоро появится</h3><p class="ink2" style="max-width:40ch;margin:8px auto 0">Мы проверяем каждого партнёра перед публикацией. Здесь появятся компании и специалисты, которых рекомендует Liberterra.</p></div>`}
   </div></div>`;
+}
+function checkQuiz(){
+  const s=S.checkStep||1;
+  if(s===1)return `<h2>Юридическая проверка</h2><p class="muted">Вопрос 1 из 3</p><h3>Вы клиент или агент?</h3>
+    <div class="quiz-opts"><button class="btn block quiz-opt" data-a="checkAnswer" data-v="client">${I.user} Клиент</button>
+    <button class="btn block quiz-opt" data-a="checkAnswer" data-v="agent">${I.agent} Агент</button></div>`;
+  if(s===2)return `<h2>Юридическая проверка</h2><p class="muted">Вопрос 2 из 3</p><h3>Какой тип объекта?</h3>
+    <div class="quiz-opts"><button class="btn block quiz-opt" data-a="checkAnswer" data-v="apartment">Квартира</button>
+    <button class="btn block quiz-opt" data-a="checkAnswer" data-v="house">Дом / участок</button>
+    <button class="btn block quiz-opt" data-a="checkAnswer" data-v="commercial">Коммерческая</button></div>`;
+  return `<h2>Юридическая проверка</h2><p class="muted">Вопрос 3 из 3</p><h3>Оставьте контакт для связи</h3>
+    <form class="form" data-form="check">
+      <div class="field"><label>Ваше имя</label><input class="inp" name="name" required autocomplete="name"></div>
+      <div class="field"><label>Телефон</label><input class="inp" name="phone" required inputmode="tel" autocomplete="tel" placeholder="+996"></div>
+      <div class="field"><label>Адрес или описание объекта</label><textarea class="inp" name="address" placeholder="Например: ул. Токтогула 100, 2-комн. квартира"></textarea></div>
+      <button class="btn primary block">Отправить заявку (демо)</button>
+    </form>`;
 }
 function gate(msg){return `<div class="wrap"><div class="card gate"><div class="logo-mark" style="width:52px;height:52px;border-radius:16px 16px 16px 6px"><svg viewBox="0 0 24 24" style="width:28px;height:28px"><path d="M5 12.500l4.500 4.500L19 7.500"/></svg></div><h1 style="font-size:24px">${msg}</h1><p class="ink2">Кабинет с общим каталогом, комиссиями и задачами доступен одобренным агентам.</p><div class="row wrapf" style="justify-content:center"><button class="btn primary" data-a="role" data-v="agent">Посмотреть как агент (демо)</button><a class="btn" href="#/agents">Как стать агентом</a></div></div></div>`}
 function myObjects(){return allListings().filter(l=>l.mine)}
@@ -1171,6 +1221,18 @@ const A={
   searchArea(){if(!_map)return;S._mapBounds=_map.getBounds();const btn=document.querySelector('.search-area-btn');if(btn)btn.classList.remove('show');refreshResults()},
   geocode(){const q=document.getElementById('addrQ');if(q&&q.value.trim())geocodeAddr(q.value.trim())},
   pcat(t){S.partnerCat=t.dataset.v;render()},
+  openCheck(){
+    S.checkStep=1;S.checkData={};
+    const q=checkQuiz();
+    $('#overlay').innerHTML=`<div class="modal-bg" onclick="if(event.target===this)A.closeModal()"><div class="modal"><button class="modal-close" data-a="closeModal">&times;</button>${q}</div></div>`;
+  },
+  checkAnswer(t){
+    const v=t.dataset.v;
+    if(S.checkStep===1){S.checkData.role=v;S.checkStep=2}
+    else if(S.checkStep===2){S.checkData.type=v;S.checkStep=3}
+    const m=$('#overlay .modal');
+    if(m)m.innerHTML=`<button class="modal-close" data-a="closeModal">&times;</button>${checkQuiz()}`;
+  },
   drawer(){$('#overlay').innerHTML=`<div class="drawer-bg" data-a="close"></div><div class="drawer" role="dialog" aria-modal="true" aria-label="Фильтры"><div class="row between" style="margin-bottom:14px"><h3>Фильтры</h3><button class="icon-btn" data-a="close" aria-label="Закрыть">✕</button></div><div class="fgroup" id="drawerBody" style="gap:18px;display:grid">${filtersHTML()}</div><button class="btn primary block" style="margin-top:18px" data-a="close">Показать ${filtered().length}</button></div>`},
   close(){$('#overlay').innerHTML='';refreshResults()},
   day(t){S.book.day=t.dataset.v;document.querySelectorAll('[data-a=day]').forEach(b=>b.setAttribute('aria-pressed',b===t))},
@@ -1329,6 +1391,7 @@ document.addEventListener('submit',e=>{
   if(k==='partner'){if(!isAgent()){toast('Только администратор может добавлять партнёров');return}
     const id='p'+(Date.now()%100000);S.partnersExtra.push({id,name:d.name,cat:d.cat,desc:d.desc||'',city:d.city||'Бишкек',districts:d.districts||'',phone:d.phone||'',whatsapp:d.whatsapp||'',website:d.website||'',logo:d.logo||'',published:false});
     save();$('#overlay').innerHTML='';toast('Партнёр сохранён как черновик. Опубликуйте в таблице.');render()}
+  if(k==='check'){$('#overlay').innerHTML='';toast('Заявка на юридическую проверку отправлена (демо)');S.checkStep=1;S.checkData={};return}
   if(k==='editpartner'){const id=f.dataset.id,p=S.partnersExtra.find(x=>x.id===id);
     if(p){Object.assign(p,{name:d.name,cat:d.cat,desc:d.desc||'',city:d.city||'',districts:d.districts||'',phone:d.phone||'',whatsapp:d.whatsapp||'',website:d.website||'',logo:d.logo||''});save();$('#overlay').innerHTML='';toast('Изменения сохранены');render()}}
   if(k==='add'){const id=200+S.mineExtra.length+1,deal=S.adeal||'rent',r=+d.rooms;
