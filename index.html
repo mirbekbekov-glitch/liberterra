@@ -1,0 +1,837 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Liberterra — проверенная недвижимость Бишкека</title>
+<meta name="description" content="Каталог проверенных объектов для аренды и покупки в Бишкеке и рабочее место для агентов по недвижимости.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=Unbounded:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#12141A; --ink2:#4B5260; --mute:#6F7686; --line:#E3E6EB; --bg:#F3F4F6; --card:#fff;
+  --red:#F5333A; --red-d:#D9242B; --red-dd:#BF1D24; --red-t:#FFE9EA;
+  --ok:#0B8A5F; --ok-t:#DDF5EC; --warn:#8A5A00; --warn-t:#FFF1D6; --info:#2457C5; --info-t:#E4ECFB;
+  --f-display:'Unbounded','Onest',system-ui,sans-serif; --f-body:'Onest',system-ui,-apple-system,'Segoe UI',Arial,sans-serif;
+  --r-card:18px; --r-ctl:12px; --r-pill:999px; --w:1200px;
+  --safe-b:env(safe-area-inset-bottom,0px);
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.55 var(--f-body);-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{margin:0;font-family:var(--f-display);font-weight:600;letter-spacing:-.02em;line-height:1.15}
+p{margin:0}
+a{color:inherit}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid #1B1B1B;outline-offset:2px;border-radius:8px}
+.wrap{max-width:var(--w);margin:0 auto;padding:0 20px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.muted{color:var(--mute)} .ink2{color:var(--ink2)}
+.row{display:flex;align-items:center;gap:10px} .between{justify-content:space-between} .wrapf{flex-wrap:wrap}
+.grow{flex:1}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 20px;border-radius:var(--r-ctl);border:1.5px solid var(--line);background:#fff;font-weight:600;font-size:15px;text-decoration:none;white-space:nowrap;transition:background .15s,border-color .15s}
+.btn:hover{border-color:var(--ink)}
+.btn.primary{background:var(--red-d);border-color:var(--red-d);color:#fff}
+.btn.primary:hover{background:var(--red-dd);border-color:var(--red-dd)}
+.btn.dark{background:var(--ink);border-color:var(--ink);color:#fff}
+.btn.dark:hover{background:#000}
+.btn.ghost{background:transparent}
+.btn.sm{min-height:36px;padding:0 14px;font-size:14px;border-radius:10px}
+.btn.block{width:100%}
+.icon-btn{width:44px;height:44px;display:inline-grid;place-items:center;border-radius:var(--r-ctl);border:1.5px solid var(--line);background:#fff}
+.icon-btn:hover{border-color:var(--ink)}
+.icon-btn.on{color:var(--red-d);border-color:var(--red-d);background:var(--red-t)}
+svg.i{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+
+/* header */
+.top{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.94);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.top .wrap{display:flex;align-items:center;gap:18px;height:68px}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none;font-family:var(--f-display);font-weight:700;font-size:19px;letter-spacing:-.03em}
+.logo-mark{width:34px;height:34px;border-radius:11px 11px 11px 4px;background:var(--red);display:grid;place-items:center}
+.logo-mark svg{width:20px;height:20px;stroke:#fff;fill:none;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.nav{display:flex;gap:4px;margin-left:8px}
+.nav a{padding:9px 14px;border-radius:10px;text-decoration:none;font-weight:600;font-size:15px;color:var(--ink2)}
+.nav a:hover{background:var(--bg);color:var(--ink)}
+.nav a[aria-current=page]{background:var(--red-t);color:var(--red-dd)}
+.seg{display:inline-flex;background:var(--bg);border-radius:12px;padding:3px;gap:2px}
+.seg button{border:0;background:transparent;border-radius:9px;padding:7px 12px;font-weight:600;font-size:14px;color:var(--ink2);min-height:34px}
+.seg button[aria-pressed=true]{background:#fff;color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.12)}
+.top .tools{display:flex;align-items:center;gap:10px;margin-left:auto}
+
+/* bottom nav (mobile) */
+.tabbar{display:none}
+
+/* hero */
+.hero{background:#fff;border-bottom:1px solid var(--line);overflow:hidden}
+.hero .wrap{display:grid;grid-template-columns:1.1fr .9fr;gap:40px;padding-top:56px;padding-bottom:56px;align-items:center}
+.hero h1{font-size:clamp(32px,4.4vw,54px);max-width:14ch}
+.hero .lead{font-size:18px;color:var(--ink2);margin-top:18px;max-width:46ch}
+.search{margin-top:30px;background:#fff;border:1.5px solid var(--ink);border-radius:20px;padding:10px;box-shadow:6px 6px 0 var(--ink)}
+.search .tabs{display:flex;gap:6px;padding:4px 4px 10px}
+.pill-tab{border:0;background:var(--bg);border-radius:var(--r-pill);padding:8px 18px;font-weight:600;min-height:38px}
+.pill-tab[aria-pressed=true]{background:var(--ink);color:#fff}
+.search .fields{display:grid;grid-template-columns:1.1fr 1fr .9fr auto;gap:8px}
+.field{display:flex;flex-direction:column;gap:4px;min-width:0}
+.field>label,.lbl{font-size:13px;font-weight:600;color:var(--ink2)}
+.inp,.sel{width:100%;min-height:46px;border:1.5px solid var(--line);background:#fff;border-radius:var(--r-ctl);padding:0 14px}
+textarea.inp{padding:12px 14px;min-height:96px;resize:vertical}
+.inp:hover,.sel:hover{border-color:#B9BFCA}
+.inp:focus,.sel:focus{border-color:var(--ink);outline:none;box-shadow:0 0 0 3px rgba(18,20,26,.12)}
+.quick{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+.chip{display:inline-flex;align-items:center;gap:6px;border:1.5px solid var(--line);background:#fff;border-radius:var(--r-pill);padding:6px 14px;font-weight:500;font-size:14px;min-height:36px;text-decoration:none}
+.chip:hover{border-color:var(--ink)}
+.chip[aria-pressed=true]{background:var(--ink);border-color:var(--ink);color:#fff}
+
+/* verification seal composition */
+.seal-stage{position:relative;max-width:440px;margin-left:auto;width:100%}
+.v-card{background:#fff;border:1.5px solid var(--ink);border-radius:22px;overflow:hidden;box-shadow:8px 8px 0 var(--red)}
+.v-card .art{aspect-ratio:16/10}
+.v-card .body{padding:16px 18px 18px}
+.checks{list-style:none;margin:12px 0 0;padding:0;display:grid;gap:8px}
+.checks li{display:flex;align-items:center;gap:10px;font-weight:500;font-size:15px}
+.tick{width:22px;height:22px;border-radius:50%;background:var(--ok);display:grid;place-items:center;flex:none}
+.tick svg{width:13px;height:13px;stroke:#fff;fill:none;stroke-width:3.2;stroke-linecap:round;stroke-linejoin:round}
+.seal{position:absolute;top:-26px;right:-18px;width:104px;height:104px;transform:rotate(12deg)}
+.seal svg{width:100%;height:100%}
+.checks li{opacity:1}
+@media (prefers-reduced-motion:no-preference){
+  .checks li{animation:tickin .5s both}
+  .checks li:nth-child(1){animation-delay:.3s}.checks li:nth-child(2){animation-delay:.7s}.checks li:nth-child(3){animation-delay:1.1s}
+  .seal{animation:stamp .55s 1.5s cubic-bezier(.2,1.6,.4,1) both}
+}
+@keyframes tickin{from{opacity:0;transform:translateX(-8px)}to{opacity:1;transform:none}}
+@keyframes stamp{from{opacity:0;transform:rotate(-14deg) scale(1.9)}to{opacity:1;transform:rotate(12deg) scale(1)}}
+
+/* sections */
+.sec{padding:56px 0}
+.sec.tight{padding:36px 0}
+.sec-head{display:flex;align-items:end;justify-content:space-between;gap:16px;margin-bottom:24px;flex-wrap:wrap}
+.sec-head h2{font-size:clamp(24px,3vw,34px)}
+.sec-head p{color:var(--ink2);margin-top:8px;max-width:56ch}
+
+/* cards */
+.grid{display:grid;gap:18px}
+.g3{grid-template-columns:repeat(3,1fr)} .g4{grid-template-columns:repeat(4,1fr)} .g2{grid-template-columns:repeat(2,1fr)}
+.card{background:var(--card);border-radius:var(--r-card);border:1px solid var(--line)}
+.lcard{display:flex;flex-direction:column;overflow:hidden;position:relative;transition:border-color .15s,transform .15s}
+.lcard:hover{border-color:var(--ink)}
+.lcard .art{aspect-ratio:16/11;display:block;width:100%}
+.lcard .art-link{display:block;position:relative}
+.lcard .fav{position:absolute;top:12px;right:12px;background:#fff;border-color:transparent;width:40px;height:40px}
+.lcard .badges{position:absolute;left:12px;top:12px;display:flex;gap:6px;flex-wrap:wrap}
+.lcard .content{padding:16px 18px 18px;display:flex;flex-direction:column;gap:8px;flex:1}
+.price{font-family:var(--f-display);font-weight:600;font-size:21px;letter-spacing:-.02em}
+.price small{font-family:var(--f-body);font-size:14px;font-weight:500;color:var(--mute);letter-spacing:0}
+.title{font-weight:600;font-size:16px;text-decoration:none}
+.title:hover{text-decoration:underline}
+.specs{display:flex;flex-wrap:wrap;gap:6px 14px;color:var(--ink2);font-size:14px}
+.badge{display:inline-flex;align-items:center;gap:5px;font-size:13px;font-weight:600;padding:4px 10px;border-radius:var(--r-pill);background:#fff;line-height:1.2}
+.badge.ok{background:var(--ok-t);color:var(--ok)}
+.badge.new{background:var(--ink);color:#fff}
+.badge.warn{background:var(--warn-t);color:var(--warn)}
+.badge.comm{background:var(--ink);color:#fff}
+.badge.red{background:var(--red-t);color:var(--red-dd)}
+.badge.info{background:var(--info-t);color:var(--info)}
+.badge svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.lcard .foot{display:flex;align-items:center;gap:10px;margin-top:auto;padding-top:10px;border-top:1px solid var(--line)}
+.ava{width:34px;height:34px;border-radius:50%;background:var(--red-t);color:var(--red-dd);display:grid;place-items:center;font-weight:700;font-size:14px;flex:none}
+.ava.lg{width:64px;height:64px;font-size:24px}
+.lcard.list{flex-direction:row}
+.lcard.list .art-link{width:300px;flex:none}
+.lcard.list .art{height:100%;aspect-ratio:auto;min-height:210px}
+
+/* catalog layout */
+.cat{display:grid;grid-template-columns:290px 1fr;gap:24px;padding:28px 0 60px;align-items:start}
+.filters{position:sticky;top:88px;padding:20px;display:grid;gap:18px}
+.filters h3{font-size:17px}
+.fgroup{display:grid;gap:8px}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.switch{display:flex;align-items:center;gap:10px;font-weight:500;cursor:pointer}
+.switch input{width:20px;height:20px;accent-color:var(--red-d)}
+.res-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px;flex-wrap:wrap}
+.res-head h1{font-size:24px}
+.stack{display:grid;gap:16px}
+.empty{padding:48px 24px;text-align:center;display:grid;gap:12px;justify-items:center}
+.empty h3{font-size:20px}
+.mapbox{position:relative;border-radius:var(--r-card);overflow:hidden;border:1px solid var(--line);background:#E8EEF2}
+.mapbox svg.map{display:block;width:100%;height:auto}
+.pin{position:absolute;transform:translate(-50%,-100%);border:0;background:var(--ink);color:#fff;font-weight:700;font-size:13px;padding:6px 10px;border-radius:10px 10px 10px 2px;white-space:nowrap}
+.pin:hover,.pin[aria-pressed=true]{background:var(--red-d);z-index:3}
+.mapcard{position:absolute;left:16px;bottom:16px;right:16px;max-width:380px;background:#fff;border-radius:16px;padding:14px;border:1.5px solid var(--ink)}
+.dl{position:absolute;transform:translateX(-50%);font-size:12px;font-weight:600;color:#7C8796;pointer-events:none;white-space:nowrap}
+.mapnote{position:absolute;right:12px;top:12px;background:rgba(255,255,255,.92);border-radius:8px;padding:4px 10px;font-size:12px;color:var(--ink2)}
+
+/* object page */
+.crumbs{padding:20px 0 0;font-size:14px;color:var(--mute)}
+.crumbs a{color:var(--ink2)}
+.obj{display:grid;grid-template-columns:1fr 380px;gap:28px;padding:16px 0 70px;align-items:start}
+.gallery{border-radius:var(--r-card);overflow:hidden;border:1px solid var(--line);position:relative}
+.gallery .art{display:block;width:100%;aspect-ratio:16/9}
+.gallery .count{position:absolute;left:16px;bottom:16px;background:rgba(18,20,26,.85);color:#fff;border-radius:10px;padding:5px 12px;font-size:13px;font-weight:600}
+.panel{padding:24px}
+.panel h2{font-size:20px;margin-bottom:16px}
+.kv{display:grid;grid-template-columns:1fr 1fr;gap:0 32px}
+.kv div{display:flex;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}
+.kv dt{color:var(--mute)} .kv dd{margin:0;font-weight:600;text-align:right}
+.side{position:sticky;top:88px;display:grid;gap:16px}
+.side .big{font-family:var(--f-display);font-size:30px;font-weight:600;letter-spacing:-.03em}
+.contact-btns{display:grid;gap:8px}
+.verif{display:grid;gap:8px;margin-top:6px}
+.verif div{display:flex;gap:10px;align-items:center;font-size:15px}
+.agentbox{display:flex;gap:12px;align-items:center}
+.slots{display:flex;gap:8px;flex-wrap:wrap}
+.slot{border:1.5px solid var(--line);background:#fff;border-radius:10px;padding:8px 12px;font-weight:600;font-size:14px;min-height:38px}
+.slot[aria-pressed=true]{background:var(--ink);border-color:var(--ink);color:#fff}
+.days{display:flex;gap:8px;overflow:auto;padding-bottom:4px}
+.day{flex:none;border:1.5px solid var(--line);background:#fff;border-radius:12px;padding:8px 12px;text-align:center;min-width:64px;font-weight:600}
+.day small{display:block;font-weight:500;color:var(--mute);font-size:12px}
+.day[aria-pressed=true]{background:var(--ink);border-color:var(--ink);color:#fff}
+.day[aria-pressed=true] small{color:#C9CDD6}
+.agent-only{border:1.5px dashed var(--ink);background:#fff;border-radius:var(--r-card);padding:20px}
+.agent-only .hd{display:flex;align-items:center;gap:8px;font-weight:700;margin-bottom:10px}
+.note{font-size:13px;color:var(--mute)}
+.cols2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.form{display:grid;gap:14px}
+.check{display:flex;gap:10px;align-items:flex-start;font-size:14px;color:var(--ink2)}
+.check input{width:20px;height:20px;margin-top:1px;accent-color:var(--red-d);flex:none}
+
+/* requests */
+.req{padding:20px;display:grid;gap:12px}
+.req .meta{display:flex;gap:8px;flex-wrap:wrap}
+
+/* agent band */
+.band{background:var(--ink);color:#fff;border-radius:28px;padding:44px;display:grid;grid-template-columns:1.2fr 1fr;gap:36px;align-items:center}
+.band h2{font-size:clamp(24px,3vw,36px)}
+.band p{color:#C9CDD6;margin-top:14px;max-width:50ch}
+.split{display:grid;gap:10px}
+.split .bar{display:flex;height:46px;border-radius:12px;overflow:hidden;font-weight:700;font-size:14px}
+.split .bar span{display:grid;place-items:center;flex:1}
+.split .a{background:var(--red)} .split .b{background:#fff;color:var(--ink)}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;counter-reset:s}
+.step{padding:22px;border-radius:var(--r-card);background:#fff;border:1px solid var(--line);position:relative}
+.step .n{width:34px;height:34px;border-radius:50%;background:var(--ink);color:#fff;display:grid;place-items:center;font-weight:700;margin-bottom:14px}
+.step.done .n{background:var(--ok)}
+.step.now .n{background:var(--red-d)}
+.step h3{font-size:16px;margin-bottom:6px}
+.step p{font-size:14px;color:var(--ink2)}
+.how{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+
+/* cabinet */
+.cab{display:grid;grid-template-columns:260px 1fr;gap:24px;padding:28px 0 70px;align-items:start}
+.side-nav{padding:16px;display:grid;gap:4px;position:sticky;top:88px}
+.side-nav .who{padding:8px 8px 16px;display:flex;gap:12px;align-items:center;border-bottom:1px solid var(--line);margin-bottom:8px}
+.side-nav a{display:flex;align-items:center;gap:12px;padding:11px 12px;border-radius:12px;text-decoration:none;font-weight:600;color:var(--ink2)}
+.side-nav a:hover{background:var(--bg);color:var(--ink)}
+.side-nav a[aria-current=page]{background:var(--red-t);color:var(--red-dd)}
+.tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.tile{padding:18px;border-radius:16px;background:var(--bg)}
+.tile b{display:block;font-family:var(--f-display);font-size:26px;font-weight:600;margin-top:4px}
+.tbl{width:100%;border-collapse:collapse;font-size:15px}
+.tbl th{text-align:left;font-weight:600;color:var(--mute);font-size:13px;padding:10px 12px;border-bottom:1px solid var(--line)}
+.tbl td{padding:14px 12px;border-bottom:1px solid var(--line);vertical-align:middle}
+.tbl tr:last-child td{border-bottom:0}
+.scroll-x{overflow:auto}
+.chart{width:100%;height:auto;display:block}
+.gate{padding:48px 24px;text-align:center;display:grid;gap:14px;justify-items:center;max-width:560px;margin:60px auto}
+
+/* footer / toast */
+.foot-site{background:#fff;border-top:1px solid var(--line);padding:36px 0 48px;margin-top:20px}
+.foot-site .wrap{display:flex;gap:30px;justify-content:space-between;flex-wrap:wrap}
+.demo-note{font-size:13px;color:var(--mute);max-width:56ch}
+.toast{position:fixed;left:50%;bottom:calc(24px + var(--safe-b));transform:translateX(-50%);background:var(--ink);color:#fff;padding:12px 18px;border-radius:14px;font-weight:600;z-index:100;max-width:calc(100% - 32px);box-shadow:0 8px 30px rgba(0,0,0,.25)}
+.banner{background:var(--ink);color:#fff;font-size:13px;text-align:center;padding:7px 12px}
+.banner b{color:#fff}
+
+/* drawer */
+.drawer-bg{position:fixed;inset:0;background:rgba(18,20,26,.5);z-index:80}
+.drawer{position:fixed;left:0;right:0;bottom:0;max-height:88vh;overflow:auto;background:#fff;border-radius:22px 22px 0 0;z-index:90;padding:20px 20px calc(24px + var(--safe-b))}
+
+/* responsive */
+@media (max-width:1020px){
+  .hero .wrap{grid-template-columns:1fr;padding-top:36px;padding-bottom:44px}
+  .seal-stage{margin:20px auto 0;max-width:420px}
+  .g3{grid-template-columns:repeat(2,1fr)} .g4{grid-template-columns:repeat(2,1fr)}
+  .cat{grid-template-columns:1fr} .filters{display:none}
+  .obj{grid-template-columns:1fr} .side{position:static}
+  .band{grid-template-columns:1fr;padding:30px}
+  .steps{grid-template-columns:repeat(2,1fr)} .how{grid-template-columns:1fr}
+  .cab{grid-template-columns:1fr} .side-nav{position:static;grid-auto-flow:column;overflow:auto;grid-auto-columns:max-content}
+  .side-nav .who{display:none}
+  .tiles{grid-template-columns:repeat(2,1fr)}
+  .nav{display:none}
+}
+@media (min-width:1021px){.only-m{display:none!important}}
+@media (max-width:640px){
+  .wrap{padding:0 16px}
+  .top .wrap{height:60px;gap:10px}
+  .top .hide-m{display:none}
+  .g3,.g4,.g2{grid-template-columns:1fr}
+  .search .fields{grid-template-columns:1fr}
+  .search{box-shadow:4px 4px 0 var(--ink)}
+  .lcard.list{flex-direction:column} .lcard.list .art-link{width:100%} .lcard.list .art{aspect-ratio:16/11;min-height:0;height:auto}
+  .kv{grid-template-columns:1fr} .cols2{grid-template-columns:1fr}
+  .steps{grid-template-columns:1fr}
+  .sec{padding:40px 0}
+  body{padding-bottom:calc(70px + var(--safe-b))}
+  .tabbar{display:grid;grid-template-columns:repeat(5,1fr);position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--line);z-index:60;padding-bottom:var(--safe-b)}
+  .tabbar a{display:grid;justify-items:center;gap:2px;padding:8px 2px 7px;font-size:11px;font-weight:600;color:var(--mute);text-decoration:none}
+  .tabbar a[aria-current=page]{color:var(--red-dd)}
+  .tabbar svg{width:22px;height:22px}
+  .toast{bottom:calc(84px + var(--safe-b))}
+  .hero h1{max-width:none}
+  .band{padding:24px;border-radius:22px}
+  .panel{padding:18px}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<a class="sr" href="#main">К содержимому</a>
+<div class="banner" id="demoBanner"><b>Демонстрационная версия.</b> Объекты, агенты и цифры вымышлены, формы ничего не отправляют.</div>
+<header class="top">
+  <div class="wrap">
+    <a class="logo" href="#/" aria-label="Liberterra, на главную"><span class="logo-mark"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>Liberterra</a>
+    <nav class="nav" id="nav" aria-label="Основная навигация"></nav>
+    <div class="tools">
+      <div class="seg hide-m" role="group" aria-label="Валюта">
+        <button data-a="cur" data-v="KGS" aria-pressed="true">сом</button><button data-a="cur" data-v="USD" aria-pressed="false">$</button>
+      </div>
+      <div class="seg" role="group" aria-label="Режим просмотра (демо)">
+        <button data-a="role" data-v="guest" aria-pressed="true">Клиент</button><button data-a="role" data-v="agent" aria-pressed="false">Агент</button>
+      </div>
+      <a class="btn primary hide-m" href="#/add">Разместить объект</a>
+    </div>
+  </div>
+</header>
+<main id="main" tabindex="-1"></main>
+<footer class="foot-site">
+  <div class="wrap">
+    <div>
+      <a class="logo" href="#/"><span class="logo-mark"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>Liberterra</a>
+      <p class="demo-note" style="margin-top:12px">Проверенная недвижимость Бишкека. ОсОО «Либертерра». Переключатель «Клиент / Агент» вверху нужен только для демонстрации: в рабочей версии роль определяется входом через Telegram и статусом агента.</p>
+    </div>
+    <div class="row wrapf" style="gap:24px;align-items:flex-start">
+      <div style="display:grid;gap:6px"><b>Клиентам</b><a href="#/catalog">Объекты</a><a href="#/requests">Заявки</a><a href="#/mortgage">Ипотека</a></div>
+      <div style="display:grid;gap:6px"><b>Агентам</b><a href="#/agents">Стать агентом</a><a href="#/cabinet">Кабинет</a><a href="#/add">Добавить объект</a></div>
+    </div>
+  </div>
+</footer>
+<nav class="tabbar" id="tabbar" aria-label="Нижняя навигация"></nav>
+<div id="overlay"></div>
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script>
+/* =========================================================
+   КОНФИГУРАЦИЯ — меняйте здесь
+   ========================================================= */
+const CONFIG = {
+  rate: 87.5,                          // демо-курс сом за 1 $ (замените на актуальный)
+  csvUrl: '',                          // опубликованный CSV из Google Sheets; пусто = демо-данные
+  companyPhone: '+996 (XXX) XXX XXX',  // номер Liberterra (подставьте реальный)
+  companyWhatsapp: '996000000000',
+  companyTelegram: 'Liberterra_kg_bot',
+  commissionAgentPct: 50,              // доля закрывающего агента, %
+  today: new Date('2026-10-24')        // для демо; в рабочей версии: new Date()
+};
+const MONTHS = ['янв','фев','мар','апр','мая','июн','июл','авг','сен','окт','ноя','дек'];
+const DISTRICTS = {
+  'Центр':{x:50,y:46}, 'Джал':{x:68,y:60}, 'Юг-2':{x:46,y:72}, 'Асанбай':{x:70,y:78}, 'Восток-5':{x:84,y:50},
+  'Тунгуч':{x:22,y:60}, 'Академгородок':{x:56,y:26}, 'Улан-2':{x:78,y:34}, 'Аламедин':{x:30,y:30}, 'Кок-Жар':{x:14,y:42}
+};
+const TYPES = {apartment:'Квартира', house:'Дом', commercial:'Коммерческая'};
+
+/* ---------- демо-данные (вымышленные) ---------- */
+const AGENTS = [
+  {id:'a1',name:'Айгерим С.',agency:'Liberterra',rating:4.9,deals:38,dir:['Аренда','Продажа'],cert:true,since:'2021',phone:'+996 555 000 101',tg:'demo_agent_1',inhouse:true},
+  {id:'a2',name:'Бекзат Т.',agency:'Liberterra',rating:4.8,deals:27,dir:['Аренда'],cert:true,since:'2022',phone:'+996 555 000 102',tg:'demo_agent_2',inhouse:true},
+  {id:'a3',name:'Нурлан К.',agency:'Независимый агент',rating:4.7,deals:19,dir:['Продажа'],cert:true,since:'2020',phone:'+996 555 000 103',tg:'demo_agent_3'},
+  {id:'a4',name:'Элина М.',agency:'Агентство «Демо»',rating:4.6,deals:12,dir:['Аренда','Продажа'],cert:false,since:'2024',phone:'+996 555 000 104',tg:'demo_agent_4'},
+  {id:'a5',name:'Тимур А.',agency:'Liberterra',rating:5.0,deals:9,dir:['Продажа'],cert:true,since:'2025',phone:'+996 555 000 105',tg:'demo_agent_5',inhouse:true}
+];
+let LISTINGS = [
+  {id:1,deal:'rent',type:'apartment',title:'2-комнатная квартира, Джал',district:'Джал',street:'ул. Малдыбаева',rooms:2,area:55,floor:4,floors:9,usd:450,verified:true,agent:'a1',pub:'2026-10-02',act:'2026-10-22',hue:200,feat:['Мебель','Кондиционер','Стиральная машина','Бойлер'],views:1296,contacts:6,favs:3,mine:true,desc:'Светлая квартира после ремонта. Окна во двор, тихий подъезд, рядом школа и остановка. Заселение от 1 месяца, депозит обсуждается.'},
+  {id:2,deal:'sale',type:'apartment',title:'3-комнатная квартира, Юг-2',district:'Юг-2',street:'ул. Ибраимова',rooms:3,area:78,floor:6,floors:10,usd:98000,verified:true,agent:'a3',pub:'2026-09-28',act:'2026-10-20',hue:20,feat:['Евроремонт','Лоджия','Парковка во дворе'],views:842,contacts:4,favs:9,desc:'Просторная трёхкомнатная в кирпичном доме. Раздельный санузел, большая кухня-гостиная, документы готовы к сделке.'},
+  {id:3,deal:'rent',type:'apartment',title:'Студия в центре',district:'Центр',street:'ул. Токтогула',rooms:0,area:28,floor:7,floors:12,usd:320,verified:true,agent:'a2',pub:'2026-10-15',act:'2026-10-23',hue:340,feat:['Мебель','Интернет','Лифт'],views:511,contacts:7,favs:5,mine:true,desc:'Компактная студия в пешей доступности от парка и кафе. Подходит для одного или пары.'},
+  {id:4,deal:'sale',type:'house',title:'Дом с участком, Аламедин',district:'Аламедин',street:'ул. Садовая',rooms:5,area:140,floor:1,floors:2,usd:185000,verified:true,agent:'a1',pub:'2026-09-12',act:'2026-10-18',hue:120,feat:['Участок 6 соток','Гараж','Отопление газ'],views:975,contacts:5,favs:14,mine:true,desc:'Двухэтажный дом в тихом районе. Участок ухоженный, есть гараж и летняя кухня.'},
+  {id:5,deal:'rent',type:'apartment',title:'1-комнатная квартира, Асанбай',district:'Асанбай',street:'ул. Алма-Атинская',rooms:1,area:40,floor:3,floors:5,usd:280,verified:true,agent:'a4',pub:'2026-10-10',act:'2026-10-21',hue:260,feat:['Мебель','Балкон'],views:402,contacts:3,favs:2,desc:'Уютная однокомнатная в зелёном дворе, рядом рынок и маршрутки.'},
+  {id:6,deal:'sale',type:'apartment',title:'2-комнатная квартира, Восток-5',district:'Восток-5',street:'мкр Восток-5',rooms:2,area:62,floor:5,floors:9,usd:72500,verified:true,agent:'a5',pub:'2026-10-05',act:'2026-10-22',hue:40,feat:['Косметический ремонт','Лифт'],views:633,contacts:2,favs:6,desc:'Тёплая квартира на солнечной стороне. Рядом детский сад и школа.'},
+  {id:7,deal:'rent',type:'commercial',title:'Офис 100 м², бизнес-центр',district:'Центр',street:'пр. Чуй',rooms:4,area:100,floor:8,floors:10,usd:1500,verified:true,agent:'a3',pub:'2026-09-30',act:'2026-10-19',hue:215,feat:['Офисная отделка','Общий вход','Охрана'],views:288,contacts:2,favs:1,desc:'Кабинетная планировка, 4 кабинета и переговорная. Парковка у здания.'},
+  {id:8,deal:'sale',type:'apartment',title:'1-комнатная квартира, Тунгуч',district:'Тунгуч',street:'мкр Тунгуч',rooms:1,area:45,floor:2,floors:9,usd:54000,verified:true,agent:'a2',pub:'2026-10-17',act:'2026-10-24',hue:170,feat:['Свежий ремонт'],views:190,contacts:1,favs:2,mine:true,desc:'Небольшая квартира с новым ремонтом, подойдёт для первой покупки или сдачи в аренду.'},
+  {id:9,deal:'rent',type:'house',title:'Дом, Кок-Жар',district:'Кок-Жар',street:'ул. Весенняя',rooms:4,area:120,floor:1,floors:2,usd:900,verified:true,agent:'a1',pub:'2026-10-08',act:'2026-10-23',hue:95,feat:['Двор','Отопление газ','Парковка'],views:344,contacts:3,favs:4,desc:'Дом для семьи в тихом районе. Есть двор и место под две машины.'},
+  {id:10,deal:'sale',type:'apartment',title:'3-комнатная квартира, Академгородок',district:'Академгородок',street:'ул. Академика Раззакова',rooms:3,area:95,floor:4,floors:6,usd:135000,verified:true,agent:'a3',pub:'2026-09-20',act:'2026-10-17',hue:300,feat:['Дизайнерский ремонт','Два санузла','Кладовая'],views:1120,contacts:8,favs:21,desc:'Квартира в зелёном районе с чистым воздухом. Продуманная планировка, высокие потолки.'},
+  {id:11,deal:'rent',type:'apartment',title:'2-комнатная квартира, Улан-2',district:'Улан-2',street:'мкр Улан-2',rooms:2,area:60,floor:8,floors:12,usd:400,verified:false,agent:'a4',pub:'2026-10-22',act:'2026-10-22',hue:10,feat:['Мебель','Лифт'],views:64,contacts:0,favs:0,desc:'Объект ожидает проверки собственника и документов.'},
+  {id:12,deal:'sale',type:'commercial',title:'Помещение 75 м² на первой линии',district:'Центр',street:'ул. Исанова',rooms:3,area:75,floor:1,floors:5,usd:210000,verified:true,agent:'a5',pub:'2026-09-25',act:'2026-10-16',hue:355,feat:['Витринные окна','Отдельный вход'],views:410,contacts:3,favs:7,desc:'Помещение с высоким пешеходным потоком под магазин, кофейню или офис.'}
+];
+let REQUESTS = [
+  {id:1,deal:'rent',who:'Ищу 2-комнатную',district:'Джал',budget:450,note:'Для семьи, с мебелью, от 1 года',answers:3,date:'2026-10-23'},
+  {id:2,deal:'sale',who:'Ищу 3-комнатную',district:'Юг-2',budget:100000,note:'Рассматриваю ипотеку, срочно',answers:1,date:'2026-10-24'},
+  {id:3,deal:'rent',who:'Ищу студию',district:'Центр',budget:330,note:'Один человек, без животных',answers:5,date:'2026-10-21'},
+  {id:4,deal:'sale',who:'Ищу дом с участком',district:'Аламедин',budget:200000,note:'Нужен гараж',answers:0,date:'2026-10-24'}
+];
+
+/* =========================================================
+   СОСТОЯНИЕ
+   ========================================================= */
+const S = {
+  role:'guest', cur:'KGS', favs:[], mineExtra:[],
+  f:{deal:'rent',type:'',district:'',rooms:'',pmin:'',pmax:'',amin:'',verified:true,mine:false,sort:'new',view:'list'},
+  apply:{status:'draft'}, home:{deal:'rent'}
+};
+try{const x=JSON.parse(localStorage.getItem('lt2')||'null'); if(x){S.role=x.role||'guest';S.cur=x.cur||'KGS';S.favs=x.favs||[];S.mineExtra=x.mineExtra||[];S.apply=x.apply||S.apply;S.reqExtra=x.reqExtra||[]}}catch(e){}
+S.reqExtra=S.reqExtra||[];
+function save(){try{localStorage.setItem('lt2',JSON.stringify({role:S.role,cur:S.cur,favs:S.favs,mineExtra:S.mineExtra,apply:S.apply,reqExtra:S.reqExtra}))}catch(e){}}
+
+/* =========================================================
+   УТИЛИТЫ
+   ========================================================= */
+const $=(s,r=document)=>r.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const nf=n=>Math.round(n).toLocaleString('ru-RU').replace(/ /g,' ');
+const isAgent=()=>S.role==='agent';
+function money(usd,rent){const v=S.cur==='USD'?'$'+nf(usd):nf(usd*CONFIG.rate)+' сом';return `${v}${rent?' <small>/ мес</small>':''}`}
+function moneyTxt(usd,rent){return (S.cur==='USD'?'$'+nf(usd):nf(usd*CONFIG.rate)+' сом')+(rent?' / мес':'')}
+function dfmt(iso){const d=new Date(iso);return `${d.getDate()} ${MONTHS[d.getMonth()]}`}
+function daysAgo(iso){return Math.round((CONFIG.today-new Date(iso))/864e5)}
+function roomsTxt(r){return r===0?'Студия':r+'-комн.'}
+function agentOf(id){return AGENTS.find(a=>a.id===id)||AGENTS[0]}
+function allListings(){return LISTINGS.concat(S.mineExtra)}
+function toast(msg){const t=$('#toast');t.innerHTML=`<div class="toast">${esc(msg)}</div>`;clearTimeout(toast.t);toast.t=setTimeout(()=>t.innerHTML='',3200)}
+const I={
+  heart:'<svg class="i" viewBox="0 0 24 24"><path d="M12 20s-7-4.4-9-9.2C1.5 7 4 4 7 4c2 0 3.8 1.1 5 3 1.2-1.9 3-3 5-3 3 0 5.500 3 4 6.800-2 4.800-9 9.200-9 9.200z"/></svg>',
+  phone:'<svg class="i" viewBox="0 0 24 24"><path d="M5 4h4l2 5-2.500 1.500a11 11 0 005 5L15 13l5 2v4a2 2 0 01-2 2A16 16 0 013 6a2 2 0 012-2z"/></svg>',
+  chat:'<svg class="i" viewBox="0 0 24 24"><path d="M21 12a8 8 0 01-11.700 7L4 20l1.200-4.200A8 8 0 1121 12z"/></svg>',
+  check:'<svg viewBox="0 0 24 24"><path d="M5 12.500l4.500 4.500L19 7.500"/></svg>',
+  home:'<svg class="i" viewBox="0 0 24 24"><path d="M3 11l9-8 9 8M5 10v10h5v-6h4v6h5V10"/></svg>',
+  list:'<svg class="i" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg>',
+  grid:'<svg class="i" viewBox="0 0 24 24"><rect x="4" y="4" width="7" height="7" rx="1.500"/><rect x="13" y="4" width="7" height="7" rx="1.500"/><rect x="4" y="13" width="7" height="7" rx="1.500"/><rect x="13" y="13" width="7" height="7" rx="1.500"/></svg>',
+  map:'<svg class="i" viewBox="0 0 24 24"><path d="M12 21s-7-6-7-11a7 7 0 0114 0c0 5-7 11-7 11z"/><circle cx="12" cy="10" r="2.500"/></svg>',
+  users:'<svg class="i" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.500"/><path d="M2.500 20a6.500 6.500 0 0113 0M16 4.500a3.500 3.500 0 010 7M18 14a6 6 0 013.500 6"/></svg>',
+  req:'<svg class="i" viewBox="0 0 24 24"><path d="M5 4h14v16l-4-3-3 3-3-3-4 3z"/><path d="M9 9h6M9 13h4"/></svg>',
+  user:'<svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0116 0"/></svg>',
+  plus:'<svg class="i" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>',
+  chart:'<svg class="i" viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/></svg>',
+  doc:'<svg class="i" viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6zM14 3v4h4M9 13h6M9 17h4"/></svg>',
+  calc:'<svg class="i" viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 7h8M8 12h2M12 12h2M16 12h0M8 16h2M12 16h2M16 16h0"/></svg>'
+};
+function verifiedBadge(){return `<span class="badge ok">${I.check} Проверен</span>`}
+
+/* иллюстрация объекта (генерируется, пока нет реальных фото) */
+let _gid=0;
+function art(l){
+  const h=l.hue,id='g'+(++_gid),r=(n)=>{const x=Math.sin((l.id*97+n*31)*12.9898)*43758.5453;return x-Math.floor(x)};
+  let bl='',n=l.type==='house'?1:3+Math.floor(r(1)*2);
+  if(l.type==='house'){
+    bl=`<rect x="200" y="170" width="240" height="150" fill="hsl(${h} 30% 94%)"/><path d="M180 175l140-80 140 80z" fill="hsl(${h} 45% 36%)"/><rect x="300" y="235" width="44" height="85" fill="hsl(${h} 45% 30%)"/><rect x="226" y="205" width="48" height="40" rx="3" fill="hsl(${h} 45% 76%)"/><rect x="366" y="205" width="48" height="40" rx="3" fill="hsl(${h} 45% 76%)"/>`;
+  } else {
+    for(let i=0;i<n;i++){const bw=110+r(i+2)*60,bx=40+i*(520/n)+r(i+5)*20,bh=140+r(i+8)*130,by=330-bh,tone=22+i*9;
+      bl+=`<rect x="${bx}" y="${by}" width="${bw}" height="${bh}" rx="3" fill="hsl(${h} ${28+i*4}% ${tone+30}%)"/>`;
+      for(let y=by+16;y<330-24;y+=30)for(let x=bx+14;x<bx+bw-22;x+=28){bl+=`<rect x="${x}" y="${y}" width="14" height="18" rx="2" fill="hsl(${h} 45% ${r(x+y)>.7?88:62}%)"/>`}}
+  }
+  return `<svg class="art" viewBox="0 0 640 420" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Иллюстрация объекта"><defs><linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="hsl(${h} 70% 92%)"/><stop offset="1" stop-color="hsl(${h} 55% 82%)"/></linearGradient></defs><rect width="640" height="420" fill="url(#${id})"/><circle cx="${70+r(9)*60}" cy="${70+r(3)*20}" r="30" fill="#fff" opacity=".7"/>${bl}<rect y="320" width="640" height="100" fill="hsl(${h} 25% 78%)"/><rect y="320" width="640" height="6" fill="hsl(${h} 25% 70%)"/></svg>`;
+}
+
+/* =========================================================
+   КАРТОЧКА ОБЪЕКТА
+   ========================================================= */
+function card(l,mode){
+  const a=agentOf(l.agent),fav=S.favs.includes(l.id),rent=l.deal==='rent',isNew=daysAgo(l.pub)<=10;
+  const spec=[roomsTxt(l.rooms),l.area+' м²',l.floors>1?`${l.floor}/${l.floors} эт.`:null].filter(Boolean).map(x=>`<span>${x}</span>`).join('');
+  return `<article class="card lcard ${mode==='list'?'list':''}">
+    <a class="art-link" href="#/object/${l.id}" tabindex="-1" aria-hidden="true">${art(l)}
+      <span class="badges">${l.verified?verifiedBadge():'<span class="badge warn">На проверке</span>'}${isNew?'<span class="badge new">Новое</span>':''}</span></a>
+    <button class="icon-btn fav ${fav?'on':''}" data-a="fav" data-id="${l.id}" aria-pressed="${fav}" aria-label="${fav?'Убрать из избранного':'В избранное'}">${I.heart}</button>
+    <div class="content">
+      <div class="price">${money(l.usd,rent)}</div>
+      <a class="title" href="#/object/${l.id}">${esc(l.title)}</a>
+      <div class="specs">${spec}</div>
+      <div class="muted" style="font-size:14px">${esc(l.district)}, ${esc(l.street)}</div>
+      ${isAgent()?`<div class="row wrapf" style="gap:6px"><span class="badge comm">Комиссия агенту ${CONFIG.commissionAgentPct}%</span><span class="badge info">${rent?'Аренда':'Продажа'}</span></div>`:''}
+      <div class="foot">
+        <span class="ava">${esc(a.name[0])}</span>
+        <div class="grow" style="min-width:0"><div style="font-weight:600;font-size:14px;line-height:1.2">${esc(a.name)}</div><div class="muted" style="font-size:12px">Актуально на ${dfmt(l.act)}</div></div>
+        <a class="icon-btn" style="width:40px;height:40px" href="tel:${a.phone.replace(/[^+\d]/g,'')}" aria-label="Позвонить агенту">${I.phone}</a>
+      </div>
+    </div>
+  </article>`;
+}
+
+/* =========================================================
+   ФИЛЬТР И ПОИСК
+   ========================================================= */
+function filtered(){
+  const f=S.f; let r=allListings().filter(l=>l.deal===f.deal);
+  if(f.type) r=r.filter(l=>l.type===f.type);
+  if(f.district) r=r.filter(l=>l.district===f.district);
+  if(f.rooms!=='') r=r.filter(l=>f.rooms==='4'?l.rooms>=4:l.rooms===+f.rooms);
+  const rt=S.cur==='USD'?1:1/CONFIG.rate;
+  if(f.pmin) r=r.filter(l=>l.usd>=f.pmin*rt);
+  if(f.pmax) r=r.filter(l=>l.usd<=f.pmax*rt);
+  if(f.amin) r=r.filter(l=>l.area>=+f.amin);
+  if(f.verified) r=r.filter(l=>l.verified);
+  if(f.mine&&isAgent()) r=r.filter(l=>l.mine);
+  const s=f.sort;
+  r.sort((a,b)=>s==='pa'?a.usd-b.usd:s==='pd'?b.usd-a.usd:s==='ar'?b.area-a.area:new Date(b.act)-new Date(a.act));
+  return r;
+}
+function filtersHTML(){
+  const f=S.f,ch=(k,v,t)=>`<button class="chip" data-a="f" data-k="${k}" data-v="${v}" aria-pressed="${String(f[k])===String(v)}">${t}</button>`;
+  return `<div class="fgroup"><span class="lbl">Сделка</span><div class="chips">${ch('deal','rent','Аренда')}${ch('deal','sale','Покупка')}</div></div>
+  <div class="fgroup"><span class="lbl">Тип</span><div class="chips">${ch('type','','Любой')}${Object.entries(TYPES).map(([k,v])=>ch('type',k,v)).join('')}</div></div>
+  <div class="fgroup field"><label for="fd">Район</label><select id="fd" class="sel" data-f="district"><option value="">Весь Бишкек</option>${Object.keys(DISTRICTS).map(d=>`<option ${f.district===d?'selected':''}>${d}</option>`).join('')}</select></div>
+  <div class="fgroup"><span class="lbl">Комнат</span><div class="chips">${ch('rooms','','Любое')}${ch('rooms','0','Студия')}${ch('rooms','1','1')}${ch('rooms','2','2')}${ch('rooms','3','3')}${ch('rooms','4','4+')}</div></div>
+  <div class="fgroup"><span class="lbl">Цена, ${S.cur==='USD'?'$':'сом'}${f.deal==='rent'?' в месяц':''}</span><div class="two"><input class="inp" inputmode="numeric" placeholder="от" data-f="pmin" value="${esc(f.pmin)}" aria-label="Цена от"><input class="inp" inputmode="numeric" placeholder="до" data-f="pmax" value="${esc(f.pmax)}" aria-label="Цена до"></div></div>
+  <div class="fgroup field"><label for="fa">Площадь от, м²</label><input id="fa" class="inp" inputmode="numeric" placeholder="любая" data-f="amin" value="${esc(f.amin)}"></div>
+  <label class="switch"><input type="checkbox" data-f="verified" ${f.verified?'checked':''}> Только проверенные</label>
+  ${isAgent()?`<label class="switch"><input type="checkbox" data-f="mine" ${f.mine?'checked':''}> Только мои объекты</label>`:''}
+  <button class="btn block" data-a="reset">Сбросить фильтры</button>`;
+}
+function resultsHTML(){
+  const r=filtered(),f=S.f;
+  let body;
+  if(!r.length) body=`<div class="card empty"><h3>Ничего не нашли</h3><p class="ink2" style="max-width:40ch">Попробуйте расширить бюджет или выбрать другой район. Или оставьте заявку: проверенные агенты предложат подходящие объекты.</p><div class="row wrapf" style="justify-content:center"><button class="btn" data-a="reset">Сбросить фильтры</button><a class="btn primary" href="#/requests">Оставить заявку</a></div></div>`;
+  else if(f.view==='map') body=mapHTML(r);
+  else if(f.view==='grid') body=`<div class="grid g3 gridres">${r.map(l=>card(l,'grid')).join('')}</div>`;
+  else body=`<div class="stack">${r.map(l=>card(l,'list')).join('')}</div>`;
+  return `<div class="res-head"><div><h1>${f.deal==='rent'?'Аренда':'Покупка'} в Бишкеке</h1><p class="muted">${r.length} ${plural(r.length,['объект','объекта','объектов'])}</p></div>
+    <div class="row wrapf">
+      <button class="btn sm only-m" data-a="drawer">Фильтры</button>
+      <select class="sel" style="min-height:40px;width:auto" data-f="sort" aria-label="Сортировка"><option value="new" ${f.sort==='new'?'selected':''}>Сначала актуальные</option><option value="pa" ${f.sort==='pa'?'selected':''}>Сначала дешевле</option><option value="pd" ${f.sort==='pd'?'selected':''}>Сначала дороже</option><option value="ar" ${f.sort==='ar'?'selected':''}>По площади</option></select>
+      <div class="seg" role="group" aria-label="Вид">
+        <button data-a="view" data-v="list" aria-pressed="${f.view==='list'}" aria-label="Списком">${I.list}</button>
+        <button data-a="view" data-v="grid" aria-pressed="${f.view==='grid'}" aria-label="Плитками">${I.grid}</button>
+        <button data-a="view" data-v="map" aria-pressed="${f.view==='map'}" aria-label="На схеме">${I.map}</button>
+      </div></div></div>${body}`;
+}
+function plural(n,w){const a=n%10,b=n%100;return a===1&&b!==11?w[0]:a>=2&&a<=4&&(b<10||b>=20)?w[1]:w[2]}
+function mapHTML(r){
+  const sel=S.mapSel&&r.find(x=>x.id===S.mapSel);
+  const pins=r.map(l=>{const d=DISTRICTS[l.district]||{x:50,y:50};const j=((l.id*37)%9-4)*1.4;
+    return `<button class="pin" style="left:${d.x+j}%;top:${d.y+((l.id*13)%7-3)*1.2}%" data-a="pin" data-id="${l.id}" aria-pressed="${S.mapSel===l.id}" aria-label="${esc(l.title)}">${S.cur==='USD'?'$'+nf(l.usd):nf(l.usd*CONFIG.rate/1000)+'к'}</button>`}).join('');
+  return `<div class="mapbox"><svg class="map" viewBox="0 0 100 62" preserveAspectRatio="none" aria-hidden="true" style="aspect-ratio:100/62">
+    <rect width="100" height="62" fill="#E8EEF2"/>
+    <path d="M0 8Q30 4 60 10T100 6V0H0z" fill="#DCE6EC"/>
+    <path d="M6 36L94 36M50 6L50 58M22 10L80 56M10 50L88 20" stroke="#fff" stroke-width="1.400" fill="none"/>
+    <path d="M0 24Q40 26 100 22" stroke="#C5D7E3" stroke-width="2.200" fill="none"/>
+    <rect x="38" y="22" width="26" height="14" rx="6" fill="#D5E6D4" opacity=".7"/>
+  </svg>${Object.entries(DISTRICTS).map(([n,d])=>`<span class="dl" style="left:${d.x}%;top:${d.y+5}%">${n}</span>`).join('')}<span class="mapnote">Условная схема, не в масштабе</span>${pins}
+  ${sel?`<div class="mapcard"><div class="row"><div class="grow"><div class="price" style="font-size:18px">${money(sel.usd,sel.deal==='rent')}</div><a class="title" href="#/object/${sel.id}">${esc(sel.title)}</a><div class="muted" style="font-size:13px">${sel.area} м², ${esc(sel.district)}</div></div><a class="btn sm primary" href="#/object/${sel.id}">Открыть</a></div></div>`:''}
+  </div>`;
+}
+
+/* =========================================================
+   СТРАНИЦЫ
+   ========================================================= */
+function pHome(){
+  const f=S.home,list=allListings().filter(l=>l.deal===f.deal&&l.verified).sort((a,b)=>new Date(b.act)-new Date(a.act)).slice(0,6);
+  const reqs=REQUESTS.concat(S.reqExtra).slice().sort((a,b)=>b.id-a.id).slice(0,4);
+  return `<section class="hero"><div class="wrap">
+    <div>
+      <h1>Недвижимость Бишкека без фейков</h1>
+      <p class="lead">Каждый объект мы проверяем до публикации: собственника, документы и цену. Если объект в каталоге, он настоящий.</p>
+      <form class="search" id="homeSearch" aria-label="Поиск недвижимости">
+        <div class="tabs" role="group" aria-label="Тип сделки"><button type="button" class="pill-tab" data-a="hdeal" data-v="rent" aria-pressed="${f.deal==='rent'}">Снять</button><button type="button" class="pill-tab" data-a="hdeal" data-v="sale" aria-pressed="${f.deal==='sale'}">Купить</button></div>
+        <div class="fields">
+          <div class="field"><label for="hd">Район</label><select id="hd" class="sel" name="district"><option value="">Весь Бишкек</option>${Object.keys(DISTRICTS).map(d=>`<option>${d}</option>`).join('')}</select></div>
+          <div class="field"><label for="ht">Тип</label><select id="ht" class="sel" name="type"><option value="">Любой</option>${Object.entries(TYPES).map(([k,v])=>`<option value="${k}">${v}</option>`).join('')}</select></div>
+          <div class="field"><label for="hb">Бюджет до, ${S.cur==='USD'?'$':'сом'}</label><input id="hb" class="inp" name="pmax" inputmode="numeric" placeholder="без ограничений"></div>
+          <button class="btn primary" style="align-self:end;min-height:46px">Найти</button>
+        </div>
+      </form>
+      <div class="quick"><a class="chip" href="#/requests">Не нашли? Оставьте заявку</a><a class="chip" href="#/mortgage">Рассчитать ипотеку</a></div>
+    </div>
+    <div class="seal-stage" aria-hidden="false">
+      <div class="seal" aria-hidden="true"><svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="56" fill="#F5333A"/><circle cx="60" cy="60" r="49" fill="none" stroke="#fff" stroke-width="2" stroke-dasharray="3 5"/><path d="M36 61l17 17 32-34" fill="none" stroke="#fff" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="v-card">${art({id:3,hue:200,type:'apartment'})}
+        <div class="body"><div class="price" style="font-size:19px">${moneyTxt(450,true)}</div><div style="font-weight:600">2-комнатная квартира, Джал</div>
+          <ul class="checks"><li><span class="tick">${I.check}</span>Собственник подтверждён</li><li><span class="tick">${I.check}</span>Документы проверены</li><li><span class="tick">${I.check}</span>Цена актуальна на ${dfmt('2026-10-22')}</li></ul></div></div>
+    </div></div></section>
+
+  <section class="sec"><div class="wrap">
+    <div class="sec-head"><div><h2>Свежие проверенные объекты</h2><p>Обновляются, когда агент подтверждает актуальность. Устаревшие уходят вниз списка.</p></div>
+      <div class="row"><div class="seg" role="group" aria-label="Аренда или продажа"><button data-a="hdeal2" data-v="rent" aria-pressed="${f.deal==='rent'}">Аренда</button><button data-a="hdeal2" data-v="sale" aria-pressed="${f.deal==='sale'}">Продажа</button></div><a class="btn" href="#/catalog" data-a="tocat" data-v="${f.deal}">Весь каталог</a></div></div>
+    <div class="grid g3">${list.map(l=>card(l,'grid')).join('')}${list.length%3?`<div class="card empty" style="align-content:center"><h3>Не нашли своё?</h3><p class="ink2" style="max-width:30ch">Оставьте заявку, и агенты предложат подходящие объекты.</p><a class="btn primary" href="#/requests">Оставить заявку</a></div>`:''}</div>
+  </div></section>
+
+  <section class="sec tight"><div class="wrap">
+    <div class="sec-head"><div><h2>Клиенты ищут прямо сейчас</h2><p>Опишите, что нужно, и агенты сами предложат объекты под ваш бюджет. Так же работает спрос: вы называете условия, а они отвечают.</p></div><a class="btn primary" href="#/requests">Оставить заявку</a></div>
+    <div class="grid g4">${reqs.map(reqCard).join('')}</div>
+  </div></section>
+
+  <section class="sec"><div class="wrap"><div class="band">
+    <div><h2>Общий каталог для агентов</h2><p>Работайте с объектами коллег как со своими. Принесли объект, и вы получаете половину агентской комиссии. Закрыли чужой, и вы тоже получаете половину. Платформа пока ничего не удерживает.</p>
+      <div class="row wrapf" style="margin-top:24px"><a class="btn primary" href="#/agents">Стать агентом</a><a class="btn ghost" style="color:#fff;border-color:#4B5260" href="#/cabinet" data-a="asagent">Посмотреть кабинет</a></div></div>
+    <div class="split" aria-label="Схема комиссии 50 на 50"><div class="muted" style="color:#C9CDD6">Агентская комиссия делится поровну</div>
+      <div class="bar"><span class="a">Агент, принёсший объект · 50%</span><span class="b">Агент, закрывший сделку · 50%</span></div>
+      <div class="muted" style="color:#C9CDD6;font-size:13px">Суммы комиссий видят только одобренные агенты и только как ориентир: итог считается после сделки.</div></div>
+  </div></div></section>
+
+  <section class="sec tight"><div class="wrap">
+    <div class="sec-head"><div><h2>Как мы проверяем объект</h2></div></div>
+    <div class="how">
+      <div class="step"><div class="n">1</div><h3>Договор с собственником</h3><p>Объект попадает в каталог, только если у агента есть подписанный договор. Контакты собственника при этом никому не раскрываются.</p></div>
+      <div class="step"><div class="n">2</div><h3>Проверка документов</h3><p>Сверяем право собственности и совпадение с объявлением. Если что-то не сходится, объект остаётся «На проверке».</p></div>
+      <div class="step"><div class="n">3</div><h3>Метка «Проверен» и свежесть</h3><p>У каждого объекта две даты: когда опубликован и на какое число цена подтверждена агентом.</p></div>
+    </div>
+  </div></section>`;
+}
+function reqCard(r){
+  const rent=r.deal==='rent';
+  return `<article class="card req"><div class="meta"><span class="badge ${rent?'info':'red'}">${rent?'Аренда':'Покупка'}</span><span class="badge" style="background:var(--bg)">${esc(r.district)}</span></div>
+  <h3 style="font-size:17px">${esc(r.who)}</h3><div class="price" style="font-size:18px">до ${moneyTxt(r.budget,rent)}</div>
+  <p class="ink2" style="font-size:14px">${esc(r.note)}</p>
+  <div class="row between" style="margin-top:auto"><span class="muted" style="font-size:13px">${r.answers} ${plural(r.answers,['ответ','ответа','ответов'])}</span>
+  ${isAgent()?`<button class="btn sm dark" data-a="answer" data-id="${r.id}">Ответить</button>`:`<span class="muted" style="font-size:13px">${dfmt(r.date)}</span>`}</div></article>`;
+}
+function pCatalog(){
+  return `<div class="wrap"><div class="cat"><aside class="card filters" id="filters" aria-label="Фильтры"><h3>Фильтры</h3>${filtersHTML()}</aside><section id="results" aria-live="polite">${resultsHTML()}</section></div></div>`;
+}
+function pObject(id){
+  const l=allListings().find(x=>x.id==id);
+  if(!l) return `<div class="wrap"><div class="card gate"><h1 style="font-size:24px">Объект не найден</h1><p class="ink2">Возможно, он снят с публикации.</p><a class="btn primary" href="#/catalog">В каталог</a></div></div>`;
+  const a=agentOf(l.agent),rent=l.deal==='rent',fav=S.favs.includes(l.id),ppm=Math.round(l.usd/l.area);
+  const days=[...Array(7)].map((_,i)=>{const d=new Date(CONFIG.today);d.setDate(d.getDate()+i+1);return {iso:d.toISOString().slice(0,10),n:d.getDate(),w:['вс','пн','вт','ср','чт','пт','сб'][d.getDay()]}});
+  S.book={day:days[0].iso,time:'11:00'};
+  const chips=['Хочу посмотреть этот объект','Актуальна ли цена?','Можно ли торговаться?','Хочу больше фото и видео', rent?'Можно с животными?':'Возможна ли ипотека?'];
+  return `<div class="wrap"><nav class="crumbs" aria-label="Хлебные крошки"><a href="#/">Главная</a> / <a href="#/catalog" data-a="tocat" data-v="${l.deal}">${rent?'Аренда':'Покупка'}</a> / ${esc(l.district)}</nav>
+  <div class="obj"><div class="stack" style="gap:20px">
+    <div class="gallery">${art(l)}<span class="count">Фото появятся после загрузки агентом</span></div>
+    <div class="card panel"><div class="row wrapf" style="margin-bottom:12px">${l.verified?verifiedBadge():'<span class="badge warn">На проверке</span>'}<span class="badge" style="background:var(--bg)">${TYPES[l.type]}</span></div>
+      <h1 style="font-size:clamp(22px,3vw,30px)">${esc(l.title)}</h1><p class="muted" style="margin-top:8px">${esc(l.district)}, ${esc(l.street)}</p>
+      <p style="margin-top:18px;max-width:68ch">${esc(l.desc)}</p>
+      <div class="chips" style="margin-top:16px">${l.feat.map(x=>`<span class="badge" style="background:var(--bg)">${esc(x)}</span>`).join('')}</div></div>
+    <div class="card panel"><h2>Об объекте</h2><dl class="kv" style="margin:0">
+      <div><dt>Комнат</dt><dd>${l.rooms===0?'Студия':l.rooms}</dd></div><div><dt>Площадь</dt><dd>${l.area} м²</dd></div>
+      <div><dt>Этаж</dt><dd>${l.floors>1?`${l.floor} из ${l.floors}`:'1'}</dd></div><div><dt>Цена за м²</dt><dd>${S.cur==='USD'?'$'+nf(ppm):nf(ppm*CONFIG.rate)+' сом'}</dd></div>
+      <div><dt>Опубликовано</dt><dd>${dfmt(l.pub)}</dd></div><div><dt>Актуально на</dt><dd>${dfmt(l.act)}</dd></div></dl></div>
+    ${isAgent()?`<div class="agent-only"><div class="hd">${I.doc} Условия для агентов</div>
+      <dl class="kv" style="margin:0"><div><dt>Направление</dt><dd>${rent?'Аренда':'Продажа'}</dd></div><div><dt>Комиссия агенту</dt><dd>${CONFIG.commissionAgentPct}% от агентской части</dd></div>
+      <div><dt>База Liberterra</dt><dd>${rent?'50% первого месяца':'2% от цены'}</dd></div><div><dt>Ориентир вашей доли</dt><dd>${rent?moneyTxt(l.usd*.25):moneyTxt(l.usd*.01)}</dd></div></dl>
+      <p class="note" style="margin-top:12px">Суммы ориентировочные. Итог фиксируется после сделки, когда известна финальная цена. Эти условия видят только одобренные агенты.</p>
+      <div class="row wrapf" style="margin-top:14px"><button class="btn dark sm" data-a="deal" data-id="${l.id}">Запросить сделку по объекту</button><a class="btn sm" href="https://t.me/${a.tg}" target="_blank" rel="noopener">Написать агенту ${esc(a.name)}</a></div></div>`:`<div class="card panel row between wrapf"><div><b>Вы агент?</b><p class="muted" style="font-size:14px">Одобренные агенты видят комиссию и условия сделки по каждому объекту.</p></div><a class="btn" href="#/agents">Как стать агентом</a></div>`}
+    <div class="card panel"><h2>Записаться на осмотр</h2>
+      <div class="days" id="days" role="group" aria-label="День осмотра">${days.map((d,i)=>`<button class="day" data-a="day" data-v="${d.iso}" aria-pressed="${i===0}"><small>${d.w}</small>${d.n}</button>`).join('')}</div>
+      <div class="slots" id="slots" style="margin-top:12px" role="group" aria-label="Время осмотра">${['10:00','11:00','13:00','15:00','17:00','19:00'].map(t=>`<button class="slot" data-a="slot" data-v="${t}" aria-pressed="${t==='11:00'}">${t}</button>`).join('')}</div></div>
+    <div class="card panel"><h2>Задайте вопрос агенту</h2>
+      <form class="form" data-form="inquiry"><div class="cols2"><div class="field"><label for="q1">Ваше имя</label><input id="q1" class="inp" name="n" required autocomplete="name"></div><div class="field"><label for="q2">Телефон</label><input id="q2" class="inp" name="p" required inputmode="tel" autocomplete="tel" placeholder="+996"></div></div>
+      <div class="field"><span class="lbl">Выберите вопрос или напишите свой</span><div class="chips" id="qchips">${chips.map(c=>`<button type="button" class="chip" data-a="qchip" aria-pressed="false">${esc(c)}</button>`).join('')}</div></div>
+      <div class="field"><label for="q3">Сообщение</label><textarea id="q3" class="inp" name="m" placeholder="Например: когда можно посмотреть?"></textarea></div>
+      <label class="check"><input type="checkbox" required> Согласен на обработку персональных данных</label>
+      <button class="btn primary block">Отправить агенту</button></form></div>
+  </div>
+  <aside class="side"><div class="card panel"><div class="big">${money(l.usd,rent)}</div>${S.cur==='KGS'?`<p class="muted" style="margin-top:2px">≈ $${nf(l.usd)}${rent?' в месяц':''}</p>`:`<p class="muted" style="margin-top:2px">≈ ${nf(l.usd*CONFIG.rate)} сом${rent?' в месяц':''}</p>`}
+    <div class="verif" style="margin-top:16px">${l.verified?`<div><span class="tick">${I.check}</span>Собственник подтверждён</div><div><span class="tick">${I.check}</span>Документы проверены</div><div><span class="tick">${I.check}</span>Цена актуальна на ${dfmt(l.act)}</div>`:`<div class="badge warn" style="justify-self:start">Проверка ещё идёт</div>`}</div></div>
+    <div class="card panel"><div class="agentbox"><span class="ava lg">${esc(a.name[0])}</span><div><b>${esc(a.name)}</b><div class="muted" style="font-size:14px">${esc(a.agency)}</div>${a.cert?`<span class="badge ok" style="margin-top:6px">${I.check} Сертификат проверен</span>`:''}</div></div>
+      <div class="contact-btns" style="margin-top:16px"><a class="btn dark block" href="tel:${a.phone.replace(/[^+\d]/g,'')}">${I.phone} ${esc(a.phone)}</a><a class="btn block" href="https://t.me/${a.tg}" target="_blank" rel="noopener">${I.chat} Написать в Telegram</a>
+      <button class="btn primary block" data-a="book" data-id="${l.id}">Записаться на осмотр</button></div>
+      <p class="note" style="margin-top:12px">Если не дозвонились: Liberterra ${esc(CONFIG.companyPhone)}</p>
+      <button class="btn block ghost" style="margin-top:8px" data-a="fav" data-id="${l.id}" aria-pressed="${fav}">${fav?'В избранном':'Добавить в избранное'}</button></div>
+  </aside></div></div>`;
+}
+function pRequests(){
+  const reqs=REQUESTS.concat(S.reqExtra).slice().sort((a,b)=>b.id-a.id);
+  return `<div class="wrap"><div class="sec" style="padding-bottom:20px"><div class="sec-head"><div><h1 style="font-size:clamp(26px,3.4vw,38px)">Заявки клиентов</h1><p>Расскажите, что ищете, и проверенные агенты предложат подходящие объекты.</p></div></div>
+    <div class="cat" style="grid-template-columns:380px 1fr;padding-top:0">
+    <form class="card panel form" data-form="request" style="position:sticky;top:88px"><h2 style="margin-bottom:0">Новая заявка</h2>
+      <div class="chips" role="group" aria-label="Что нужно"><button type="button" class="chip" data-a="rdeal" data-v="rent" aria-pressed="true">Снять</button><button type="button" class="chip" data-a="rdeal" data-v="sale" aria-pressed="false">Купить</button></div>
+      <div class="field"><label for="r1">Что ищете</label><input id="r1" class="inp" name="who" required placeholder="2-комнатную квартиру"></div>
+      <div class="cols2"><div class="field"><label for="r2">Район</label><select id="r2" class="sel" name="district">${Object.keys(DISTRICTS).map(d=>`<option>${d}</option>`).join('')}</select></div>
+      <div class="field"><label for="r3">Бюджет, $</label><input id="r3" class="inp" name="budget" inputmode="numeric" required placeholder="450"></div></div>
+      <div class="field"><label for="r4">Пожелания</label><textarea id="r4" class="inp" name="note" placeholder="Мебель, этаж, срок"></textarea></div>
+      <div class="field"><label for="r5">Телефон</label><input id="r5" class="inp" name="phone" required inputmode="tel" placeholder="+996"></div>
+      <button class="btn primary block">Опубликовать заявку</button><p class="note">Телефон видят только агенты, которые ответили на заявку.</p></form>
+    <div class="grid g2" style="align-content:start">${reqs.map(reqCard).join('')}</div></div></div></div>`;
+}
+function pAgents(){
+  const st=S.apply.status,steps=[['Заявка','Заполните короткую анкету: имя, фото, телефон, Telegram, опыт.'],['Интервью','Мы звоним и знакомимся. Паспорт и документы на этом этапе не нужны.'],['Договор','После звонка подписываем договор сотрудничества.'],['Одобрен','Открываются комиссии и работа с общим каталогом.']];
+  const cur=st==='draft'?-1:st==='sent'?0:2;
+  return `<div class="wrap"><div class="sec" style="padding-bottom:10px"><div class="sec-head"><div><h1 style="font-size:clamp(26px,3.4vw,38px)">Агенты Liberterra</h1><p>Проверенные специалисты с рейтингом и подтверждённой работой в сфере недвижимости.</p></div></div>
+    <div class="grid g3">${AGENTS.map(a=>`<article class="card panel"><div class="agentbox"><span class="ava lg">${esc(a.name[0])}</span><div><b>${esc(a.name)}</b><div class="muted" style="font-size:14px">${esc(a.agency)}</div></div></div>
+      <div class="row wrapf" style="margin:14px 0 6px">${a.cert?`<span class="badge ok">${I.check} Сертификат проверен</span>`:'<span class="badge warn">Сертификат на проверке</span>'}${a.dir.map(d=>`<span class="badge info">${d}</span>`).join('')}</div>
+      <div class="tiles" style="grid-template-columns:1fr 1fr;margin-top:12px"><div class="tile"><span class="muted" style="font-size:13px">Рейтинг</span><b>${a.rating.toFixed(1)}</b></div><div class="tile"><span class="muted" style="font-size:13px">Сделок</span><b>${a.deals}</b></div></div>
+      <div class="row" style="margin-top:14px"><a class="btn sm grow" href="https://t.me/${a.tg}" target="_blank" rel="noopener">Написать</a><a class="btn sm dark grow" href="#/catalog" data-a="byagent">Объекты</a></div></article>`).join('')}</div></div>
+    <div class="sec" id="apply"><div class="sec-head"><div><h2>Стать агентом Liberterra</h2><p>Работаете в недвижимости? Присоединяйтесь к общему каталогу. Публикация пока бесплатна для всех.</p></div></div>
+      <div class="steps" style="margin-bottom:24px">${steps.map((s,i)=>`<div class="step ${i<=cur&&cur>=0?(i<cur?'done':'now'):''}"><div class="n">${i<cur?'✓':i+1}</div><h3>${s[0]}</h3><p>${s[1]}</p></div>`).join('')}</div>
+      ${st==='sent'?`<div class="card panel row between wrapf"><div><b>Заявка отправлена</b><p class="muted">Мы позвоним для короткого интервью. Это демо: данные никуда не ушли.</p></div><button class="btn" data-a="applyreset">Заполнить заново</button></div>`:
+      `<form class="card panel form" data-form="apply" style="max-width:720px"><div class="cols2"><div class="field"><label for="p1">Имя и фамилия</label><input id="p1" class="inp" name="n" required autocomplete="name"></div><div class="field"><label for="p2">Телефон</label><input id="p2" class="inp" name="p" required inputmode="tel" placeholder="+996"></div></div>
+      <div class="cols2"><div class="field"><label for="p3">Telegram</label><input id="p3" class="inp" name="t" placeholder="@username"></div><div class="field"><label for="p4">Опыт в недвижимости</label><select id="p4" class="sel" name="e"><option>Пока без опыта</option><option>До года</option><option>1–3 года</option><option>Больше 3 лет</option></select></div></div>
+      <div class="field"><span class="lbl">С чем хотите работать</span><div class="chips"><label class="switch"><input type="checkbox" checked> Аренда</label><label class="switch"><input type="checkbox"> Продажа</label></div></div>
+      <button class="btn primary">Отправить заявку</button></form>`}</div></div>`;
+}
+function pMortgage(){
+  return `<div class="wrap"><div class="sec"><div class="sec-head"><div><h1 style="font-size:clamp(26px,3.4vw,38px)">Калькулятор ипотеки</h1><p>Введите свои условия, и мы посчитаем ежемесячный платёж. Ставку и срок уточняйте в банке.</p></div></div>
+  <div class="grid g2" style="align-items:start"><form class="card panel form" id="mort"><div class="field"><label for="m1">Стоимость, $</label><input id="m1" class="inp" inputmode="numeric" value="80000" data-m></div><div class="field"><label for="m2">Первый взнос, %</label><input id="m2" class="inp" inputmode="decimal" value="20" data-m></div><div class="cols2"><div class="field"><label for="m3">Ставка, % годовых</label><input id="m3" class="inp" inputmode="decimal" value="17" data-m></div><div class="field"><label for="m4">Срок, лет</label><input id="m4" class="inp" inputmode="numeric" value="15" data-m></div></div></form>
+  <div class="card panel" id="mout" aria-live="polite"></div></div></div></div>`;
+}
+function calcMort(){
+  const v=(i)=>parseFloat(String($('#'+i).value).replace(',','.'))||0;
+  const P=v('m1')*(1-v('m2')/100),r=v('m3')/1200,n=v('m4')*12;
+  const pay=r>0&&n>0?P*r/(1-Math.pow(1+r,-n)):n>0?P/n:0,tot=pay*n;
+  $('#mout').innerHTML=`<h2>Ежемесячный платёж</h2><div class="big price" style="font-size:36px">${moneyTxt(pay)}</div>
+  <dl class="kv" style="margin:18px 0 0;grid-template-columns:1fr"><div><dt>Сумма кредита</dt><dd>${moneyTxt(P)}</dd></div><div><dt>Всего выплат</dt><dd>${moneyTxt(tot)}</dd></div><div><dt>Переплата</dt><dd>${moneyTxt(Math.max(0,tot-P))}</dd></div></dl>
+  <p class="note" style="margin-top:14px">Расчёт приблизительный (аннуитетный платёж). Это не предложение банка.</p>`;
+}
+function gate(msg){return `<div class="wrap"><div class="card gate"><div class="logo-mark" style="width:52px;height:52px;border-radius:16px 16px 16px 6px"><svg viewBox="0 0 24 24" style="width:28px;height:28px"><path d="M5 12.500l4.500 4.500L19 7.500"/></svg></div><h1 style="font-size:24px">${msg}</h1><p class="ink2">Кабинет с общим каталогом, комиссиями и задачами доступен одобренным агентам.</p><div class="row wrapf" style="justify-content:center"><button class="btn primary" data-a="role" data-v="agent">Посмотреть как агент (демо)</button><a class="btn" href="#/agents">Как стать агентом</a></div></div></div>`}
+function myObjects(){return allListings().filter(l=>l.mine)}
+function pCabinet(tab){
+  if(!isAgent()) return gate('Кабинет агента');
+  tab=tab||'overview'; const mine=myObjects();
+  const nav=[['overview','Обзор',I.chart],['objects','Мои объекты',I.home],['pool','Общий каталог',I.users],['requests','Заявки',I.req],['profile','Профиль',I.user]];
+  const stale=mine.filter(l=>daysAgo(l.act)>=5);
+  let body='';
+  if(tab==='overview'){
+    const views=mine.reduce((s,l)=>s+l.views,0),con=mine.reduce((s,l)=>s+l.contacts,0),fav=mine.reduce((s,l)=>s+l.favs,0);
+    const pts=[6,9,7,12,14,9,8,11,13,10,15,12,9,11],mx=16,W=640,H=200;
+    const xy=pts.map((p,i)=>[i*(W/(pts.length-1)),H-12-p/mx*(H-30)]);
+    const path=xy.map((p,i)=>(i?'L':'M')+p[0].toFixed(1)+' '+p[1].toFixed(1)).join(' ');
+    body=`<div class="card panel"><div class="row between wrapf" style="margin-bottom:14px"><h2 style="margin:0">Статистика по моим объектам</h2><span class="muted" style="font-size:14px">за 14 дней, демо</span></div>
+      <div class="tiles"><div class="tile"><span class="muted">Просмотры</span><b>${nf(views)}</b></div><div class="tile"><span class="muted">Контакты</span><b>${con}</b></div><div class="tile"><span class="muted">В избранном</span><b>${fav}</b></div><div class="tile"><span class="muted">Объектов</span><b>${mine.length}</b></div></div>
+      <svg class="chart" viewBox="0 0 ${W} ${H}" style="margin-top:20px" role="img" aria-label="График просмотров за 14 дней"><path d="${path} L${W} ${H-12} L0 ${H-12}Z" fill="#F5333A" opacity=".1"/><path d="${path}" fill="none" stroke="#D9242B" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>${xy.map(p=>`<circle cx="${p[0]}" cy="${p[1]}" r="3.500" fill="#fff" stroke="#D9242B" stroke-width="2"/>`).join('')}<line x1="0" x2="${W}" y1="${H-12}" y2="${H-12}" stroke="#E3E6EB"/></svg></div>
+      <div class="card panel"><h2>Что сделать сегодня</h2><div class="stack" style="gap:10px">
+      ${stale.length?stale.map(l=>`<div class="row between wrapf"><span><b>${esc(l.title)}</b> <span class="muted">· актуально на ${dfmt(l.act)}</span></span><button class="btn sm dark" data-a="confirm" data-id="${l.id}">Подтвердить актуальность</button></div>`).join(''):'<p class="ink2">Все ваши объекты актуальны.</p>'}
+      <div class="row between wrapf"><span><b>Новые заявки клиентов</b> <span class="muted">· ${REQUESTS.filter(r=>r.answers<3).length} ждут ответа</span></span><a class="btn sm" href="#/cabinet/requests">Открыть</a></div></div></div>`;
+  } else if(tab==='objects'){
+    body=`<div class="card panel"><div class="row between wrapf" style="margin-bottom:14px"><h2 style="margin:0">Мои объекты</h2><a class="btn primary sm" href="#/add">${I.plus} Добавить объект</a></div>
+      <div class="scroll-x"><table class="tbl"><thead><tr><th>Объект</th><th>Цена</th><th>Статус</th><th>Опубликовано</th><th>Актуально на</th><th></th></tr></thead><tbody>${mine.map(l=>`<tr><td><a href="#/object/${l.id}" style="font-weight:600">${esc(l.title)}</a><div class="muted" style="font-size:13px">${l.deal==='rent'?'Аренда':'Продажа'} · ${esc(l.district)}</div></td><td>${moneyTxt(l.usd,l.deal==='rent')}</td><td>${l.verified?verifiedBadge():'<span class="badge warn">На проверке</span>'}</td><td>${dfmt(l.pub)}</td><td>${dfmt(l.act)}</td><td><button class="btn sm" data-a="confirm" data-id="${l.id}">Подтвердить</button></td></tr>`).join('')||'<tr><td colspan="6" class="muted">Объектов пока нет. Добавьте первый.</td></tr>'}</tbody></table></div></div>`;
+  } else if(tab==='pool'){
+    body=`<div class="card panel"><h2>Общий каталог</h2><p class="ink2" style="max-width:60ch">Здесь все объекты участников Liberterra. Вы видите комиссию и можете работать с любым объектом: закрыв сделку, получите половину агентской части.</p><div class="row wrapf" style="margin-top:16px"><a class="btn primary" href="#/catalog" data-a="tocat" data-v="rent">Аренда</a><a class="btn dark" href="#/catalog" data-a="tocat" data-v="sale">Продажа</a></div></div>`;
+  } else if(tab==='requests'){
+    body=`<div class="grid g2">${REQUESTS.concat(S.reqExtra).slice().sort((a,b)=>b.id-a.id).map(reqCard).join('')}</div>`;
+  } else {
+    body=`<div class="card panel"><h2>Профиль агента</h2><div class="agentbox" style="margin-bottom:18px"><span class="ava lg">А</span><div><b>Айгерим С.</b> <span class="muted">(демо)</span><div class="row wrapf" style="margin-top:6px"><span class="badge ok">${I.check} Одобрен</span><span class="badge ok">${I.check} Сертификат проверен</span></div></div></div>
+      <div class="steps">${[['Заявка','Отправлена'],['Интервью','Пройдено'],['Договор','Подписан'],['Одобрен','Комиссии открыты']].map((s,i)=>`<div class="step done"><div class="n">✓</div><h3>${s[0]}</h3><p>${s[1]}</p></div>`).join('')}</div>
+      <p class="note" style="margin-top:16px">Работаете по направлениям: Аренда, Продажа. Направление можно изменить на «оба» в любой момент.</p></div>`;
+  }
+  return `<div class="wrap"><div class="cab"><aside class="card side-nav" aria-label="Кабинет"><div class="who"><span class="ava lg" style="width:48px;height:48px;font-size:18px">А</span><div><b>Айгерим С.</b><div class="muted" style="font-size:13px">Агент · одобрен</div></div></div>
+    ${nav.map(n=>`<a href="#/cabinet/${n[0]}" ${n[0]===tab?'aria-current="page"':''}>${n[2]}${n[1]}</a>`).join('')}</aside><section class="stack" style="gap:18px">${body}</section></div></div>`;
+}
+function pAdd(){
+  return `<div class="wrap"><div class="sec" style="max-width:820px;padding-bottom:70px"><div class="sec-head"><div><h1 style="font-size:clamp(26px,3.4vw,38px)">Добавить объект</h1><p>Объект появится в каталоге после проверки. Публикация пока бесплатна.</p></div></div>
+  <form class="card panel form" data-form="add">
+    <div class="field"><span class="lbl">Направление</span><div class="chips" role="group"><button type="button" class="chip" data-a="adeal" data-v="rent" aria-pressed="true">Аренда</button><button type="button" class="chip" data-a="adeal" data-v="sale" aria-pressed="false">Продажа</button></div></div>
+    <div class="cols2"><div class="field"><label for="a1">Тип</label><select id="a1" class="sel" name="type">${Object.entries(TYPES).map(([k,v])=>`<option value="${k}">${v}</option>`).join('')}</select></div><div class="field"><label for="a2">Район</label><select id="a2" class="sel" name="district">${Object.keys(DISTRICTS).map(d=>`<option>${d}</option>`).join('')}</select></div></div>
+    <div class="field"><label for="a3">Улица или микрорайон</label><input id="a3" class="inp" name="street" required placeholder="ул. Токтогула"></div>
+    <div class="cols2"><div class="field"><label for="a4">Комнат (0 — студия)</label><input id="a4" class="inp" name="rooms" inputmode="numeric" required value="2"></div><div class="field"><label for="a5">Площадь, м²</label><input id="a5" class="inp" name="area" inputmode="numeric" required></div></div>
+    <div class="cols2"><div class="field"><label for="a6">Этаж</label><input id="a6" class="inp" name="floor" inputmode="numeric" value="3"></div><div class="field"><label for="a7">Этажей в доме</label><input id="a7" class="inp" name="floors" inputmode="numeric" value="9"></div></div>
+    <div class="field"><label for="a8">Цена, $ <span class="muted" id="ahint">в месяц</span></label><input id="a8" class="inp" name="usd" inputmode="numeric" required></div>
+    <div class="field"><label for="a9">Описание</label><textarea id="a9" class="inp" name="desc" placeholder="Состояние, мебель, условия"></textarea></div>
+    <div class="field"><span class="lbl">Фото</span><div class="card" style="padding:18px;border-style:dashed;background:var(--bg)"><p class="ink2" style="font-size:14px">Загрузка фото подключается к хранилищу в рабочей версии. В демо объект получит иллюстрацию.</p></div></div>
+    <label class="check"><input type="checkbox" name="contract" required> У меня подписан договор с собственником. Контакты собственника в каталоге не показываются.</label>
+    <div class="agent-only" style="padding:14px"><span class="note">Комиссия по объекту: ${CONFIG.commissionAgentPct}% агентской части получает агент, закрывший сделку, и ${CONFIG.commissionAgentPct}% вы как агент, принёсший объект.</span></div>
+    <button class="btn primary">Отправить на проверку</button></form></div></div>`;
+}
+
+/* =========================================================
+   РОУТЕР
+   ========================================================= */
+const NAV=[['/','Главная'],['/catalog','Объекты'],['/requests','Заявки'],['/agents','Агенты'],['/mortgage','Ипотека']];
+function render(){
+  const h=(location.hash.slice(1)||'/').split('?')[0],[,pg,arg]=h.split('/'),page='/'+(pg||'');
+  let html='',title='Liberterra';
+  switch(pg||''){
+    case '':html=pHome();break;
+    case 'catalog':html=pCatalog();title='Объекты';break;
+    case 'object':html=pObject(arg);break;
+    case 'requests':html=pRequests();title='Заявки';break;
+    case 'agents':html=pAgents();title='Агенты';break;
+    case 'mortgage':html=pMortgage();title='Ипотека';break;
+    case 'cabinet':html=pCabinet(arg);title='Кабинет';break;
+    case 'add':html=isAgent()?pAdd():gate('Размещать объекты могут агенты');title='Добавить объект';break;
+    default:html=pHome();
+  }
+  $('#main').innerHTML=html;
+  document.title=(title==='Liberterra'?'':title+' — ')+'Liberterra';
+  const links=[...NAV,...(isAgent()?[['/cabinet','Кабинет']]:[])];
+  $('#nav').innerHTML=links.map(([p,t])=>`<a href="#${p}" ${page===p||(p!=='/'&&page.startsWith(p))?'aria-current="page"':''}>${t}</a>`).join('');
+  const tb=[['/','Главная',I.home],['/catalog','Объекты',I.list],['/requests','Заявки',I.req],['/agents','Агенты',I.users],isAgent()?['/cabinet','Кабинет',I.user]:['/mortgage','Ипотека',I.calc]];
+  $('#tabbar').innerHTML=tb.map(([p,t,ic])=>`<a href="#${p}" ${page===p||(p!=='/'&&page.startsWith(p))?'aria-current="page"':''}>${ic}${t}</a>`).join('');
+  syncChrome();
+  if(pg==='mortgage')calcMort();
+  window.scrollTo(0,0);
+}
+function syncChrome(){
+  document.querySelectorAll('[data-a=cur]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===S.cur));
+  document.querySelectorAll('[data-a=role]').forEach(b=>{if(b.closest('.top'))b.setAttribute('aria-pressed',b.dataset.v===S.role)});
+}
+function refreshResults(){const r=$('#results');if(r){r.innerHTML=resultsHTML()}const f=$('#filters');if(f&&document.activeElement&&f.contains(document.activeElement)){}else if(f){f.innerHTML='<h3>Фильтры</h3>'+filtersHTML()}}
+function refreshFilters(){const f=$('#filters');if(f)f.innerHTML='<h3>Фильтры</h3>'+filtersHTML();const d=$('#drawerBody');if(d)d.innerHTML=filtersHTML()}
+
+/* =========================================================
+   ДЕЙСТВИЯ
+   ========================================================= */
+const A={
+  cur(t){S.cur=t.dataset.v;save();render()},
+  role(t){S.role=t.dataset.v;save();if(S.role==='guest'&&/^#\/(cabinet|add)/.test(location.hash)){location.hash='#/'}render()},
+  asagent(){S.role='agent';save()},
+  fav(t,e){e.preventDefault();const id=+t.dataset.id,i=S.favs.indexOf(id);i>=0?S.favs.splice(i,1):S.favs.push(id);save();toast(i>=0?'Убрано из избранного':'Добавлено в избранное');
+    if(/#\/object/.test(location.hash))render();else{t.classList.toggle('on',i<0);t.setAttribute('aria-pressed',i<0)}},
+  hdeal(t){S.home.deal=t.dataset.v;document.querySelectorAll('[data-a=hdeal]').forEach(b=>b.setAttribute('aria-pressed',b===t))},
+  hdeal2(t){S.home.deal=t.dataset.v;render()},
+  tocat(t){if(t.dataset.v)S.f.deal=t.dataset.v},
+  byagent(){S.f.verified=true},
+  f(t){const k=t.dataset.k;S.f[k]=t.dataset.v;refreshFilters();refreshResults();if(S.f.view==='map'){}},
+  reset(){S.f={...S.f,type:'',district:'',rooms:'',pmin:'',pmax:'',amin:'',verified:true,mine:false};refreshFilters();refreshResults()},
+  view(t){S.f.view=t.dataset.v;S.mapSel=null;refreshResults()},
+  pin(t){S.mapSel=+t.dataset.id;refreshResults()},
+  drawer(){$('#overlay').innerHTML=`<div class="drawer-bg" data-a="close"></div><div class="drawer" role="dialog" aria-modal="true" aria-label="Фильтры"><div class="row between" style="margin-bottom:14px"><h3>Фильтры</h3><button class="icon-btn" data-a="close" aria-label="Закрыть">✕</button></div><div class="fgroup" id="drawerBody" style="gap:18px;display:grid">${filtersHTML()}</div><button class="btn primary block" style="margin-top:18px" data-a="close">Показать ${filtered().length}</button></div>`},
+  close(){$('#overlay').innerHTML='';refreshResults()},
+  day(t){S.book.day=t.dataset.v;document.querySelectorAll('[data-a=day]').forEach(b=>b.setAttribute('aria-pressed',b===t))},
+  slot(t){S.book.time=t.dataset.v;document.querySelectorAll('[data-a=slot]').forEach(b=>b.setAttribute('aria-pressed',b===t))},
+  book(t){const l=allListings().find(x=>x.id==t.dataset.id);toast(`Запрос на осмотр: ${dfmt(S.book.day)}, ${S.book.time}. Это демо, ничего не отправлено`)},
+  qchip(t){const on=t.getAttribute('aria-pressed')!=='true';t.setAttribute('aria-pressed',on);const ta=$('#q3'),sel=[...document.querySelectorAll('#qchips [aria-pressed=true]')].map(b=>b.textContent);ta.value=sel.join('. ')+(sel.length?'.':'')},
+  rdeal(t){document.querySelectorAll('[data-a=rdeal]').forEach(b=>b.setAttribute('aria-pressed',b===t));S.rdeal=t.dataset.v},
+  adeal(t){document.querySelectorAll('[data-a=adeal]').forEach(b=>b.setAttribute('aria-pressed',b===t));S.adeal=t.dataset.v;$('#ahint').textContent=t.dataset.v==='rent'?'в месяц':''},
+  answer(t){const r=REQUESTS.concat(S.reqExtra).find(x=>x.id==t.dataset.id);if(r){r.answers++;save();toast('Ответ отправлен клиенту (демо)');render()}},
+  deal(t){toast('Запрос сделки отправлен агенту, который добавил объект (демо)')},
+  confirm(t){const l=allListings().find(x=>x.id==t.dataset.id);if(l){l.act=CONFIG.today.toISOString().slice(0,10);save();toast('Актуальность подтверждена на сегодня');render()}},
+  applyreset(){S.apply.status='draft';save();render()}
+};
+document.addEventListener('click',e=>{const t=e.target.closest('[data-a]');if(!t)return;const fn=A[t.dataset.a];if(fn)fn(t,e)});
+document.addEventListener('input',e=>{
+  const t=e.target;
+  if(t.dataset.m!==undefined){calcMort();return}
+  if(t.dataset.f&&t.type!=='checkbox'&&t.tagName!=='SELECT'){S.f[t.dataset.f]=t.value.replace(/\D/g,'');clearTimeout(A._t);A._t=setTimeout(refreshResults,250)}
+});
+document.addEventListener('change',e=>{
+  const t=e.target;if(!t.dataset.f)return;
+  if(t.type==='checkbox')S.f[t.dataset.f]=t.checked;else S.f[t.dataset.f]=t.value;
+  refreshResults();
+});
+document.addEventListener('submit',e=>{
+  const f=e.target;
+  if(f.id==='homeSearch'){e.preventDefault();const d=new FormData(f);S.f={...S.f,deal:S.home.deal,district:d.get('district'),type:d.get('type'),pmax:String(d.get('pmax')||'').replace(/\D/g,''),pmin:'',amin:'',rooms:''};location.hash='#/catalog';return}
+  const k=f.dataset.form;if(!k)return;e.preventDefault();const d=Object.fromEntries(new FormData(f));
+  if(k==='inquiry'){toast('Вопрос подготовлен для агента. Это демо: данные никуда не отправлены');f.reset()}
+  if(k==='request'){const id=100+S.reqExtra.length+1;S.reqExtra.push({id,deal:S.rdeal||'rent',who:d.who,district:d.district,budget:+d.budget||0,note:d.note||'Без пожеланий',answers:0,date:CONFIG.today.toISOString().slice(0,10)});save();toast('Заявка опубликована (демо)');render()}
+  if(k==='apply'){S.apply.status='sent';save();toast('Заявка отправлена. Мы позвоним для интервью (демо)');render()}
+  if(k==='add'){const id=200+S.mineExtra.length+1,deal=S.adeal||'rent',r=+d.rooms;
+    S.mineExtra.push({id,deal,type:d.type,title:`${r===0?'Студия':r+'-комнатная'} ${TYPES[d.type].toLowerCase()}, ${d.district}`,district:d.district,street:d.street,rooms:r,area:+d.area,floor:+d.floor||1,floors:+d.floors||1,usd:+d.usd,verified:false,agent:'a1',pub:CONFIG.today.toISOString().slice(0,10),act:CONFIG.today.toISOString().slice(0,10),hue:(id*47)%360,feat:[],views:0,contacts:0,favs:0,mine:true,desc:d.desc||'Описание появится после проверки.'});
+    save();toast('Объект отправлен на проверку (демо)');location.hash='#/cabinet/objects'}
+});
+window.addEventListener('hashchange',()=>{$('#overlay').innerHTML='';render()});
+
+/* ---------- загрузка реальных данных из CSV (Google Sheets) ----------
+   Ожидаемые колонки: id, deal(rent|sale), type(apartment|house|commercial), title, district, street,
+   rooms, area, floor, floors, usd, verified(1|0), agent, pub(YYYY-MM-DD), act(YYYY-MM-DD), desc
+   Включите, указав CONFIG.csvUrl. Пока пусто — показываются демо-данные. */
+function parseCSV(t){const rows=[];let r=[],c='',q=false;for(let i=0;i<t.length;i++){const ch=t[i];if(q){if(ch==='"'&&t[i+1]==='"'){c+='"';i++}else if(ch==='"')q=false;else c+=ch}else if(ch==='"')q=true;else if(ch===','){r.push(c);c=''}else if(ch==='\n'){r.push(c);rows.push(r);r=[];c=''}else if(ch!=='\r')c+=ch}if(c||r.length){r.push(c);rows.push(r)}return rows}
+async function loadCSV(){
+  if(!CONFIG.csvUrl)return;
+  try{const t=await (await fetch(CONFIG.csvUrl)).text(),[h,...rs]=parseCSV(t);
+    const items=rs.filter(r=>r.length>3).map((r,i)=>{const o={};h.forEach((k,j)=>o[k.trim()]=r[j]);
+      return {id:+o.id||i+1,deal:o.deal||'rent',type:o.type||'apartment',title:o.title,district:o.district,street:o.street||'',rooms:+o.rooms||0,area:+o.area||0,floor:+o.floor||1,floors:+o.floors||1,usd:+o.usd||0,verified:o.verified==='1',agent:o.agent||'a1',pub:o.pub||'2026-01-01',act:o.act||o.pub||'2026-01-01',hue:((+o.id||i)*47)%360,feat:[],views:0,contacts:0,favs:0,desc:o.desc||''}});
+    if(items.length){LISTINGS=items;document.getElementById('demoBanner').remove();render()}
+  }catch(e){console.warn('CSV не загрузился, показаны демо-данные',e)}
+}
+
+/* ---------- Telegram Mini App ---------- */
+try{if(window.Telegram&&Telegram.WebApp){Telegram.WebApp.ready();Telegram.WebApp.expand()}}catch(e){}
+
+render();loadCSV();
+</script>
+</body>
+</html>
