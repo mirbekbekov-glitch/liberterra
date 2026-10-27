@@ -1,0 +1,10 @@
+.agent-photo-avatar { position:relative; display:inline-flex; align-items:center; justify-content:center; overflow:hidden; width:80px; height:80px; flex-shrink:0; border-radius:50%; background:#fae1e1; color:#ad3038; font-size:30px; }
+.agent-photo-avatar img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; border-radius:inherit; }
+.agent-photo-editor { margin:18px 0; padding:16px; border:1px solid #e7ddd1; border-radius:18px; }
+.agent-photo-editor p { font-size:14px; line-height:1.5; }
+.agent-photo-editor button { padding:10px 16px; margin:8px 8px 0 0; border:1px solid #ddd; border-radius:12px; background:#fff; cursor:pointer; }
+.agent-photo-editor [data-save] { background:#ff2937; color:#fff; }
+.agent-photo-editor input { max-width:100%; }
+.agent-photo-editor button:disabled { opacity:.55; cursor:wait; }
+.agent-photo-preview img { display:block; width:160px; height:160px; object-fit:cover; border-radius:16px; margin-top:12px; }
+.agent-photo-editor [hidden] { display:none; }

@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <script src="/telegram-membership.js?v=20260915-1"></script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <base href="https://hidden-pine-cbff.mirbekbekov.workers.dev/">
+  <meta name="description" content="Liberterra — каталог недвижимости в Бишкеке. Аренда, покупка и продажа объектов.">
+  <title>Liberterra</title>
+  <meta property="og:title" content="Liberterra">
+  <meta property="og:description" content="Каталог недвижимости в Бишкеке: аренда, покупка и продажа.">
+  <meta property="og:url" content="https://liberterra-kg-catalog.pages.dev/">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://liberterra-kg-catalog.pages.dev/assets/liberterra-mark-adapted.png">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Liberterra">
+  <meta name="twitter:description" content="Каталог недвижимости в Бишкеке: аренда, покупка и продажа.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600&family=Manrope:wght@700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/style.css?v=20260908-agents-mobile-entry-1" data-liberterra-main-styles="true">
+  <link rel="stylesheet" href="/site-theme.css?v=20260930-nav-3">
+  <script src="/catalog-translations.js?v=20260820-1" defer></script>
+  <script src="/i18n.js?v=20260828-admin-dashboard-1" defer></script>
+  <script src="/site-theme.js?v=20260930-nav-3" defer></script>
+</head>
+<body class="home-page">
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a class="brand" href="/" aria-label="Liberterra">
+        <img class="brand-logo" src="assets/liberterra-logo-white.png" alt="Liberterra">
+      </a>
+      <div class="header-controls">
+        <div class="agent-access-slot" data-agent-access-slot aria-live="polite"></div>
+        <a class="header-action" href="add-object.html">Разместить объект</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="home-hero" aria-labelledby="homeHeroTitle">
+      <div class="wrap home-hero-inner">
+        <div class="hero-location">
+          <span aria-hidden="true">⌖</span>
+          <strong>Бишкек</strong>
+        </div>
+        <h1 id="homeHeroTitle">Недвижимость в Бишкеке</h1>
+        <p>Аренда, покупка и продажа объектов через Liberterra</p>
+        <div class="hero-actions">
+          <a class="hero-primary" href="#catalogGrid">Смотреть объекты</a>
+          <a class="hero-secondary" href="requests.html">Заявки на поиск</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="catalog-toolbar wrap" aria-label="Поиск и фильтры каталога">
+      <div class="toolbar-main">
+        <label class="toolbar-search" for="catalogSearch">
+          <span>Поиск</span>
+          <input id="catalogSearch" type="search" placeholder="Район, название, описание" autocomplete="off">
+        </label>
+        <label class="toolbar-field" for="heroDistrictFilter">
+          <span>Район</span>
+          <select id="heroDistrictFilter">
+            <option value="all">Любой район</option>
+            <option value="Золотой квадрат">Золотой квадрат</option>
+            <option value="Центр">Центр</option>
+            <option value="Юг">Юг</option>
+            <option value="Восток">Восток</option>
+            <option value="Запад">Запад</option>
+          </select>
+        </label>
+        <label class="toolbar-field price-field" for="heroPriceMax">
+          <span>Цена до</span>
+          <input id="heroPriceMax" type="number" inputmode="numeric" min="0" step="1000" placeholder="0">
+        </label>
+        <label class="toolbar-field currency-field" for="priceCurrency">
+          <span>Валюта</span>
+          <select id="priceCurrency">
+            <option value="kgs">сом</option>
+            <option value="usd">$</option>
+          </select>
+        </label>
+        <input id="heroPriceMin" type="hidden" value="">
+      </div>
+      <div class="toolbar-filters">
+        <div class="toolbar-group" aria-label="Сделка">
+          <button class="toolbar-chip is-active" type="button" data-hero-deal="аренда" aria-pressed="true">Аренда</button>
+          <button class="toolbar-chip" type="button" data-hero-deal="продажа" aria-pressed="false">Продажа</button>
+        </div>
+        <div class="toolbar-group" aria-label="Тип недвижимости">
+          <button class="toolbar-chip is-active" type="button" data-hero-type="all" aria-pressed="true">Все</button>
+          <button class="toolbar-chip" type="button" data-hero-type="apartment" aria-pressed="false">Квартира</button>
+          <button class="toolbar-chip" type="button" data-hero-type="house" aria-pressed="false">Дом</button>
+          <button class="toolbar-chip" type="button" data-hero-type="land" aria-pressed="false">Участок</button>
+          <button class="toolbar-chip" type="button" data-hero-type="commercial" aria-pressed="false">Коммерция</button>
+        </div>
+        <div class="toolbar-group rooms" aria-label="Комнаты">
+          <button class="toolbar-chip is-active" type="button" data-hero-rooms="all" aria-pressed="true">Любые</button>
+          <button class="toolbar-chip" type="button" data-hero-rooms="1" aria-pressed="false">1</button>
+          <button class="toolbar-chip" type="button" data-hero-rooms="2" aria-pressed="false">2</button>
+          <button class="toolbar-chip" type="button" data-hero-rooms="3" aria-pressed="false">3</button>
+          <button class="toolbar-chip" type="button" data-hero-rooms="4+" aria-pressed="false">4+</button>
+        </div>
+        <div class="toolbar-group" aria-label="Формат проживания">
+          <button class="toolbar-chip is-active" type="button" data-hero-occupancy="all" aria-pressed="true">Все форматы</button>
+          <button class="toolbar-chip" type="button" data-hero-occupancy="sharing" aria-pressed="false">Подселение</button>
+        </div>
+        <div class="toolbar-actions">
+          <a class="toolbar-map" href="district-map.html">Карта</a>
+          <button class="toolbar-reset" id="resetFilters" type="button" hidden>Сбросить</button>
+          <button class="toolbar-show" id="heroShowButton" type="button">Показать <span id="heroShowCount">0 объектов</span></button>
+        </div>
+      </div>
+    </section>
+
+    <section class="catalog wrap" aria-live="polite">
+      <div class="grid" id="catalogGrid"></div>
+    </section>
+
+    <section class="map-promo wrap" aria-labelledby="mapPromoTitle">
+      <div class="map-promo-content">
+        <span class="map-promo-eyebrow">Карта Бишкека</span>
+        <h2 id="mapPromoTitle">Ищите объекты на карте</h2>
+        <p>Смотрите зоны города, районы и расположение объектов рядом с нужной инфраструктурой.</p>
+        <a class="map-promo-action" href="district-map.html">Открыть карту <span aria-hidden="true">⌁</span></a>
+      </div>
+      <span class="map-promo-price price-one">75 000 сом</span>
+      <span class="map-promo-price price-two">$1 200</span>
+      <span class="map-promo-price price-three">$550</span>
+    </section>
+
+    <section class="trust-line wrap">
+      <p id="trustLine">Загружаем проверенные объекты в Бишкеке</p>
+    </section>
+
+    <section class="specialists wrap" aria-labelledby="specialists-title">
+      <div class="section-heading">
+        <div>
+          <h2 id="specialists-title">Специалисты по аренде недвижимости</h2>
+          <p>Помогут подобрать объект, уточнить условия и быстро организовать связь.</p>
+        </div>
+      </div>
+      <div class="specialist-grid" id="specialistGrid"></div>
+    </section>
+
+  </main>
+
+  <div class="detail-modal" id="objectModal" hidden>
+    <button class="modal-backdrop" type="button" data-close-modal aria-label="Закрыть карточку"></button>
+    <article class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <button class="modal-close" type="button" data-close-modal aria-label="Закрыть">×</button>
+      <div id="modalContent"></div>
+    </article>
+  </div>
+
+  <footer class="site-footer">
+    <div class="wrap footer-inner">
+      <span>Liberterra</span>
+      <div class="footer-contacts">
+        <a href="tel:+996500804402">Аренда: 0500 804 402</a>
+        <a href="tel:+996500804402">Продажа: 0500 804 402</a>
+      </div>
+      <a href="https://t.me/Liberterra_kg_bot" target="_blank" rel="noopener">Telegram-бот</a>
+    </div>
+  </footer>
+
+<script src="/catalog-data.js?v=20260820-i18n-1" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js" defer></script>
+  <script src="https://telegram.org/js/telegram-web-app.js" defer></script>
+<script src="/analytics.js?v=20260826-user-tracking-1" defer></script>
+<script src="/agent-access.js?v=20260928-public-cache-1" defer></script>
+  <script src="/telegram-catalog-20260731.js?v=20260817-1" defer></script>
+</body>
+</html>

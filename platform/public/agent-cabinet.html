@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <script src="/telegram-membership.js?v=20260915-1"></script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Кабинет агента — Liberterra</title>
+  <meta name="description" content="Личный рабочий кабинет агента Liberterra.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600&family=Manrope:wght@700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/api/crm/style.css?v=20261017-private-agent-crm-1" data-liberterra-main-styles="true">
+  <script src="/catalog-translations.js?v=20260820-1" defer></script>
+  <script src="/i18n.js?v=20260929-theme-2" defer></script>
+<link rel="stylesheet" href="/site-theme.css?v=20260930-nav-3">
+<script src="/site-theme.js?v=20260930-nav-3" defer></script>
+<link rel="stylesheet" href="/api/crm-workflow/concept-v20.css?v=20261021-1">
+<script src="/api/crm-workflow/concept-v20.js?v=20261021-2" defer></script>
+<link rel="stylesheet" href="/api/crm-workflow/crm-workspace.css?v=20261026-workflow-2">
+<script src="/api/crm-workflow/crm-draft-model.js?v=20261021-2" defer></script>
+<script src="/api/crm-workflow/crm-workspace.js?v=20261026-workflow-2" defer></script>
+<script src="/api/crm-workflow/crm-workflow.js?v=20261026-workflow-2" defer></script>
+<style id="crm-compact-navigation">/* Compact agent workspace; scoped to the CRM only. */
+body.v20.agent-crm-page{padding-left:232px;background:#f6f4f0;font-family:Inter,'Segoe UI',sans-serif}
+body.v20.agent-crm-page>.crm-header{display:none!important}
+body.v20.agent-crm-page .crm-main{width:auto;max-width:none;margin:0;padding:24px 28px 48px}
+body.v20.agent-crm-page .crm-page-heading{margin:0 0 20px;padding:0;gap:12px}
+body.v20.agent-crm-page .crm-page-heading h1{font-size:26px;line-height:1.25;letter-spacing:-.5px;margin:4px 0}
+body.v20.agent-crm-page .crm-eyebrow{font-size:10px;letter-spacing:1.5px;margin:0}
+body.v20.agent-crm-page .crm-page-heading p{font-size:13px;margin:4px 0}
+body.v20.agent-crm-page .crm-public-link{font-size:12px;padding:9px 12px;border-radius:8px}
+body.v20.agent-crm-page .crm-tabs{position:fixed;inset:0 auto 0 0;width:232px;box-sizing:border-box;display:flex;flex-direction:column;flex-wrap:nowrap;align-items:stretch;justify-content:flex-start;gap:3px;margin:0;padding:20px 10px;background:#1c1917!important;border:0;border-radius:0;overflow:auto;z-index:80}
+body.v20.agent-crm-page .crm-tabs .crm-tab{flex:0 0 auto;display:flex;align-items:center;min-height:40px;padding:10px 13px;border:0;border-radius:7px;text-align:left;background:transparent;color:#bcb5ad;font-size:13px;font-weight:500;box-shadow:none;white-space:normal}
+body.v20.agent-crm-page .crm-tabs .crm-tab:hover{background:#312b28;color:white}
+body.v20.agent-crm-page .crm-tabs .crm-tab.is-active{background:#7b233f;color:#fff;font-weight:600}
+body.v20.agent-crm-page .crm-tabs [hidden]{display:none!important}
+.crm-sidebar-brand{padding:4px 13px 20px;color:white!important;text-decoration:none;font-size:23px;font-weight:750;letter-spacing:-.5px}
+.crm-sidebar-caption{padding:15px 13px 5px;color:#8f8780;font-size:10px;letter-spacing:1px;text-transform:uppercase}
+.crm-sidebar-footer{margin-top:auto;padding:18px 13px 0;border-top:1px solid #3c3530;display:grid;gap:12px}
+.crm-sidebar-footer a{color:#d4c4c9;text-decoration:none;font-size:12px}
+body.v20.agent-crm-page .crm-workflow-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 16px;padding:0}
+body.v20.agent-crm-page .crm-workflow-status{font-size:12px;color:#77706a;margin:0}
+body.v20.agent-crm-page .crm-workflow-toolbar button{font-size:12px;padding:8px 12px;white-space:nowrap}
+body.v20.agent-crm-page .crm-panel{padding:20px;border:1px solid #e5ded7;border-radius:12px}
+body.v20.agent-crm-page .crm-panel h2{font-size:20px;letter-spacing:-.25px;margin:0 0 8px}
+body.v20.agent-crm-page .crm-panel-heading{margin-bottom:16px}
+body.v20.agent-crm-page .crm-panel p{font-size:13px}
+body.v20.agent-crm-page .crm-counters{margin:16px 0;gap:12px}
+body.v20.agent-crm-page .crm-counter{min-height:72px;padding:14px;border-radius:10px}
+body.v20.agent-crm-page .crm-counter strong{font-size:24px}
+body.v20.agent-crm-page .crm-counter span{font-size:12px}
+body.v20.agent-crm-page .concept-roadmap{padding:12px;margin:16px 0;font-size:13px}
+body.v20.agent-crm-page .crm-object-card{border-radius:10px}
+body.v20.agent-crm-page .crm-workflow-form{max-width:900px}
+.crm-menu-toggle{display:none}
+@media(max-width:760px){
+ body.v20.agent-crm-page{padding-left:0;padding-top:54px}
+ body.v20.agent-crm-page .crm-main{padding:18px 14px 36px}
+ body.v20.agent-crm-page .crm-page-heading{align-items:flex-start}
+ body.v20.agent-crm-page .crm-page-heading h1{font-size:23px}
+ body.v20.agent-crm-page .crm-tabs{transform:translateX(-100%);width:232px;top:54px;transition:transform .15s}
+ body.v20.agent-crm-page.crm-menu-open .crm-tabs{transform:translateX(0);box-shadow:10px 0 30px #0003}
+ .crm-menu-toggle{display:block;position:fixed;inset:0 0 auto;width:100%;height:54px;border:0;border-radius:0;background:#1c1917;color:#fff;text-align:left;padding:0 18px;font:600 14px 'Segoe UI',sans-serif;z-index:90}
+ body.v20.agent-crm-page .crm-panel{padding:16px}
+ body.v20.agent-crm-page .crm-workflow-toolbar{align-items:flex-start}
+ body.v20.agent-crm-page .crm-workflow-status{max-width:65%}
+}
+</style><script>(()=>{'use strict';function mount(){
+ const root=document.querySelector('#agentCabinet'),nav=root?.querySelector('.crm-tabs'),content=root?.querySelector('[data-crm-content]');if(!nav||nav.dataset.compactNavigation)return;nav.dataset.compactNavigation='true';
+ const overview=root.querySelector('[data-crm-panel="overview"]');
+ if(overview){const counters=root.querySelector('.crm-counters'),help=root.querySelector('.concept-roadmap');if(counters)overview.append(counters);if(help)overview.append(help);}
+ const home=content.querySelector(':scope > a');if(home&&home.textContent.includes('Главная'))home.remove();
+ const brand=document.createElement('a');brand.className='crm-sidebar-brand';brand.href='/profile.html';brand.textContent='Liberterra';nav.prepend(brand);
+ const caption=document.createElement('span');caption.className='crm-sidebar-caption';caption.textContent='Рабочее пространство';brand.after(caption);
+ // Unconnected prototypes are not everyday controls. Their code/data is preserved.
+ ['calls','analytics','contracts'].forEach(key=>{const tab=nav.querySelector(`[data-crm-tab="${key}"]`);if(tab)tab.hidden=true;});
+ const footer=document.createElement('div');footer.className='crm-sidebar-footer';for(const [label,url]of [['Открыть каталог','/'],['Мой профиль','/profile.html']]){const a=document.createElement('a');a.href=url;a.textContent=label;footer.append(a);}nav.append(footer);
+ const menu=document.createElement('button');menu.type='button';menu.className='crm-menu-toggle';menu.textContent='☰  Liberterra · Меню CRM';menu.setAttribute('aria-expanded','false');menu.setAttribute('aria-controls','crmCompactNavigation');nav.id='crmCompactNavigation';document.body.append(menu);
+ function close(){document.body.classList.remove('crm-menu-open');menu.setAttribute('aria-expanded','false');}
+ menu.addEventListener('click',()=>{const open=document.body.classList.toggle('crm-menu-open');menu.setAttribute('aria-expanded',String(open));});
+ nav.addEventListener('click',event=>{if(event.target.closest('[data-crm-tab],a'))close();});
+ document.addEventListener('keydown',event=>{if(event.key==='Escape')close();});
+ document.addEventListener('click',event=>{if(!nav.contains(event.target)&&!menu.contains(event.target))close();});
+ }if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mount,{once:true});else mount();})();
+</script><style id="crm-object-rows">/* Compact single-row listings: content fills the body, controls form a bottom toolbar. */
+body.v20.agent-crm-page .crm-object-list{grid-template-columns:minmax(0,1fr);gap:14px}
+body.v20.agent-crm-page .crm-object-card{grid-template-columns:230px minmax(0,1fr);min-height:0;border-radius:12px;box-shadow:0 2px 10px #211a1606}
+body.v20.agent-crm-page .crm-object-photo-link{position:relative;min-height:210px;overflow:hidden}
+body.v20.agent-crm-page .crm-object-photo{position:absolute;inset:0;width:100%;height:100%;min-height:0;object-fit:cover}
+body.v20.agent-crm-page .crm-object-copy{display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-rows:auto;align-content:start;column-gap:20px;row-gap:7px;padding:18px 22px}
+body.v20.agent-crm-page .crm-object-topline{grid-column:1;grid-row:1;justify-content:flex-start;gap:7px}
+body.v20.agent-crm-page .crm-review-badge{margin-left:0}
+body.v20.agent-crm-page .crm-object-copy h3{grid-column:1;grid-row:2;margin:0;font-size:20px;line-height:1.3}
+body.v20.agent-crm-page .crm-object-copy .crm-object-location{grid-column:1;grid-row:3;margin:0;font-size:13px;line-height:1.4}
+body.v20.agent-crm-page .crm-object-price{grid-column:2;grid-row:1/3;margin:0;align-self:center;font-size:23px;line-height:1.3;text-align:right}
+body.v20.agent-crm-page .crm-object-copy .crm-actuality{grid-column:2;grid-row:3;margin:0;font-size:11px;line-height:1.4;text-align:right;color:#827970}
+body.v20.agent-crm-page .crm-object-copy .crm-object-facts{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:7px;margin:3px 0 0;font-size:12px}
+body.v20.agent-crm-page .crm-object-facts span{background:#f4f0eb;border-radius:5px;padding:5px 9px;color:#514941}
+body.v20.agent-crm-page .crm-object-copy .crm-object-description{grid-column:1/-1;margin:0;font-size:13px;line-height:1.55;color:#6c625b;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;overflow-wrap:anywhere}
+body.v20.agent-crm-page .crm-object-actions{grid-column:1/-1;grid-row:auto;display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin:5px 0 0;padding:12px 0 0;border:0;border-top:1px solid #eee7e1}
+body.v20.agent-crm-page .crm-object-actions .crm-text-button{min-height:36px;padding:8px 12px;font-size:12px;font-weight:600;line-height:1.25;white-space:nowrap}
+body.v20.agent-crm-page .crm-object-actions .crm-status-control{width:190px;margin:0 0 0 auto;min-height:36px}
+body.v20.agent-crm-page .crm-object-actions [data-crm-action="edit"]{background:#7b233f;color:#fff;border-color:#7b233f}
+@media(max-width:1100px){
+body.v20.agent-crm-page .crm-object-card{grid-template-columns:190px minmax(0,1fr)}
+body.v20.agent-crm-page .crm-object-copy{padding:16px;grid-template-columns:minmax(0,1fr);gap:6px}
+body.v20.agent-crm-page .crm-object-copy>:is(.crm-object-price,.crm-actuality){grid-column:1;grid-row:auto;text-align:left}
+body.v20.agent-crm-page .crm-object-actions .crm-status-control{margin-left:0;width:100%}
+}
+@media(max-width:520px){
+body.v20.agent-crm-page .crm-object-card{grid-template-columns:minmax(0,1fr)}
+body.v20.agent-crm-page .crm-object-photo-link{height:190px;min-height:0}
+body.v20.agent-crm-page .crm-object-actions{display:grid;grid-template-columns:1fr 1fr}
+body.v20.agent-crm-page .crm-object-actions .crm-status-control{grid-column:1/-1}
+body.v20.agent-crm-page .crm-object-copy h3{font-size:19px}
+}
+</style><link rel="stylesheet" href="/api/crm-workflow/auth-entry.css?v=20261027-1"></head>
+<body class="agent-crm-page concept-v20 v20">
+  <header class="crm-header">
+    <div class="wrap crm-header-inner">
+      <a class="brand" href="/" aria-label="Liberterra">
+        <img class="brand-logo" src="/assets/liberterra-logo-adapted.png" alt="Liberterra">
+      </a>
+      <a class="crm-catalog-link" href="/profile.html" data-smart-back>← Назад</a>
+    </div>
+  </header>
+
+  <main class="wrap crm-main" id="agentCabinet">
+    <section class="crm-page-heading">
+      <div>
+        <p class="crm-eyebrow">Рабочая зона</p>
+        <h1>Кабинет агента</h1>
+        <p data-crm-agent-summary>Загружаем ваши объекты и заметки...</p>
+      </div>
+      <a class="crm-public-link" data-crm-public-link href="/agent-public.html" hidden>Моя публичная витрина</a>
+    </section>
+
+    <div class="crm-access-state" data-crm-loading role="status">
+      Проверяем доступ агента...
+    </div>
+
+    <div data-crm-content hidden>
+      <a class="concept-workspace-link" href="/index.html">← Главная и поиск</a>
+      <details class="concept-roadmap"><summary>Как работать в CRM</summary><p>Добавьте клиента и его требования, соберите подборку, запланируйте показ и назначьте следующий шаг. Контакты и рабочие заметки видны только вам. Ссылку на подборку можно отозвать.</p><p>Воронка показывает этап работы с клиентом. Показы в календаре — ваш личный план; приглашение клиенту отправляйте отдельно.</p><p>В разделах «Договоры» и «Заявки» сохранены пробные формы: они пока не отправляют данные. Журнал звонков и внешние CRM ещё не подключены.</p></details>
+      <section class="crm-counters" aria-label="Статистика объектов" data-crm-counters></section>
+
+      <div class="crm-tabs" role="tablist" aria-label="Разделы кабинета">
+        <button class="crm-tab is-active" id="crmObjectsTab" type="button" role="tab" aria-selected="true" aria-controls="crmObjectsPanel" data-crm-tab="objects">Мои объекты</button>
+        <button class="crm-tab" id="crmClientsTab" type="button" role="tab" aria-selected="false" aria-controls="crmClientsPanel" data-crm-tab="clients">Мои клиенты</button>
+        <button class="crm-tab" id="crmNotesTab" type="button" role="tab" aria-selected="false" aria-controls="crmNotesPanel" data-crm-tab="notes">Заметки</button>
+        <button class="crm-tab" id="crmPrivateAccessTab" type="button" role="tab" aria-selected="false" aria-controls="crmPrivateAccessPanel" data-crm-tab="private-access">Доступ к данным</button>
+      </div>
+
+      <section class="crm-panel" id="crmObjectsPanel" role="tabpanel" aria-labelledby="crmObjectsTab" data-crm-panel="objects">
+        <div class="crm-panel-heading">
+          <div>
+            <h2>Мои объекты</h2>
+            <p>Редактируйте данные и поддерживайте статус актуальным.</p>
+          </div>
+          <a class="crm-primary-link" href="/add-object.html">Разместить объект</a>
+        </div>
+        <div class="crm-object-list" data-crm-objects></div>
+      </section>
+
+      <section class="crm-panel" id="crmClientsPanel" role="tabpanel" aria-labelledby="crmClientsTab" data-crm-panel="clients" hidden>
+        <div class="crm-panel-heading">
+          <div>
+            <h2>Закрепления по объектам</h2>
+            <p>Здесь видны ваши активные закрепления с точным временем.</p>
+          </div>
+        </div>
+        <div class="crm-client-list" data-crm-clients></div>
+      </section>
+
+      <section class="crm-panel" id="crmNotesPanel" role="tabpanel" aria-labelledby="crmNotesTab" data-crm-panel="notes" hidden>
+        <div class="crm-panel-heading">
+          <div>
+            <h2>Приватные заметки</h2>
+            <p>Эти записи видны только вам.</p>
+          </div>
+        </div>
+        <div class="crm-note-list" data-crm-notes></div>
+      </section>
+
+      <section class="crm-panel" id="crmPrivateAccessPanel" role="tabpanel" aria-labelledby="crmPrivateAccessTab" data-crm-panel="private-access" hidden>
+        <div class="crm-panel-heading"><div><p class="crm-eyebrow">Закрытая CRM</p><h2>Запросы доступа</h2><p>Разрешайте коллегам только выбранные контакты и документы. Доступ можно отозвать.</p></div></div>
+        <div class="crm-private-access-list" data-crm-private-access><div class="crm-empty"><strong>Загружаем запросы</strong></div></div>
+      </section>
+    </div>
+  </main>
+
+  <dialog class="crm-dialog" data-crm-edit-dialog aria-labelledby="crmEditTitle">
+    <form method="dialog" class="crm-dialog-form" data-crm-edit-form>
+      <div class="crm-dialog-heading">
+        <div>
+          <p class="crm-eyebrow">Редактирование объекта</p>
+          <h2 id="crmEditTitle">Изменить данные</h2>
+        </div>
+        <button class="crm-icon-button" type="button" data-crm-dialog-close aria-label="Закрыть">×</button>
+      </div>
+      <input type="hidden" name="object_id">
+      <label class="crm-field">
+        <span>Цена</span>
+        <input name="price" inputmode="decimal" autocomplete="off">
+      </label>
+      <label class="crm-field">
+        <span>Заголовок</span>
+        <input name="title" maxlength="240">
+      </label>
+      <label class="crm-field">
+        <span>Район или адрес</span>
+        <input name="district" maxlength="240">
+      </label>
+      <label class="crm-field">
+        <span>Описание</span>
+        <textarea name="description" rows="5" maxlength="700"></textarea>
+        <small>До 700 символов. Оставьте только важные особенности и условия.</small>
+      </label>
+      <p class="crm-form-message" data-crm-edit-message role="alert" hidden></p>
+      <div class="crm-dialog-actions">
+        <button class="crm-secondary-button" type="button" data-crm-dialog-close>Отмена</button>
+        <button class="crm-primary-button" type="submit">Сохранить изменения</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="https://telegram.org/js/telegram-web-app.js" defer></script>
+  <script src="/analytics.js?v=20260826-user-tracking-1" defer></script>
+  <script src="/api/crm-workflow/agent-access.js?v=20261026-crm-workflow-2" defer></script>
+  <script src="/api/crm-workflow/agent-cabinet.js?v=20261026-workflow-2" defer></script>
+  <script src="/back-navigation.js?v=20260814-1"></script>
+  
+<script src="/api/crm-workflow/auth-entry.js?v=20261027-1"></script></body>
+</html>

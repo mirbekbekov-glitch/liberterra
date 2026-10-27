@@ -1,0 +1,4 @@
+# Preserve the bytes used by the production baseline manifest.
+platform/workers/** -text
+platform/apps-script/** -text
+platform/public/** -text
