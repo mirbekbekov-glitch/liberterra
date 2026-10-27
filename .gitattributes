@@ -2,3 +2,6 @@
 platform/workers/** -text
 platform/apps-script/** -text
 platform/public/** -text
+platform/assets/** -text
+platform/features/** text eol=lf
+platform/dev/** text eol=lf

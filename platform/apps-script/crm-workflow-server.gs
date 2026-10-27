@@ -57,6 +57,24 @@ function agentTasksAction_(payload, action) {
 // Deploy beside google_sheets_webhook.gs. All workflow records live in the private CRM book.
 const CRM_WORKFLOW_HEADERS = ["id", "kind", "agent_key", "record_json"];
 const CRM_STAGES = ["new", "selection", "viewing", "negotiation", "won", "lost"];
+const CRM_DEAL_STAGES = [
+  ["new", "Новый лид"], ["qualification", "Квалификация"], ["selection", "Подбор объектов"],
+  ["viewing_scheduled", "Назначен показ"], ["viewing_done", "Показ проведён"],
+  ["negotiation", "Переговоры"], ["agreement", "Согласование условий"],
+  ["documents", "Подготовка документов"], ["won", "Успешно закрыта"], ["lost", "Проиграна"]
+];
+
+function crmDealTransitions_(stage) {
+  const active = CRM_DEAL_STAGES.slice(0, 8).map((item) => item[0]), index = active.indexOf(stage);
+  if (index < 0) return [];
+  return (index > 0 ? [active[index - 1]] : []).concat(index === active.length - 1 ? ["won"] : [active[index + 1]], ["lost"]);
+}
+
+function crmMoney_(value) {
+  const number = crmNumber_(value);
+  if (number !== "" && Math.abs(number * 100 - Math.round(number * 100)) > 0.00001) throw Error("crm_invalid_money");
+  return number === "" ? "" : Math.round(number * 100) / 100;
+}
 
 function crmWorkflowContext_(payload) {
   const registered = registeredUserContext_(payload);
@@ -117,6 +135,17 @@ function crmNumber_(value) {
 
 function crmNormalizeRecord_(kind, data) {
   if (!data || typeof data !== "object" || Array.isArray(data)) throw Error("crm_invalid_fields");
+  if (kind === "deal") {
+    if (!CRM_DEAL_STAGES.some((item) => item[0] === data.stage) || !["USD", "KGS"].includes(data.currency)) throw Error("crm_invalid_fields");
+    const result = { title: crmString_(data.title, 160, true), client_id: crmString_(data.client_id, 36, true),
+      object_id: crmString_(data.object_id, 100, false), stage: data.stage, currency: data.currency,
+      amount: crmMoney_(data.amount), planned_commission: crmMoney_(data.planned_commission),
+      source: crmString_(data.source, 100, false), next_action: crmString_(data.next_action, 240, false),
+      lost_reason: crmString_(data.lost_reason, 500, false), notes: crmString_(data.notes, 2000, false) };
+    if (result.stage === "lost" && !result.lost_reason) throw Error("crm_loss_reason_required");
+    if (result.stage === "won" && (!result.object_id || !(result.amount > 0))) throw Error("crm_close_details_required");
+    return result;
+  }
   if (kind === "object_stage") {
     if (!CRM_STAGES.includes(data.stage)) throw Error("crm_invalid_fields");
     return { object_id: crmString_(data.object_id, 100, true), stage: data.stage };
@@ -163,7 +192,8 @@ function crmWorkflowAction_(payload, action) {
       const fields = ["id", "title", "city", "district", "price", "per", "area", "rooms", "deal", "status", "actuality_at"];
       const objects = objectRows_(catalog).filter((object) => isPublicCrmObject_(object) || ownsListingKey_(actor, listingAgentIdForObject_(object.id, links)))
         .map((object) => fields.reduce((safe, key) => { safe[key] = cleanText_(object[key]); return safe; }, { own: ownsListingKey_(actor, listingAgentIdForObject_(object.id, links)) }));
-      return { ok: true, records: records, objects: objects, requests: crmRequestFeed_(actor, catalog), specialization: actor.specialization };
+      return { ok: true, records: records, objects: objects, requests: crmRequestFeed_(actor, catalog), specialization: actor.specialization,
+        deal_stages: CRM_DEAL_STAGES.map((item) => ({ id: item[0], label: item[1], transitions: crmDealTransitions_(item[0]) })) };
     } catch (_) { return { ok: false, error: "crm_storage_error" }; }
   }
   if (action !== "save_crm_record") return { ok: false, error: "unknown_action" };
@@ -178,6 +208,10 @@ function crmWorkflowAction_(payload, action) {
     if (existing && existing.mutation_id === payload.mutation_id) return { ok: true, record: crmPublicRecord_(existing) };
     if (Number(payload.version) !== (existing ? existing.version : 0)) throw Error("crm_version_conflict");
     let data = crmNormalizeRecord_(payload.kind, payload.data);
+    if (payload.kind === "deal") {
+      if (!existing && data.stage !== "new") throw Error("crm_invalid_transition");
+      if (existing && data.stage !== existing.stage && !crmDealTransitions_(existing.stage).includes(data.stage)) throw Error("crm_invalid_transition");
+    }
     const sourceId = crmString_(existing ? existing.source_request_id : payload.data.source_request_id, 100, false);
     if (payload.kind === "client" && sourceId) {
       if (!existing) {
@@ -207,6 +241,19 @@ function crmWorkflowAction_(payload, action) {
     const now = new Date().toISOString();
     const record = Object.assign({}, data, { id: payload.id, kind: payload.kind, agent_key: existing ? existing.agent_key : actor.crmKey,
       version: existing ? existing.version + 1 : 1, created_at: existing ? existing.created_at : now, updated_at: now, mutation_id: payload.mutation_id });
+    if (payload.kind === "deal") {
+      const history = existing && Array.isArray(existing.history) ? existing.history.slice() : [];
+      if (history.length >= 100) throw Error("crm_history_limit");
+      history.push({ id: payload.mutation_id, at: now, author_id: actor.crmKey,
+        type: !existing ? "created" : existing.stage !== record.stage ? "stage_changed" : "updated",
+        from: existing ? existing.stage : "", to: record.stage,
+        fields: Object.keys(data).filter((key) => !existing || data[key] !== existing[key]) });
+      record.history = history;
+      record.created_by = existing ? existing.created_by : actor.crmKey;
+      record.stage_changed_at = existing && existing.stage === record.stage ? existing.stage_changed_at : now;
+      record.closed_at = ["won", "lost"].includes(record.stage) ? (existing && existing.closed_at || now) : "";
+      if (JSON.stringify(record).length > 45000) throw Error("crm_history_limit");
+    }
     if (payload.kind === "selection") {
       const enabled = payload.share_enabled === undefined ? Boolean(existing && existing.share_enabled) : payload.share_enabled === true;
       record.share_enabled = enabled;

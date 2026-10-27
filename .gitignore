@@ -5,6 +5,7 @@ node_modules/
 dist/
 build/
 coverage/
+platform/.sandbox/
 *.log
 *.pem
 *.key

@@ -18,5 +18,8 @@ const backend=fs.readFileSync(path.join(root,'workers/backend.mjs'),'utf8');
 const marker='const crmWorkflowAssets = ',start=backend.indexOf(marker),end=backend.indexOf(';\nfunction crmWorkflowAssetResponse',start);
 assert(start>=0&&end>start,'CRM asset map missing');
 const embedded=JSON.parse(backend.slice(start+marker.length,end));
+let authored=0;
+function inspect(dir){if(!fs.existsSync(dir))return;for(const entry of fs.readdirSync(dir,{withFileTypes:true})){const file=path.join(dir,entry.name);if(entry.isDirectory()){inspect(file);continue;}const source=fs.readFileSync(file,'utf8');for(const pattern of patterns)assert(!pattern.test(source),'Potential credential in '+file);if(/\.(cjs|js)$/.test(file)){new vm.Script(source,{filename:file});authored++;}if(file.endsWith('.json'))JSON.parse(source);}}
+for(const directory of ['assets','features','dev','scripts','tests'])inspect(path.join(root,directory));
 if(process.argv.includes('--baseline'))for(const [name,source]of Object.entries(embedded))assert.equal(fs.readFileSync(path.join(root,'public/api/crm-workflow',name),'utf8'),source,'Served CRM asset differs from active backend: '+name);
-console.log(JSON.stringify({files:manifest.files.length,syntaxChecked:parsed,crmAssets:Object.keys(embedded).length,baseline:process.argv.includes('--baseline'),credentialPatterns:'passed'}));
+console.log(JSON.stringify({files:manifest.files.length,syntaxChecked:parsed,authoredSyntaxChecked:authored,crmAssets:Object.keys(embedded).length,baseline:process.argv.includes('--baseline'),credentialPatterns:'passed'}));
