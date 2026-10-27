@@ -596,7 +596,7 @@ function card(l,mode){
       <a class="title" href="#/object/${l.id}">${esc(l.title)}</a>
       <div class="specs">${spec}</div>
       <div class="muted" style="font-size:14px">${esc(l.district)}, ${esc(l.street)}</div>
-      ${isAgent()?`<div class="row wrapf" style="gap:6px"><span class="badge comm">Комиссия агенту ${CONFIG.commissionAgentPct}%</span><span class="badge info">${rent?'Аренда':'Продажа'}</span></div>`:''}
+      ${isAgent()?`<div class="row wrapf" style="gap:6px">${l.commCloser!=null?`<span class="badge comm">Вам ${l.commCloser}% от стоимости</span>`:`<span class="badge warn">Комиссия не указана</span>`}<span class="badge info">${rent?'Аренда':'Продажа'}</span></div>`:''}
       <div class="foot">
         <span class="ava">${esc(a.name[0])}</span>
         <div class="grow" style="min-width:0"><div style="font-weight:600;font-size:14px;line-height:1.2">${esc(a.name)}</div><div class="muted" style="font-size:12px">Актуально на ${dfmt(l.act)}</div></div>
@@ -755,9 +755,10 @@ function pObject(id){
       <div><dt>Этаж</dt><dd>${l.floors>1?`${l.floor} из ${l.floors}`:'1'}</dd></div><div><dt>Цена за м²</dt><dd>${S.cur==='USD'?'$'+nf(ppm):nf(ppm*CONFIG.rate)+' сом'}</dd></div>
       <div><dt>Опубликовано</dt><dd>${dfmt(l.pub)}</dd></div><div><dt>Актуально на</dt><dd>${dfmt(l.act)}</dd></div></dl></div>
     ${isAgent()?`<div class="agent-only"><div class="hd">${I.doc} Условия для агентов</div>
-      <dl class="kv" style="margin:0"><div><dt>Направление</dt><dd>${rent?'Аренда':'Продажа'}</dd></div><div><dt>Комиссия агенту</dt><dd>${CONFIG.commissionAgentPct}% от агентской части</dd></div>
-      <div><dt>База Liberterra</dt><dd>${rent?'50% первого месяца':'2% от цены'}</dd></div><div><dt>Ориентир вашей доли</dt><dd>${rent?moneyTxt(l.usd*.25):moneyTxt(l.usd*.01)}</dd></div></dl>
-      <p class="note" style="margin-top:12px">Суммы ориентировочные. Итог фиксируется после сделки, когда известна финальная цена. Эти условия видят только одобренные агенты.</p>
+      <dl class="kv" style="margin:0"><div><dt>Направление</dt><dd>${rent?'Аренда':'Продажа'}</dd></div>
+      ${l.commOwner!=null&&l.commCloser!=null?`<div><dt>Агенту, добавившему объект</dt><dd>${l.commOwner}% от стоимости</dd></div><div><dt>Агенту, закрывшему сделку</dt><dd>${l.commCloser}% от стоимости</dd></div>
+      <div><dt>Ориентир: добавившему</dt><dd>${moneyTxt(l.usd*l.commOwner/100)}</dd></div><div><dt>Ориентир: закрывшему</dt><dd>${moneyTxt(l.usd*l.commCloser/100)}</dd></div>`:`<div style="grid-column:1/-1"><span class="badge warn">Комиссия не указана</span><p class="muted" style="font-size:13px;margin-top:4px">Автор объекта ещё не задал распределение. Комиссия будет показана после заполнения.</p></div>`}</dl>
+      <p class="note" style="margin-top:12px">Проценты считаются от стоимости ${rent?'аренды':'продажи'} объекта. Итог фиксируется после сделки. Эти условия видят только одобренные агенты.</p>
       <div class="row wrapf" style="margin-top:14px"><button class="btn dark sm" data-a="deal" data-id="${l.id}">Запросить сделку по объекту</button><a class="btn sm" href="https://t.me/${a.tg}" target="_blank" rel="noopener">Написать агенту ${esc(a.name)}</a></div></div>`:`<div class="card panel row between wrapf"><div><b>Вы агент?</b><p class="muted" style="font-size:14px">Одобренные агенты видят комиссию и условия сделки по каждому объекту.</p></div><a class="btn" href="#/agents">Как стать агентом</a></div>`}
     <div class="card panel"><h2>Записаться на осмотр</h2>
       <div class="days" id="days" role="group" aria-label="День осмотра">${days.map((d,i)=>`<button class="day" data-a="day" data-v="${d.iso}" aria-pressed="${i===0}"><small>${d.w}</small>${d.n}</button>`).join('')}</div>
@@ -896,7 +897,7 @@ function pCabinet(tab){
       ${TASKS_CRM.map(t=>`<div class="task-item"><input type="checkbox" class="task-check" ${t.done?'checked':''} disabled><span class="task-text${t.done?' done':''}">${esc(t.text)}</span><span class="task-due">${dfmt(t.due)}</span></div>`).join('')}</div>`;
 
   } else if(tab==='partners'){
-    body=`<div class="card panel"><h2>Партнёры</h2><p class="ink2" style="max-width:60ch;margin-top:8px">Здесь будут ваши партнёры — агенты, с которыми вы делите сделки и объекты. Закрыв сделку по чужому объекту, вы получите ${CONFIG.commissionAgentPct}% комиссии.</p>
+    body=`<div class="card panel"><h2>Партнёры</h2><p class="ink2" style="max-width:60ch;margin-top:8px">Здесь будут ваши партнёры — агенты, с которыми вы делите сделки и объекты. Комиссия по каждому объекту задаётся его автором при публикации.</p>
       <div style="margin-top:18px">${AGENTS.filter(a=>a.id!=='a1').slice(0,3).map(a=>`<div class="row between wrapf" style="padding:12px 0;border-bottom:1px solid var(--line)"><div class="row" style="gap:12px"><span class="ava">${esc(a.name[0])}</span><div><b>${esc(a.name)}</b><div class="muted" style="font-size:13px">${esc(a.agency)} · ${a.deals} сделок</div></div></div><span class="badge ${a.cert?'ok':'warn'}">${a.cert?'Сертифицирован':'Без сертификата'}</span></div>`).join('')}</div></div>`;
 
   } else if(tab==='agencies'){
@@ -950,7 +951,11 @@ function pAdd(){
     <div class="field"><label for="a9">Описание</label><textarea id="a9" class="inp" name="desc" placeholder="Состояние, мебель, условия"></textarea></div>
     <div class="field"><span class="lbl">Фото</span><div class="card" style="padding:18px;border-style:dashed;background:var(--bg)"><p class="ink2" style="font-size:14px">Загрузка фото подключается к хранилищу в рабочей версии. В демо объект получит иллюстрацию.</p></div></div>
     <label class="check"><input type="checkbox" name="contract" required> У меня подписан договор с собственником. Контакты собственника в каталоге не показываются.</label>
-    <div class="agent-only" style="padding:14px"><span class="note">Комиссия по объекту: ${CONFIG.commissionAgentPct}% агентской части получает агент, закрывший сделку, и ${CONFIG.commissionAgentPct}% вы как агент, принёсший объект.</span></div>
+    <fieldset class="agent-only" style="padding:18px;margin-top:8px;border:1.5px solid var(--brand-t);border-radius:var(--r-card)"><legend style="font-weight:700;font-size:15px;padding:0 8px;color:var(--brand-d)">Комиссия между агентами</legend>
+      <p class="muted" style="font-size:13px;margin-bottom:12px">Укажите % от стоимости объекта. Оба поля обязательны для публикации.</p>
+      <div class="cols2"><div class="field"><label for="ac1">Агенту, добавившему объект, %</label><input id="ac1" class="inp" name="commOwner" inputmode="decimal" required placeholder="напр. 3" min="0" max="100" step="0.1"><div class="hint">% от стоимости аренды/продажи</div></div>
+      <div class="field"><label for="ac2">Агенту, который сдаст объект, %</label><input id="ac2" class="inp" name="commCloser" inputmode="decimal" required placeholder="напр. 2" min="0" max="100" step="0.1"><div class="hint">% от стоимости аренды/продажи</div></div></div>
+    </fieldset>
     <button class="btn primary">Отправить на проверку</button></form></div></div>`;
 }
 
@@ -1128,7 +1133,9 @@ document.addEventListener('submit',e=>{
   if(k==='request'){const id=100+S.reqExtra.length+1;S.reqExtra.push({id,deal:S.rdeal||'rent',who:d.who,district:d.district,budget:+d.budget||0,note:d.note||'Без пожеланий',answers:0,date:CONFIG.today.toISOString().slice(0,10)});save();toast('Заявка опубликована (демо)');render()}
   if(k==='apply'){S.apply.status='sent';save();toast('Заявка отправлена. Мы позвоним для интервью (демо)');render()}
   if(k==='add'){const id=200+S.mineExtra.length+1,deal=S.adeal||'rent',r=+d.rooms;
-    S.mineExtra.push({id,deal,type:d.type,title:`${r===0?'Студия':r+'-комнатная'} ${TYPES[d.type].toLowerCase()}, ${d.district}`,district:d.district,street:d.street,rooms:r,area:+d.area,floor:+d.floor||1,floors:+d.floors||1,usd:+d.usd,verified:false,agent:'a1',pub:CONFIG.today.toISOString().slice(0,10),act:CONFIG.today.toISOString().slice(0,10),hue:(id*47)%360,feat:[],views:0,contacts:0,favs:0,mine:true,desc:d.desc||'Описание появится после проверки.'});
+    const commOwner=parseFloat(d.commOwner),commCloser=parseFloat(d.commCloser);
+    if(isNaN(commOwner)||isNaN(commCloser)||commOwner<0||commCloser<0||commOwner>100||commCloser>100){toast('Укажите корректные проценты комиссии (от 0 до 100)');return}
+    S.mineExtra.push({id,deal,type:d.type,title:`${r===0?'Студия':r+'-комнатная'} ${TYPES[d.type].toLowerCase()}, ${d.district}`,district:d.district,street:d.street,rooms:r,area:+d.area,floor:+d.floor||1,floors:+d.floors||1,usd:+d.usd,verified:false,agent:'a1',pub:CONFIG.today.toISOString().slice(0,10),act:CONFIG.today.toISOString().slice(0,10),hue:(id*47)%360,feat:[],views:0,contacts:0,favs:0,mine:true,desc:d.desc||'Описание появится после проверки.',commOwner,commCloser});
     save();toast('Объект отправлен на проверку (демо)');location.hash='#/cabinet/objects'}
 });
 window.addEventListener('hashchange',()=>{$('#overlay').innerHTML='';render()});
