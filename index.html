@@ -267,6 +267,38 @@ textarea.inp{padding:12px 14px;min-height:96px;resize:vertical}
 .task-due{font-size:13px;color:var(--mute);white-space:nowrap}
 /* side-nav groups */
 .side-nav .nav-group{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--mute);padding:16px 12px 4px}
+/* modal */
+.modal-bg{position:fixed;inset:0;background:rgba(18,20,26,.5);z-index:80;display:grid;place-items:center;padding:20px}
+.modal{background:#fff;border-radius:22px;max-width:640px;width:100%;max-height:88vh;overflow:auto;padding:28px;box-shadow:var(--shadow-lg);position:relative}
+.modal h2{margin-bottom:18px}
+.modal .close-modal{position:absolute;top:16px;right:16px;background:none;border:none;font-size:20px;color:var(--mute);cursor:pointer;padding:4px 8px}
+/* detail card */
+.detail-header{display:flex;gap:16px;align-items:flex-start;margin-bottom:20px}
+.detail-header .ava{width:48px;height:48px;font-size:20px}
+.detail-meta{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;margin-bottom:20px}
+.detail-meta .dm{padding:12px;border-radius:12px;background:var(--bg)}
+.detail-meta .dm .lbl{font-size:12px;font-weight:600;color:var(--mute);text-transform:uppercase;letter-spacing:.04em}
+.detail-meta .dm .val{font-size:15px;font-weight:600;margin-top:2px}
+/* activity feed */
+.activity-feed{border-left:2px solid var(--line);margin-left:16px;padding-left:20px}
+.activity-item{position:relative;padding-bottom:16px}
+.activity-item::before{content:'';position:absolute;left:-27px;top:4px;width:12px;height:12px;border-radius:50%;background:var(--line);border:2px solid #fff}
+.activity-item.call::before{background:var(--brand)}
+.activity-item.viewing::before{background:var(--info)}
+.activity-item.msg::before{background:var(--warn)}
+.activity-item.note::before{background:var(--mute)}
+.activity-item .a-date{font-size:12px;color:var(--mute)}
+.activity-item .a-text{font-size:14px;margin-top:2px}
+/* stage progress */
+.stage-bar{display:flex;gap:4px;margin-bottom:20px}
+.stage-dot{flex:1;height:6px;border-radius:3px;background:var(--line)}
+.stage-dot.done{background:var(--brand)}
+.stage-dot.current{background:var(--brand);opacity:.6}
+.stage-label{font-size:13px;color:var(--mute);margin-bottom:8px}
+/* form improvements */
+.form .field{margin-bottom:16px}
+.form .lbl{display:block;font-size:13px;font-weight:600;color:var(--ink2);margin-bottom:6px}
+.form .hint{font-size:12px;color:var(--mute);margin-top:4px}
 .chart{width:100%;height:auto;display:block}
 .gate{padding:48px 24px;text-align:center;display:grid;gap:14px;justify-items:center;max-width:560px;margin:60px auto}
 
@@ -408,23 +440,42 @@ let REQUESTS = [
 
 /* ---------- CRM демо-данные ---------- */
 const DEAL_STAGES=['Новая','Контакт','Осмотр','Задаток','Документы','Сделка','Закрыта','Потеряна'];
+const DEAL_STAGE_INFO={
+  'Новая':{color:'info',desc:'Лид получен, нужно связаться',action:'Связаться с клиентом',fields:['Источник','Потребность']},
+  'Контакт':{color:'info',desc:'Первый контакт состоялся, выясняем потребности',action:'Назначить осмотр',fields:['Бюджет','Район','Тип жилья','Срок']},
+  'Осмотр':{color:'warn',desc:'Назначен или проведён осмотр объекта',action:'Зафиксировать результат',fields:['Дата осмотра','Объект','Впечатление клиента']},
+  'Задаток':{color:'ok',desc:'Клиент готов, задаток внесён или обсуждается',action:'Подготовить документы',fields:['Сумма задатка','Дата внесения']},
+  'Документы':{color:'warn',desc:'Готовятся документы для сделки',action:'Проверить документы',fields:['Договор','Доверенность','Справка об обременении']},
+  'Сделка':{color:'ok',desc:'Подписание договора и передача ключей',action:'Закрыть сделку',fields:['Дата подписания','Итоговая сумма','Комиссия']},
+  'Закрыта':{color:'ok',desc:'Сделка успешно завершена'},
+  'Потеряна':{color:'warn',desc:'Сделка не состоялась',fields:['Причина потери']}
+};
+const LOSS_REASONS=['Клиент передумал','Не одобрили ипотеку','Ушёл к другому агенту','Нашёл сам','Недостаточно средств','Другое'];
+const CLIENT_SOURCES=['Сайт Liberterra','Telegram','Рекомендация','Звонок','Заявка на сайте','Повторный клиент','Другое'];
 const DEALS=[
-  {id:'d1',title:'Аренда 2-комн. Джал',client:'Марат К.',stage:'Осмотр',amount:450,listing:1,agent:'a1',updated:'2026-10-23'},
-  {id:'d2',title:'Покупка 3-комн. Юг-2',client:'Анна Л.',stage:'Контакт',amount:98000,listing:2,agent:'a1',updated:'2026-10-24'},
-  {id:'d3',title:'Аренда студии Центр',client:'Дмитрий Р.',stage:'Задаток',amount:320,listing:3,agent:'a1',updated:'2026-10-22'},
-  {id:'d4',title:'Покупка дома Аламедин',client:'Нурлан С.',stage:'Новая',amount:185000,listing:4,agent:'a1',updated:'2026-10-24'},
-  {id:'d5',title:'Аренда офиса 100м²',client:'ОсОО «Техно»',stage:'Документы',amount:1500,listing:7,agent:'a1',updated:'2026-10-21'},
-  {id:'d6',title:'Покупка 1-комн. Тунгуч',client:'Айбек Ж.',stage:'Закрыта',amount:54000,listing:8,agent:'a1',updated:'2026-10-18'},
-  {id:'d7',title:'Аренда дома Кок-Жар',client:'Виктория М.',stage:'Потеряна',amount:900,listing:9,agent:'a1',updated:'2026-10-15'}
+  {id:'d1',title:'Аренда 2-комн. Джал',clientId:'c1',stage:'Осмотр',amount:450,listing:1,agent:'a1',updated:'2026-10-23',created:'2026-10-15',deal:'rent',source:'Сайт Liberterra',notes:'Семья с ребёнком, нужна мебель'},
+  {id:'d2',title:'Покупка 3-комн. Юг-2',clientId:'c2',stage:'Контакт',amount:98000,listing:2,agent:'a1',updated:'2026-10-24',created:'2026-10-20',deal:'sale',source:'Telegram',notes:'Рассматривает ипотеку через RSK'},
+  {id:'d3',title:'Аренда студии Центр',clientId:'c3',stage:'Задаток',amount:320,listing:3,agent:'a1',updated:'2026-10-22',created:'2026-10-10',deal:'rent',source:'Заявка на сайте',notes:'Один человек, без животных'},
+  {id:'d4',title:'Покупка дома Аламедин',clientId:'c4',stage:'Новая',amount:185000,listing:4,agent:'a1',updated:'2026-10-24',created:'2026-10-24',deal:'sale',source:'Рекомендация',notes:''},
+  {id:'d5',title:'Аренда офиса 100м²',clientId:'c5',stage:'Документы',amount:1500,listing:7,agent:'a1',updated:'2026-10-21',created:'2026-10-05',deal:'rent',source:'Звонок',notes:'Нужен акт приёма-передачи'},
+  {id:'d6',title:'Покупка 1-комн. Тунгуч',clientId:'c6',stage:'Закрыта',amount:54000,listing:8,agent:'a1',updated:'2026-10-18',created:'2026-09-20',deal:'sale',source:'Сайт Liberterra',notes:'Первая покупка, помощь с документами',commission:2700},
+  {id:'d7',title:'Аренда дома Кок-Жар',clientId:'c7',stage:'Потеряна',amount:900,listing:9,agent:'a1',updated:'2026-10-15',created:'2026-10-01',deal:'rent',source:'Telegram',notes:'',lossReason:'Клиент передумал'}
 ];
 const CLIENTS=[
-  {id:'c1',name:'Марат К.',phone:'+996 555 100 201',deals:2,lastContact:'2026-10-23',status:'Активный'},
-  {id:'c2',name:'Анна Л.',phone:'+996 555 100 202',deals:1,lastContact:'2026-10-24',status:'Активный'},
-  {id:'c3',name:'Дмитрий Р.',phone:'+996 555 100 203',deals:1,lastContact:'2026-10-22',status:'Активный'},
-  {id:'c4',name:'Нурлан С.',phone:'+996 555 100 204',deals:1,lastContact:'2026-10-24',status:'Новый'},
-  {id:'c5',name:'ОсОО «Техно»',phone:'+996 312 900 100',deals:1,lastContact:'2026-10-21',status:'Активный'},
-  {id:'c6',name:'Айбек Ж.',phone:'+996 555 100 206',deals:1,lastContact:'2026-10-18',status:'Закрыт'},
-  {id:'c7',name:'Виктория М.',phone:'+996 555 100 207',deals:0,lastContact:'2026-10-15',status:'Потерян'}
+  {id:'c1',name:'Марат К.',phone:'+996 555 100 201',tg:'marat_k',source:'Сайт Liberterra',need:'Аренда 2-комн., Джал, до $500',lastContact:'2026-10-23',status:'Активный',
+   activity:[{type:'call',text:'Звонок 5 мин — обсудили осмотр',date:'2026-10-23'},{type:'viewing',text:'Осмотр квартиры на Малдыбаева',date:'2026-10-22'},{type:'note',text:'Клиент заинтересован, хочет мебель',date:'2026-10-20'},{type:'call',text:'Первый контакт по заявке',date:'2026-10-15'}]},
+  {id:'c2',name:'Анна Л.',phone:'+996 555 100 202',tg:'anna_l',source:'Telegram',need:'Покупка 3-комн., до $100 000, ипотека',lastContact:'2026-10-24',status:'Активный',
+   activity:[{type:'msg',text:'Отправлены варианты в Юг-2',date:'2026-10-24'},{type:'call',text:'Обсудили ипотеку RSK',date:'2026-10-22'}]},
+  {id:'c3',name:'Дмитрий Р.',phone:'+996 555 100 203',tg:'',source:'Заявка на сайте',need:'Аренда студии, Центр, до $350',lastContact:'2026-10-22',status:'Активный',
+   activity:[{type:'note',text:'Задаток обсуждается, $320/мес',date:'2026-10-22'},{type:'viewing',text:'Осмотр студии на Токтогула',date:'2026-10-18'}]},
+  {id:'c4',name:'Нурлан С.',phone:'+996 555 100 204',tg:'nurlan_s',source:'Рекомендация',need:'Покупка дома, Аламедин, до $200 000',lastContact:'2026-10-24',status:'Новый',
+   activity:[{type:'note',text:'Новый лид от партнёра Бекзата',date:'2026-10-24'}]},
+  {id:'c5',name:'ОсОО «Техно»',phone:'+996 312 900 100',tg:'',source:'Звонок',need:'Аренда офиса от 80м², Центр',lastContact:'2026-10-21',status:'Активный',
+   activity:[{type:'note',text:'Документы на подписании у директора',date:'2026-10-21'},{type:'viewing',text:'Осмотр офиса на Чуй',date:'2026-10-12'}]},
+  {id:'c6',name:'Айбек Ж.',phone:'+996 555 100 206',tg:'aibek_zh',source:'Сайт Liberterra',need:'Покупка 1-комн., до $60 000',lastContact:'2026-10-18',status:'Закрыт',
+   activity:[{type:'note',text:'Сделка закрыта, ключи переданы',date:'2026-10-18'},{type:'note',text:'Документы подписаны',date:'2026-10-16'}]},
+  {id:'c7',name:'Виктория М.',phone:'+996 555 100 207',tg:'',source:'Telegram',need:'Аренда дома, Кок-Жар',lastContact:'2026-10-15',status:'Потерян',
+   activity:[{type:'note',text:'Клиент передумал, переехал в другой город',date:'2026-10-15'}]}
 ];
 const TASKS_CRM=[
   {id:'t1',text:'Позвонить Марату К. — подтвердить осмотр',due:'2026-10-24',done:false,deal:'d1'},
@@ -433,6 +484,9 @@ const TASKS_CRM=[
   {id:'t4',text:'Связаться с Анной Л. по ипотеке',due:'2026-10-26',done:false,deal:'d2'},
   {id:'t5',text:'Обновить актуальность квартиры Джал',due:'2026-10-23',done:true,deal:'d1'}
 ];
+function clientOf(id){return CLIENTS.find(c=>c.id===id)||CLIENTS[0]}
+function dealsOf(clientId){return DEALS.filter(d=>d.clientId===clientId)}
+function dealClient(d){return clientOf(d.clientId).name}
 
 /* =========================================================
    СОСТОЯНИЕ
@@ -793,13 +847,13 @@ function pCabinet(tab){
       <div class="row between wrapf"><span><b>Новые заявки клиентов</b> <span class="muted">· ${REQUESTS.filter(r=>r.answers<3).length} ждут ответа</span></span><a class="btn sm" href="#/cabinet/requests">Открыть</a></div></div></div>`;
 
   } else if(tab==='deals'){
-    body=`<div class="row between wrapf" style="margin-bottom:14px"><h2 style="margin:0">Сделки</h2><button class="btn primary sm">${I.plus} Новая сделка (демо)</button></div>
-      <div class="kanban">${DEAL_STAGES.filter(st=>!['Закрыта','Потеряна'].includes(st)).map(st=>{const cards=DEALS.filter(d=>d.stage===st);return `<div class="kanban-col"><h4>${esc(st)} <span class="cnt">${cards.length}</span></h4>${cards.map(d=>`<div class="k-card"><div class="k-title">${esc(d.title)}</div><div class="k-client">${esc(d.client)}</div><div class="k-amount">$${nf(d.amount)}</div><div class="k-date">${dfmt(d.updated)}</div></div>`).join('')||'<p class="muted" style="font-size:13px;text-align:center;padding:12px">Пусто</p>'}</div>`}).join('')}</div>
-      <div class="card panel" style="margin-top:18px"><h3>Завершённые сделки</h3><div class="scroll-x"><table class="tbl"><thead><tr><th>Сделка</th><th>Клиент</th><th>Сумма</th><th>Статус</th><th>Дата</th></tr></thead><tbody>${DEALS.filter(d=>['Закрыта','Потеряна'].includes(d.stage)).map(d=>`<tr><td><b>${esc(d.title)}</b></td><td>${esc(d.client)}</td><td>$${nf(d.amount)}</td><td><span class="badge ${d.stage==='Закрыта'?'ok':'warn'}">${esc(d.stage)}</span></td><td>${dfmt(d.updated)}</td></tr>`).join('')||'<tr><td colspan="5" class="muted">Пока нет завершённых сделок.</td></tr>'}</tbody></table></div></div>`;
+    body=`<div class="row between wrapf" style="margin-bottom:14px"><h2 style="margin:0">Сделки</h2><button class="btn primary sm" data-a="newDeal">${I.plus} Новая сделка</button></div>
+      <div class="kanban">${DEAL_STAGES.filter(st=>!['Закрыта','Потеряна'].includes(st)).map(st=>{const si=DEAL_STAGE_INFO[st],cards=DEALS.filter(d=>d.stage===st);return `<div class="kanban-col"><h4>${esc(st)} <span class="cnt">${cards.length}</span></h4>${cards.map(d=>`<div class="k-card" data-a="openDeal" data-id="${d.id}" style="cursor:pointer"><div class="k-title">${esc(d.title)}</div><div class="k-client">${esc(dealClient(d))}</div><div class="k-amount">$${nf(d.amount)}</div><div class="k-date">${dfmt(d.updated)}</div></div>`).join('')||'<p class="muted" style="font-size:13px;text-align:center;padding:12px">Пусто</p>'}</div>`}).join('')}</div>
+      <div class="card panel" style="margin-top:18px"><h3>Завершённые сделки</h3><div class="scroll-x"><table class="tbl"><thead><tr><th>Сделка</th><th>Клиент</th><th>Сумма</th><th>Статус</th><th>Причина</th><th>Дата</th></tr></thead><tbody>${DEALS.filter(d=>['Закрыта','Потеряна'].includes(d.stage)).map(d=>`<tr style="cursor:pointer" data-a="openDeal" data-id="${d.id}"><td><b>${esc(d.title)}</b></td><td>${esc(dealClient(d))}</td><td>$${nf(d.amount)}</td><td><span class="badge ${d.stage==='Закрыта'?'ok':'warn'}">${esc(d.stage)}</span></td><td>${d.lossReason?esc(d.lossReason):d.commission?'Комиссия $'+nf(d.commission):'-'}</td><td>${dfmt(d.updated)}</td></tr>`).join('')||'<tr><td colspan="6" class="muted">Пока нет завершённых сделок.</td></tr>'}</tbody></table></div></div>`;
 
   } else if(tab==='clients'){
-    body=`<div class="card panel"><div class="row between wrapf" style="margin-bottom:14px"><h2 style="margin:0">Клиенты</h2><button class="btn primary sm">${I.plus} Добавить клиента (демо)</button></div>
-      <div class="scroll-x"><table class="tbl"><thead><tr><th>Имя</th><th>Телефон</th><th>Сделок</th><th>Последний контакт</th><th>Статус</th></tr></thead><tbody>${CLIENTS.map(c=>`<tr><td><b>${esc(c.name)}</b></td><td>${esc(c.phone)}</td><td>${c.deals}</td><td>${dfmt(c.lastContact)}</td><td><span class="badge ${c.status==='Активный'?'ok':c.status==='Новый'?'info':'warn'}">${esc(c.status)}</span></td></tr>`).join('')}</tbody></table></div></div>`;
+    body=`<div class="card panel"><div class="row between wrapf" style="margin-bottom:14px"><h2 style="margin:0">Клиенты</h2><button class="btn primary sm" data-a="newClient">${I.plus} Добавить клиента</button></div>
+      <div class="scroll-x"><table class="tbl"><thead><tr><th>Имя</th><th>Телефон</th><th>Потребность</th><th>Сделок</th><th>Последний контакт</th><th>Статус</th></tr></thead><tbody>${CLIENTS.map(c=>`<tr style="cursor:pointer" data-a="openClient" data-id="${c.id}"><td><div class="row" style="gap:10px"><span class="ava" style="width:32px;height:32px;font-size:13px">${esc(c.name[0])}</span><b>${esc(c.name)}</b></div></td><td>${esc(c.phone)}</td><td style="max-width:200px;font-size:13px;color:var(--ink2)">${esc(c.need||'-')}</td><td>${dealsOf(c.id).length}</td><td>${dfmt(c.lastContact)}</td><td><span class="badge ${c.status==='Активный'?'ok':c.status==='Новый'?'info':'warn'}">${esc(c.status)}</span></td></tr>`).join('')}</tbody></table></div></div>`;
 
   } else if(tab==='objects'){
     body=`<div class="card panel"><div class="row between wrapf" style="margin-bottom:14px"><h2 style="margin:0">Мои объекты</h2><a class="btn primary sm" href="#/add">${I.plus} Добавить объект</a></div>
@@ -939,7 +993,97 @@ const A={
   answer(t){const r=REQUESTS.concat(S.reqExtra).find(x=>x.id==t.dataset.id);if(r){r.answers++;save();toast('Ответ отправлен клиенту (демо)');render()}},
   deal(t){toast('Запрос сделки отправлен агенту, который добавил объект (демо)')},
   confirm(t){const l=allListings().find(x=>x.id==t.dataset.id);if(l){l.act=CONFIG.today.toISOString().slice(0,10);save();toast('Актуальность подтверждена на сегодня');render()}},
-  applyreset(){S.apply.status='draft';save();render()}
+  applyreset(){S.apply.status='draft';save();render()},
+  closeModal(){$('#overlay').innerHTML=''},
+  openDeal(t){
+    const d=DEALS.find(x=>x.id===t.dataset.id);if(!d)return;
+    const c=clientOf(d.clientId),si=DEAL_STAGE_INFO[d.stage]||{},stageIdx=DEAL_STAGES.indexOf(d.stage);
+    const l=allListings().find(x=>x.id===d.listing);
+    const cActivity=c.activity||[];
+    $('#overlay').innerHTML=`<div class="modal-bg" data-a="closeModal"><div class="modal" onclick="event.stopPropagation()">
+      <button class="close-modal" data-a="closeModal">✕</button>
+      <div class="detail-header"><span class="ava lg">${esc(c.name[0])}</span><div><h2 style="margin:0">${esc(d.title)}</h2><p class="muted">${esc(dealClient(d))} · ${d.deal==='rent'?'Аренда':'Продажа'}</p></div></div>
+      <div class="stage-label">Этап: <b>${esc(d.stage)}</b> — ${esc(si.desc||'')}</div>
+      <div class="stage-bar">${DEAL_STAGES.slice(0,6).map((s,i)=>`<div class="stage-dot${i<stageIdx?' done':i===stageIdx?' current':''}"></div>`).join('')}</div>
+      <div class="detail-meta">
+        <div class="dm"><div class="lbl">Сумма</div><div class="val">$${nf(d.amount)}</div></div>
+        <div class="dm"><div class="lbl">Источник</div><div class="val">${esc(d.source||'-')}</div></div>
+        <div class="dm"><div class="lbl">Создана</div><div class="val">${dfmt(d.created)}</div></div>
+        <div class="dm"><div class="lbl">Обновлена</div><div class="val">${dfmt(d.updated)}</div></div>
+        ${l?`<div class="dm"><div class="lbl">Объект</div><div class="val"><a href="#/object/${l.id}">${esc(l.title)}</a></div></div>`:''}
+        ${d.commission?`<div class="dm"><div class="lbl">Комиссия</div><div class="val">$${nf(d.commission)}</div></div>`:''}
+        ${d.lossReason?`<div class="dm"><div class="lbl">Причина потери</div><div class="val">${esc(d.lossReason)}</div></div>`:''}
+      </div>
+      ${d.notes?`<div class="card" style="padding:14px;background:var(--bg);margin-bottom:18px"><div class="lbl" style="font-size:12px;font-weight:600;color:var(--mute)">Заметки</div><p style="font-size:14px;margin-top:4px">${esc(d.notes)}</p></div>`:''}
+      ${si.fields?`<div class="card" style="padding:14px;border:1px solid var(--line);margin-bottom:18px"><div class="lbl" style="font-size:12px;font-weight:600;color:var(--mute)">Что заполнить на этом этапе</div><ul style="margin:8px 0 0;padding-left:20px;font-size:14px">${si.fields.map(f=>`<li>${esc(f)}</li>`).join('')}</ul></div>`:''}
+      ${si.action&&!['Закрыта','Потеряна'].includes(d.stage)?`<div class="row wrapf" style="gap:10px;margin-bottom:18px"><button class="btn primary sm" data-a="advanceDeal" data-id="${d.id}">${esc(si.action)} →</button><button class="btn sm" style="color:var(--danger)" data-a="loseDeal" data-id="${d.id}">Потеряна</button></div>`:''}
+      <h3 style="margin-bottom:12px">Лента активности</h3>
+      <div class="activity-feed">${cActivity.map(a=>`<div class="activity-item ${a.type}"><div class="a-date">${dfmt(a.date)}</div><div class="a-text">${esc(a.text)}</div></div>`).join('')||'<p class="muted" style="font-size:14px">Нет записей</p>'}</div>
+    </div></div>`},
+  advanceDeal(t){
+    const d=DEALS.find(x=>x.id===t.dataset.id);if(!d)return;
+    const idx=DEAL_STAGES.indexOf(d.stage);
+    if(idx>=0&&idx<DEAL_STAGES.length-3){d.stage=DEAL_STAGES[idx+1];d.updated=CONFIG.today.toISOString().slice(0,10);toast(`Сделка переведена на этап «${d.stage}» (демо)`);$('#overlay').innerHTML='';render()}
+  },
+  loseDeal(t){
+    const d=DEALS.find(x=>x.id===t.dataset.id);if(!d)return;
+    d.stage='Потеряна';d.lossReason='Клиент передумал';d.updated=CONFIG.today.toISOString().slice(0,10);
+    toast('Сделка отмечена как потерянная (демо)');$('#overlay').innerHTML='';render()
+  },
+  newDeal(){
+    $('#overlay').innerHTML=`<div class="modal-bg" data-a="closeModal"><div class="modal" onclick="event.stopPropagation()">
+      <button class="close-modal" data-a="closeModal">✕</button>
+      <h2>Новая сделка</h2>
+      <form class="form" data-form="newdeal">
+        <div class="field"><label class="lbl" for="nd1">Направление</label><div class="chips" role="group"><button type="button" class="chip" data-a="nddeal" data-v="rent" aria-pressed="true">Аренда</button><button type="button" class="chip" data-a="nddeal" data-v="sale" aria-pressed="false">Продажа</button></div></div>
+        <div class="field"><label class="lbl" for="nd2">Клиент</label><select id="nd2" class="sel" name="client" required>${CLIENTS.filter(c=>c.status!=='Закрыт'&&c.status!=='Потерян').map(c=>`<option value="${c.id}">${esc(c.name)} — ${esc(c.phone)}</option>`).join('')}<option value="_new">+ Новый клиент</option></select><div class="hint">Выберите существующего клиента или создайте нового</div></div>
+        <div class="field"><label class="lbl" for="nd3">Объект</label><select id="nd3" class="sel" name="listing">${allListings().map(l=>`<option value="${l.id}">${esc(l.title)} — $${nf(l.usd)}</option>`).join('')}<option value="">Без объекта (подбор)</option></select></div>
+        <div class="field"><label class="lbl" for="nd4">Сумма, $</label><input id="nd4" class="inp" name="amount" inputmode="numeric" required placeholder="0"></div>
+        <div class="field"><label class="lbl" for="nd5">Источник</label><select id="nd5" class="sel" name="source">${CLIENT_SOURCES.map(s=>`<option>${s}</option>`).join('')}</select></div>
+        <div class="field"><label class="lbl" for="nd6">Заметки</label><textarea id="nd6" class="inp" name="notes" placeholder="Потребности клиента, детали запроса"></textarea></div>
+        <button class="btn primary" type="submit">Создать сделку (демо)</button>
+      </form>
+    </div></div>`},
+  nddeal(t){document.querySelectorAll('[data-a=nddeal]').forEach(b=>b.setAttribute('aria-pressed',b===t))},
+  openClient(t){
+    const c=CLIENTS.find(x=>x.id===t.dataset.id);if(!c)return;
+    const cDeals=dealsOf(c.id);
+    $('#overlay').innerHTML=`<div class="modal-bg" data-a="closeModal"><div class="modal" onclick="event.stopPropagation()">
+      <button class="close-modal" data-a="closeModal">✕</button>
+      <div class="detail-header"><span class="ava lg">${esc(c.name[0])}</span><div><h2 style="margin:0">${esc(c.name)}</h2><p class="muted">${esc(c.phone)}${c.tg?' · @'+esc(c.tg):''}</p></div></div>
+      <div class="detail-meta">
+        <div class="dm"><div class="lbl">Статус</div><div class="val"><span class="badge ${c.status==='Активный'?'ok':c.status==='Новый'?'info':'warn'}">${esc(c.status)}</span></div></div>
+        <div class="dm"><div class="lbl">Источник</div><div class="val">${esc(c.source||'-')}</div></div>
+        <div class="dm"><div class="lbl">Последний контакт</div><div class="val">${dfmt(c.lastContact)}</div></div>
+        <div class="dm"><div class="lbl">Сделок</div><div class="val">${cDeals.length}</div></div>
+      </div>
+      ${c.need?`<div class="card" style="padding:14px;background:var(--bg);margin-bottom:18px"><div class="lbl" style="font-size:12px;font-weight:600;color:var(--mute)">Потребность</div><p style="font-size:14px;margin-top:4px">${esc(c.need)}</p></div>`:''}
+      ${cDeals.length?`<h3 style="margin-bottom:10px">Сделки</h3><div style="margin-bottom:18px">${cDeals.map(d=>`<div class="row between wrapf" style="padding:10px 0;border-bottom:1px solid var(--line);cursor:pointer" data-a="openDeal" data-id="${d.id}"><div><b>${esc(d.title)}</b><div class="muted" style="font-size:13px">$${nf(d.amount)}</div></div><span class="badge ${DEAL_STAGE_INFO[d.stage]?.color||'info'}">${esc(d.stage)}</span></div>`).join('')}</div>`:''}
+      <div class="row wrapf" style="gap:10px;margin-bottom:18px"><button class="btn primary sm" data-a="newDealForClient" data-id="${c.id}">${I.plus} Новая сделка</button><a class="btn sm" href="tel:${c.phone}">${I.phone} Позвонить</a>${c.tg?`<a class="btn sm" href="https://t.me/${esc(c.tg)}" target="_blank">${I.chat} Telegram</a>`:''}</div>
+      <h3 style="margin-bottom:12px">Лента активности</h3>
+      <div class="activity-feed">${(c.activity||[]).map(a=>`<div class="activity-item ${a.type}"><div class="a-date">${dfmt(a.date)}</div><div class="a-text">${esc(a.text)}</div></div>`).join('')||'<p class="muted" style="font-size:14px">Нет записей</p>'}</div>
+    </div></div>`},
+  newDealForClient(t){
+    const c=CLIENTS.find(x=>x.id===t.dataset.id);
+    A.closeModal();A.newDeal();
+    setTimeout(()=>{const sel=$('#nd2');if(sel&&c)sel.value=c.id},50)
+  },
+  newClient(){
+    $('#overlay').innerHTML=`<div class="modal-bg" data-a="closeModal"><div class="modal" onclick="event.stopPropagation()">
+      <button class="close-modal" data-a="closeModal">✕</button>
+      <h2>Добавить клиента</h2>
+      <form class="form" data-form="newclient">
+        <div class="field"><label class="lbl" for="nc1">Имя</label><input id="nc1" class="inp" name="name" required placeholder="Фамилия Имя"></div>
+        <div class="cols2"><div class="field"><label class="lbl" for="nc2">Телефон</label><input id="nc2" class="inp" name="phone" required placeholder="+996 ..." inputmode="tel"></div><div class="field"><label class="lbl" for="nc3">Telegram</label><input id="nc3" class="inp" name="tg" placeholder="username без @"></div></div>
+        <div class="field"><label class="lbl" for="nc4">Источник</label><select id="nc4" class="sel" name="source">${CLIENT_SOURCES.map(s=>`<option>${s}</option>`).join('')}</select></div>
+        <div class="field"><label class="lbl">Потребность</label><div class="chips" role="group"><button type="button" class="chip" data-a="ncneed" data-v="rent" aria-pressed="true">Аренда</button><button type="button" class="chip" data-a="ncneed" data-v="sale" aria-pressed="false">Покупка</button></div></div>
+        <div class="cols2"><div class="field"><label class="lbl" for="nc5">Район</label><select id="nc5" class="sel" name="district"><option value="">Любой</option>${Object.keys(DISTRICTS).map(d=>`<option>${d}</option>`).join('')}</select></div><div class="field"><label class="lbl" for="nc6">Бюджет до, $</label><input id="nc6" class="inp" name="budget" inputmode="numeric" placeholder="0"></div></div>
+        <div class="field"><label class="lbl" for="nc7">Комнат</label><select id="nc7" class="sel" name="rooms"><option value="">Любое</option><option>Студия</option><option>1</option><option>2</option><option>3</option><option>4+</option></select></div>
+        <div class="field"><label class="lbl" for="nc8">Комментарий</label><textarea id="nc8" class="inp" name="comment" placeholder="Дополнительные пожелания"></textarea></div>
+        <button class="btn primary" type="submit">Добавить клиента (демо)</button>
+      </form>
+    </div></div>`},
+  ncneed(t){document.querySelectorAll('[data-a=ncneed]').forEach(b=>b.setAttribute('aria-pressed',b===t))}
 };
 document.addEventListener('click',e=>{const t=e.target.closest('[data-a]');if(!t)return;const fn=A[t.dataset.a];if(fn)fn(t,e)});
 document.addEventListener('input',e=>{
