@@ -11,9 +11,13 @@
 <style>
 :root{
   --ink:#12141A; --ink2:#4B5260; --mute:#6F7686; --line:#E3E6EB; --bg:#F3F4F6; --card:#fff;
-  --red:#F5333A; --red-d:#D9242B; --red-dd:#BF1D24; --red-t:#FFE9EA;
+  --brand:#1B6B4A; --brand-d:#155A3D; --brand-dd:#0E4A2E; --brand-t:#E8F3ED;
   --ok:#0B8A5F; --ok-t:#DDF5EC; --warn:#8A5A00; --warn-t:#FFF1D6; --info:#2457C5; --info-t:#E4ECFB;
+  --danger:#D93025; --danger-t:#FFE9EA;
+  --surface:#fff; --surface-raised:#fff; --surface-sunken:#F3F4F6;
+  --shadow-sm:0 1px 3px rgba(0,0,0,.08); --shadow-md:0 4px 12px rgba(0,0,0,.1); --shadow-lg:0 8px 30px rgba(0,0,0,.12);
   --f-display:'Unbounded','Onest',system-ui,sans-serif; --f-body:'Onest',system-ui,-apple-system,'Segoe UI',Arial,sans-serif;
+  --sp-xs:4px; --sp-sm:8px; --sp-md:16px; --sp-lg:24px; --sp-xl:32px; --sp-2xl:48px; --sp-3xl:64px;
   --r-card:18px; --r-ctl:12px; --r-pill:999px; --w:1200px;
   --safe-b:env(safe-area-inset-bottom,0px);
 }
@@ -35,8 +39,8 @@ button{cursor:pointer}
 /* buttons */
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 20px;border-radius:var(--r-ctl);border:1.5px solid var(--line);background:#fff;font-weight:600;font-size:15px;text-decoration:none;white-space:nowrap;transition:background .15s,border-color .15s}
 .btn:hover{border-color:var(--ink)}
-.btn.primary{background:var(--red-d);border-color:var(--red-d);color:#fff}
-.btn.primary:hover{background:var(--red-dd);border-color:var(--red-dd)}
+.btn.primary{background:var(--brand-d);border-color:var(--brand-d);color:#fff}
+.btn.primary:hover{background:var(--brand-dd);border-color:var(--brand-dd)}
 .btn.dark{background:var(--ink);border-color:var(--ink);color:#fff}
 .btn.dark:hover{background:#000}
 .btn.ghost{background:transparent}
@@ -44,19 +48,19 @@ button{cursor:pointer}
 .btn.block{width:100%}
 .icon-btn{width:44px;height:44px;display:inline-grid;place-items:center;border-radius:var(--r-ctl);border:1.5px solid var(--line);background:#fff}
 .icon-btn:hover{border-color:var(--ink)}
-.icon-btn.on{color:var(--red-d);border-color:var(--red-d);background:var(--red-t)}
+.icon-btn.on{color:var(--brand-d);border-color:var(--brand-d);background:var(--brand-t)}
 svg.i{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
 
 /* header */
 .top{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.94);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
 .top .wrap{display:flex;align-items:center;gap:18px;height:68px}
 .logo{display:flex;align-items:center;gap:10px;text-decoration:none;font-family:var(--f-display);font-weight:700;font-size:19px;letter-spacing:-.03em}
-.logo-mark{width:34px;height:34px;border-radius:11px 11px 11px 4px;background:var(--red);display:grid;place-items:center}
+.logo-mark{width:34px;height:34px;border-radius:11px 11px 11px 4px;background:var(--brand);display:grid;place-items:center}
 .logo-mark svg{width:20px;height:20px;stroke:#fff;fill:none;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
 .nav{display:flex;gap:4px;margin-left:8px}
 .nav a{padding:9px 14px;border-radius:10px;text-decoration:none;font-weight:600;font-size:15px;color:var(--ink2)}
 .nav a:hover{background:var(--bg);color:var(--ink)}
-.nav a[aria-current=page]{background:var(--red-t);color:var(--red-dd)}
+.nav a[aria-current=page]{background:var(--brand-t);color:var(--brand-dd)}
 .seg{display:inline-flex;background:var(--bg);border-radius:12px;padding:3px;gap:2px}
 .seg button{border:0;background:transparent;border-radius:9px;padding:7px 12px;font-weight:600;font-size:14px;color:var(--ink2);min-height:34px}
 .seg button[aria-pressed=true]{background:#fff;color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.12)}
@@ -88,7 +92,7 @@ textarea.inp{padding:12px 14px;min-height:96px;resize:vertical}
 
 /* verification seal composition */
 .seal-stage{position:relative;max-width:440px;margin-left:auto;width:100%}
-.v-card{background:#fff;border:1.5px solid var(--ink);border-radius:22px;overflow:hidden;box-shadow:8px 8px 0 var(--red)}
+.v-card{background:#fff;border:1.5px solid var(--ink);border-radius:22px;overflow:hidden;box-shadow:8px 8px 0 var(--brand)}
 .v-card .art{aspect-ratio:16/10}
 .v-card .body{padding:16px 18px 18px}
 .checks{list-style:none;margin:12px 0 0;padding:0;display:grid;gap:8px}
@@ -134,11 +138,11 @@ textarea.inp{padding:12px 14px;min-height:96px;resize:vertical}
 .badge.new{background:var(--ink);color:#fff}
 .badge.warn{background:var(--warn-t);color:var(--warn)}
 .badge.comm{background:var(--ink);color:#fff}
-.badge.red{background:var(--red-t);color:var(--red-dd)}
+.badge.red{background:var(--brand-t);color:var(--brand-dd)}
 .badge.info{background:var(--info-t);color:var(--info)}
 .badge svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
 .lcard .foot{display:flex;align-items:center;gap:10px;margin-top:auto;padding-top:10px;border-top:1px solid var(--line)}
-.ava{width:34px;height:34px;border-radius:50%;background:var(--red-t);color:var(--red-dd);display:grid;place-items:center;font-weight:700;font-size:14px;flex:none}
+.ava{width:34px;height:34px;border-radius:50%;background:var(--brand-t);color:var(--brand-dd);display:grid;place-items:center;font-weight:700;font-size:14px;flex:none}
 .ava.lg{width:64px;height:64px;font-size:24px}
 .lcard.list{flex-direction:row}
 .lcard.list .art-link{width:300px;flex:none}
@@ -152,7 +156,7 @@ textarea.inp{padding:12px 14px;min-height:96px;resize:vertical}
 .chips{display:flex;gap:6px;flex-wrap:wrap}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .switch{display:flex;align-items:center;gap:10px;font-weight:500;cursor:pointer}
-.switch input{width:20px;height:20px;accent-color:var(--red-d)}
+.switch input{width:20px;height:20px;accent-color:var(--brand-d)}
 .res-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px;flex-wrap:wrap}
 .res-head h1{font-size:24px}
 .stack{display:grid;gap:16px}
@@ -161,7 +165,7 @@ textarea.inp{padding:12px 14px;min-height:96px;resize:vertical}
 .mapbox{position:relative;border-radius:var(--r-card);overflow:hidden;border:1px solid var(--line);background:#E8EEF2}
 .mapbox svg.map{display:block;width:100%;height:auto}
 .pin{position:absolute;transform:translate(-50%,-100%);border:0;background:var(--ink);color:#fff;font-weight:700;font-size:13px;padding:6px 10px;border-radius:10px 10px 10px 2px;white-space:nowrap}
-.pin:hover,.pin[aria-pressed=true]{background:var(--red-d);z-index:3}
+.pin:hover,.pin[aria-pressed=true]{background:var(--brand-d);z-index:3}
 .mapcard{position:absolute;left:16px;bottom:16px;right:16px;max-width:380px;background:#fff;border-radius:16px;padding:14px;border:1.5px solid var(--ink)}
 .dl{position:absolute;transform:translateX(-50%);font-size:12px;font-weight:600;color:#7C8796;pointer-events:none;white-space:nowrap}
 .mapnote{position:absolute;right:12px;top:12px;background:rgba(255,255,255,.92);border-radius:8px;padding:4px 10px;font-size:12px;color:var(--ink2)}
@@ -198,7 +202,7 @@ textarea.inp{padding:12px 14px;min-height:96px;resize:vertical}
 .cols2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .form{display:grid;gap:14px}
 .check{display:flex;gap:10px;align-items:flex-start;font-size:14px;color:var(--ink2)}
-.check input{width:20px;height:20px;margin-top:1px;accent-color:var(--red-d);flex:none}
+.check input{width:20px;height:20px;margin-top:1px;accent-color:var(--brand-d);flex:none}
 
 /* requests */
 .req{padding:20px;display:grid;gap:12px}
@@ -211,12 +215,12 @@ textarea.inp{padding:12px 14px;min-height:96px;resize:vertical}
 .split{display:grid;gap:10px}
 .split .bar{display:flex;height:46px;border-radius:12px;overflow:hidden;font-weight:700;font-size:14px}
 .split .bar span{display:grid;place-items:center;flex:1}
-.split .a{background:var(--red)} .split .b{background:#fff;color:var(--ink)}
+.split .a{background:var(--brand)} .split .b{background:#fff;color:var(--ink)}
 .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;counter-reset:s}
 .step{padding:22px;border-radius:var(--r-card);background:#fff;border:1px solid var(--line);position:relative}
 .step .n{width:34px;height:34px;border-radius:50%;background:var(--ink);color:#fff;display:grid;place-items:center;font-weight:700;margin-bottom:14px}
 .step.done .n{background:var(--ok)}
-.step.now .n{background:var(--red-d)}
+.step.now .n{background:var(--brand-d)}
 .step h3{font-size:16px;margin-bottom:6px}
 .step p{font-size:14px;color:var(--ink2)}
 .how{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
@@ -227,7 +231,7 @@ textarea.inp{padding:12px 14px;min-height:96px;resize:vertical}
 .side-nav .who{padding:8px 8px 16px;display:flex;gap:12px;align-items:center;border-bottom:1px solid var(--line);margin-bottom:8px}
 .side-nav a{display:flex;align-items:center;gap:12px;padding:11px 12px;border-radius:12px;text-decoration:none;font-weight:600;color:var(--ink2)}
 .side-nav a:hover{background:var(--bg);color:var(--ink)}
-.side-nav a[aria-current=page]{background:var(--red-t);color:var(--red-dd)}
+.side-nav a[aria-current=page]{background:var(--brand-t);color:var(--brand-dd)}
 .tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
 .tile{padding:18px;border-radius:16px;background:var(--bg)}
 .tile b{display:block;font-family:var(--f-display);font-size:26px;font-weight:600;margin-top:4px}
@@ -236,6 +240,33 @@ textarea.inp{padding:12px 14px;min-height:96px;resize:vertical}
 .tbl td{padding:14px 12px;border-bottom:1px solid var(--line);vertical-align:middle}
 .tbl tr:last-child td{border-bottom:0}
 .scroll-x{overflow:auto}
+/* kanban */
+.kanban{display:flex;gap:14px;overflow-x:auto;padding-bottom:12px;min-height:340px}
+.kanban-col{min-width:240px;max-width:260px;flex:0 0 240px;background:var(--bg);border-radius:var(--r-card);padding:12px}
+.kanban-col h4{font-size:13px;font-weight:700;color:var(--mute);text-transform:uppercase;letter-spacing:.04em;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}
+.kanban-col h4 .cnt{background:var(--line);color:var(--ink2);font-size:11px;padding:2px 8px;border-radius:var(--r-pill);font-weight:600}
+.k-card{background:#fff;border-radius:12px;padding:12px;margin-bottom:8px;border:1px solid var(--line);cursor:grab;box-shadow:var(--shadow-sm)}
+.k-card:hover{box-shadow:var(--shadow-md)}
+.k-card .k-title{font-weight:600;font-size:14px;margin-bottom:4px}
+.k-card .k-client{font-size:13px;color:var(--ink2)}
+.k-card .k-amount{font-size:13px;font-weight:600;color:var(--brand-d);margin-top:6px}
+.k-card .k-date{font-size:12px;color:var(--mute);margin-top:4px}
+/* dashboard metrics */
+.metric-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.metric{padding:18px;border-radius:16px;background:#fff;border:1px solid var(--line)}
+.metric .label{font-size:13px;color:var(--mute);font-weight:500}
+.metric .value{font-family:var(--f-display);font-size:28px;font-weight:600;margin-top:4px}
+.metric .delta{font-size:13px;font-weight:600;margin-top:4px}
+.metric .delta.up{color:var(--ok)} .metric .delta.down{color:var(--danger,#D93025)}
+/* task list */
+.task-item{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-bottom:1px solid var(--line)}
+.task-item:last-child{border-bottom:0}
+.task-check{width:20px;height:20px;accent-color:var(--brand-d);margin-top:2px;flex:none}
+.task-text{font-size:15px;flex:1}
+.task-text.done{text-decoration:line-through;color:var(--mute)}
+.task-due{font-size:13px;color:var(--mute);white-space:nowrap}
+/* side-nav groups */
+.side-nav .nav-group{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--mute);padding:16px 12px 4px}
 .chart{width:100%;height:auto;display:block}
 .gate{padding:48px 24px;text-align:center;display:grid;gap:14px;justify-items:center;max-width:560px;margin:60px auto}
 
@@ -260,9 +291,10 @@ textarea.inp{padding:12px 14px;min-height:96px;resize:vertical}
   .obj{grid-template-columns:1fr} .side{position:static}
   .band{grid-template-columns:1fr;padding:30px}
   .steps{grid-template-columns:repeat(2,1fr)} .how{grid-template-columns:1fr}
-  .cab{grid-template-columns:1fr} .side-nav{position:static;grid-auto-flow:column;overflow:auto;grid-auto-columns:max-content}
-  .side-nav .who{display:none}
-  .tiles{grid-template-columns:repeat(2,1fr)}
+  .cab{grid-template-columns:1fr} .side-nav{position:static;display:flex;overflow:auto;gap:0;padding:8px}
+  .side-nav .who{display:none} .side-nav .nav-group{display:none}
+  .tiles{grid-template-columns:repeat(2,1fr)} .metric-grid{grid-template-columns:repeat(2,1fr)}
+  .kanban{flex-wrap:nowrap}
   .nav{display:none}
 }
 @media (min-width:1021px){.only-m{display:none!important}}
@@ -270,7 +302,7 @@ textarea.inp{padding:12px 14px;min-height:96px;resize:vertical}
   .wrap{padding:0 16px}
   .top .wrap{height:60px;gap:10px}
   .top .hide-m{display:none}
-  .g3,.g4,.g2{grid-template-columns:1fr}
+  .g3,.g4,.g2{grid-template-columns:1fr} .metric-grid{grid-template-columns:1fr} .kanban-col{min-width:200px;flex:0 0 200px}
   .search .fields{grid-template-columns:1fr}
   .search{box-shadow:4px 4px 0 var(--ink)}
   .lcard.list{flex-direction:column} .lcard.list .art-link{width:100%} .lcard.list .art{aspect-ratio:16/11;min-height:0;height:auto}
@@ -280,7 +312,7 @@ textarea.inp{padding:12px 14px;min-height:96px;resize:vertical}
   body{padding-bottom:calc(70px + var(--safe-b))}
   .tabbar{display:grid;grid-template-columns:repeat(5,1fr);position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--line);z-index:60;padding-bottom:var(--safe-b)}
   .tabbar a{display:grid;justify-items:center;gap:2px;padding:8px 2px 7px;font-size:11px;font-weight:600;color:var(--mute);text-decoration:none}
-  .tabbar a[aria-current=page]{color:var(--red-dd)}
+  .tabbar a[aria-current=page]{color:var(--brand-dd)}
   .tabbar svg{width:22px;height:22px}
   .toast{bottom:calc(84px + var(--safe-b))}
   .hero h1{max-width:none}
@@ -374,6 +406,34 @@ let REQUESTS = [
   {id:4,deal:'sale',who:'Ищу дом с участком',district:'Аламедин',budget:200000,note:'Нужен гараж',answers:0,date:'2026-10-24'}
 ];
 
+/* ---------- CRM демо-данные ---------- */
+const DEAL_STAGES=['Новая','Контакт','Осмотр','Задаток','Документы','Сделка','Закрыта','Потеряна'];
+const DEALS=[
+  {id:'d1',title:'Аренда 2-комн. Джал',client:'Марат К.',stage:'Осмотр',amount:450,listing:1,agent:'a1',updated:'2026-10-23'},
+  {id:'d2',title:'Покупка 3-комн. Юг-2',client:'Анна Л.',stage:'Контакт',amount:98000,listing:2,agent:'a1',updated:'2026-10-24'},
+  {id:'d3',title:'Аренда студии Центр',client:'Дмитрий Р.',stage:'Задаток',amount:320,listing:3,agent:'a1',updated:'2026-10-22'},
+  {id:'d4',title:'Покупка дома Аламедин',client:'Нурлан С.',stage:'Новая',amount:185000,listing:4,agent:'a1',updated:'2026-10-24'},
+  {id:'d5',title:'Аренда офиса 100м²',client:'ОсОО «Техно»',stage:'Документы',amount:1500,listing:7,agent:'a1',updated:'2026-10-21'},
+  {id:'d6',title:'Покупка 1-комн. Тунгуч',client:'Айбек Ж.',stage:'Закрыта',amount:54000,listing:8,agent:'a1',updated:'2026-10-18'},
+  {id:'d7',title:'Аренда дома Кок-Жар',client:'Виктория М.',stage:'Потеряна',amount:900,listing:9,agent:'a1',updated:'2026-10-15'}
+];
+const CLIENTS=[
+  {id:'c1',name:'Марат К.',phone:'+996 555 100 201',deals:2,lastContact:'2026-10-23',status:'Активный'},
+  {id:'c2',name:'Анна Л.',phone:'+996 555 100 202',deals:1,lastContact:'2026-10-24',status:'Активный'},
+  {id:'c3',name:'Дмитрий Р.',phone:'+996 555 100 203',deals:1,lastContact:'2026-10-22',status:'Активный'},
+  {id:'c4',name:'Нурлан С.',phone:'+996 555 100 204',deals:1,lastContact:'2026-10-24',status:'Новый'},
+  {id:'c5',name:'ОсОО «Техно»',phone:'+996 312 900 100',deals:1,lastContact:'2026-10-21',status:'Активный'},
+  {id:'c6',name:'Айбек Ж.',phone:'+996 555 100 206',deals:1,lastContact:'2026-10-18',status:'Закрыт'},
+  {id:'c7',name:'Виктория М.',phone:'+996 555 100 207',deals:0,lastContact:'2026-10-15',status:'Потерян'}
+];
+const TASKS_CRM=[
+  {id:'t1',text:'Позвонить Марату К. — подтвердить осмотр',due:'2026-10-24',done:false,deal:'d1'},
+  {id:'t2',text:'Отправить документы по офису «Техно»',due:'2026-10-25',done:false,deal:'d5'},
+  {id:'t3',text:'Собрать фото объекта Аламедин',due:'2026-10-24',done:false,deal:'d4'},
+  {id:'t4',text:'Связаться с Анной Л. по ипотеке',due:'2026-10-26',done:false,deal:'d2'},
+  {id:'t5',text:'Обновить актуальность квартиры Джал',due:'2026-10-23',done:true,deal:'d1'}
+];
+
 /* =========================================================
    СОСТОЯНИЕ
    ========================================================= */
@@ -416,7 +476,15 @@ const I={
   plus:'<svg class="i" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>',
   chart:'<svg class="i" viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/></svg>',
   doc:'<svg class="i" viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6zM14 3v4h4M9 13h6M9 17h4"/></svg>',
-  calc:'<svg class="i" viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 7h8M8 12h2M12 12h2M16 12h0M8 16h2M12 16h2M16 16h0"/></svg>'
+  calc:'<svg class="i" viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 7h8M8 12h2M12 12h2M16 12h0M8 16h2M12 16h2M16 16h0"/></svg>',
+  calendar:'<svg class="i" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01"/></svg>',
+  deal:'<svg class="i" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>',
+  clients:'<svg class="i" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>',
+  tasks:'<svg class="i" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>',
+  partner:'<svg class="i" viewBox="0 0 24 24"><path d="M16.5 9.4l-9-5.19M21 16V8l-9-5-9 5v8l9 5 9-5z"/><path d="M3.27 6.96L12 12.01l8.73-5.05M12 22.08V12"/></svg>',
+  agency:'<svg class="i" viewBox="0 0 24 24"><path d="M3 21h18M3 7v14M21 7v14M7 11h2M7 15h2M15 11h2M15 15h2M11 21V3h2v18"/></svg>',
+  analytics:'<svg class="i" viewBox="0 0 24 24"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>',
+  settings:'<svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>'
 };
 function verifiedBadge(){return `<span class="badge ok">${I.check} Проверен</span>`}
 
@@ -545,7 +613,7 @@ function pHome(){
       <div class="quick"><a class="chip" href="#/requests">Не нашли? Оставьте заявку</a><a class="chip" href="#/mortgage">Рассчитать ипотеку</a></div>
     </div>
     <div class="seal-stage" aria-hidden="false">
-      <div class="seal" aria-hidden="true"><svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="56" fill="#F5333A"/><circle cx="60" cy="60" r="49" fill="none" stroke="#fff" stroke-width="2" stroke-dasharray="3 5"/><path d="M36 61l17 17 32-34" fill="none" stroke="#fff" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="seal" aria-hidden="true"><svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="56" fill="#1B6B4A"/><circle cx="60" cy="60" r="49" fill="none" stroke="#fff" stroke-width="2" stroke-dasharray="3 5"/><path d="M36 61l17 17 32-34" fill="none" stroke="#fff" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
       <div class="v-card">${art({id:3,hue:200,type:'apartment'})}
         <div class="body"><div class="price" style="font-size:19px">${moneyTxt(450,true)}</div><div style="font-weight:600">2-комнатная квартира, Джал</div>
           <ul class="checks"><li><span class="tick">${I.check}</span>Собственник подтверждён</li><li><span class="tick">${I.check}</span>Документы проверены</li><li><span class="tick">${I.check}</span>Цена актуальна на ${dfmt('2026-10-22')}</li></ul></div></div>
@@ -679,35 +747,118 @@ function gate(msg){return `<div class="wrap"><div class="card gate"><div class="
 function myObjects(){return allListings().filter(l=>l.mine)}
 function pCabinet(tab){
   if(!isAgent()) return gate('Кабинет агента');
-  tab=tab||'overview'; const mine=myObjects();
-  const nav=[['overview','Обзор',I.chart],['objects','Мои объекты',I.home],['pool','Общий каталог',I.users],['requests','Заявки',I.req],['profile','Профиль',I.user]];
+  tab=tab||'dashboard'; const mine=myObjects();
+  const nav=[
+    ['_main','ОСНОВНОЕ'],
+    ['dashboard','Дашборд',I.chart],
+    ['deals','Сделки',I.deal],
+    ['clients','Клиенты',I.clients],
+    ['objects','Мои объекты',I.home],
+    ['requests','Заявки',I.req],
+    ['_work','РАБОТА'],
+    ['calendar','Календарь',I.calendar],
+    ['tasks','Задачи',I.tasks],
+    ['_grow','РОСТ'],
+    ['partners','Партнёры',I.partner],
+    ['agencies','Агентства',I.agency],
+    ['analytics','Аналитика',I.analytics],
+    ['_acc','АККАУНТ'],
+    ['documents','Документы',I.doc],
+    ['profile','Профиль',I.user],
+    ['settings','Настройки',I.settings]
+  ];
   const stale=mine.filter(l=>daysAgo(l.act)>=5);
+  const activeDeals=DEALS.filter(d=>!['Закрыта','Потеряна'].includes(d.stage));
   let body='';
-  if(tab==='overview'){
+
+  if(tab==='dashboard'){
     const views=mine.reduce((s,l)=>s+l.views,0),con=mine.reduce((s,l)=>s+l.contacts,0),fav=mine.reduce((s,l)=>s+l.favs,0);
+    const todayTasks=TASKS_CRM.filter(t=>!t.done);
     const pts=[6,9,7,12,14,9,8,11,13,10,15,12,9,11],mx=16,W=640,H=200;
     const xy=pts.map((p,i)=>[i*(W/(pts.length-1)),H-12-p/mx*(H-30)]);
     const path=xy.map((p,i)=>(i?'L':'M')+p[0].toFixed(1)+' '+p[1].toFixed(1)).join(' ');
-    body=`<div class="card panel"><div class="row between wrapf" style="margin-bottom:14px"><h2 style="margin:0">Статистика по моим объектам</h2><span class="muted" style="font-size:14px">за 14 дней, демо</span></div>
-      <div class="tiles"><div class="tile"><span class="muted">Просмотры</span><b>${nf(views)}</b></div><div class="tile"><span class="muted">Контакты</span><b>${con}</b></div><div class="tile"><span class="muted">В избранном</span><b>${fav}</b></div><div class="tile"><span class="muted">Объектов</span><b>${mine.length}</b></div></div>
-      <svg class="chart" viewBox="0 0 ${W} ${H}" style="margin-top:20px" role="img" aria-label="График просмотров за 14 дней"><path d="${path} L${W} ${H-12} L0 ${H-12}Z" fill="#F5333A" opacity=".1"/><path d="${path}" fill="none" stroke="#D9242B" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>${xy.map(p=>`<circle cx="${p[0]}" cy="${p[1]}" r="3.500" fill="#fff" stroke="#D9242B" stroke-width="2"/>`).join('')}<line x1="0" x2="${W}" y1="${H-12}" y2="${H-12}" stroke="#E3E6EB"/></svg></div>
-      <div class="card panel"><h2>Что сделать сегодня</h2><div class="stack" style="gap:10px">
+    body=`<h2 style="margin-bottom:4px">Добро пожаловать, Айгерим</h2><p class="muted" style="margin-bottom:18px">${dfmt(CONFIG.today.toISOString().slice(0,10))} · ${todayTasks.length} задач на сегодня</p>
+      <div class="metric-grid">
+        <div class="metric"><span class="label">Активные сделки</span><div class="value">${activeDeals.length}</div><div class="delta up">+2 за неделю</div></div>
+        <div class="metric"><span class="label">Просмотры</span><div class="value">${nf(views)}</div><div class="delta up">+18%</div></div>
+        <div class="metric"><span class="label">Контакты</span><div class="value">${con}</div><div class="delta up">+3</div></div>
+        <div class="metric"><span class="label">Мои объекты</span><div class="value">${mine.length}</div><div class="delta">${stale.length?'<span class="down">'+stale.length+' просрочены</span>':'Все актуальны'}</div></div>
+      </div>
+      <div class="card panel" style="margin-top:18px"><div class="row between wrapf" style="margin-bottom:14px"><h3 style="margin:0">Задачи на сегодня</h3><a class="btn sm" href="#/cabinet/tasks">Все задачи</a></div>
+      ${TASKS_CRM.map(t=>`<div class="task-item"><input type="checkbox" class="task-check" ${t.done?'checked':''} disabled><span class="task-text${t.done?' done':''}">${esc(t.text)}</span><span class="task-due">${dfmt(t.due)}</span></div>`).join('')}</div>
+      <div class="card panel" style="margin-top:18px"><div class="row between wrapf" style="margin-bottom:14px"><h3 style="margin:0">Просмотры за 14 дней</h3><span class="muted" style="font-size:14px">демо</span></div>
+      <svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="График просмотров за 14 дней"><path d="${path} L${W} ${H-12} L0 ${H-12}Z" fill="#1B6B4A" opacity=".1"/><path d="${path}" fill="none" stroke="#155A3D" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>${xy.map(p=>`<circle cx="${p[0]}" cy="${p[1]}" r="3.500" fill="#fff" stroke="#155A3D" stroke-width="2"/>`).join('')}<line x1="0" x2="${W}" y1="${H-12}" y2="${H-12}" stroke="#E3E6EB"/></svg></div>
+      <div class="card panel" style="margin-top:18px"><h3>Что сделать сегодня</h3><div class="stack" style="gap:10px;margin-top:12px">
       ${stale.length?stale.map(l=>`<div class="row between wrapf"><span><b>${esc(l.title)}</b> <span class="muted">· актуально на ${dfmt(l.act)}</span></span><button class="btn sm dark" data-a="confirm" data-id="${l.id}">Подтвердить актуальность</button></div>`).join(''):'<p class="ink2">Все ваши объекты актуальны.</p>'}
       <div class="row between wrapf"><span><b>Новые заявки клиентов</b> <span class="muted">· ${REQUESTS.filter(r=>r.answers<3).length} ждут ответа</span></span><a class="btn sm" href="#/cabinet/requests">Открыть</a></div></div></div>`;
+
+  } else if(tab==='deals'){
+    body=`<div class="row between wrapf" style="margin-bottom:14px"><h2 style="margin:0">Сделки</h2><button class="btn primary sm">${I.plus} Новая сделка (демо)</button></div>
+      <div class="kanban">${DEAL_STAGES.filter(st=>!['Закрыта','Потеряна'].includes(st)).map(st=>{const cards=DEALS.filter(d=>d.stage===st);return `<div class="kanban-col"><h4>${esc(st)} <span class="cnt">${cards.length}</span></h4>${cards.map(d=>`<div class="k-card"><div class="k-title">${esc(d.title)}</div><div class="k-client">${esc(d.client)}</div><div class="k-amount">$${nf(d.amount)}</div><div class="k-date">${dfmt(d.updated)}</div></div>`).join('')||'<p class="muted" style="font-size:13px;text-align:center;padding:12px">Пусто</p>'}</div>`}).join('')}</div>
+      <div class="card panel" style="margin-top:18px"><h3>Завершённые сделки</h3><div class="scroll-x"><table class="tbl"><thead><tr><th>Сделка</th><th>Клиент</th><th>Сумма</th><th>Статус</th><th>Дата</th></tr></thead><tbody>${DEALS.filter(d=>['Закрыта','Потеряна'].includes(d.stage)).map(d=>`<tr><td><b>${esc(d.title)}</b></td><td>${esc(d.client)}</td><td>$${nf(d.amount)}</td><td><span class="badge ${d.stage==='Закрыта'?'ok':'warn'}">${esc(d.stage)}</span></td><td>${dfmt(d.updated)}</td></tr>`).join('')||'<tr><td colspan="5" class="muted">Пока нет завершённых сделок.</td></tr>'}</tbody></table></div></div>`;
+
+  } else if(tab==='clients'){
+    body=`<div class="card panel"><div class="row between wrapf" style="margin-bottom:14px"><h2 style="margin:0">Клиенты</h2><button class="btn primary sm">${I.plus} Добавить клиента (демо)</button></div>
+      <div class="scroll-x"><table class="tbl"><thead><tr><th>Имя</th><th>Телефон</th><th>Сделок</th><th>Последний контакт</th><th>Статус</th></tr></thead><tbody>${CLIENTS.map(c=>`<tr><td><b>${esc(c.name)}</b></td><td>${esc(c.phone)}</td><td>${c.deals}</td><td>${dfmt(c.lastContact)}</td><td><span class="badge ${c.status==='Активный'?'ok':c.status==='Новый'?'info':'warn'}">${esc(c.status)}</span></td></tr>`).join('')}</tbody></table></div></div>`;
+
   } else if(tab==='objects'){
     body=`<div class="card panel"><div class="row between wrapf" style="margin-bottom:14px"><h2 style="margin:0">Мои объекты</h2><a class="btn primary sm" href="#/add">${I.plus} Добавить объект</a></div>
       <div class="scroll-x"><table class="tbl"><thead><tr><th>Объект</th><th>Цена</th><th>Статус</th><th>Опубликовано</th><th>Актуально на</th><th></th></tr></thead><tbody>${mine.map(l=>`<tr><td><a href="#/object/${l.id}" style="font-weight:600">${esc(l.title)}</a><div class="muted" style="font-size:13px">${l.deal==='rent'?'Аренда':'Продажа'} · ${esc(l.district)}</div></td><td>${moneyTxt(l.usd,l.deal==='rent')}</td><td>${l.verified?verifiedBadge():'<span class="badge warn">На проверке</span>'}</td><td>${dfmt(l.pub)}</td><td>${dfmt(l.act)}</td><td><button class="btn sm" data-a="confirm" data-id="${l.id}">Подтвердить</button></td></tr>`).join('')||'<tr><td colspan="6" class="muted">Объектов пока нет. Добавьте первый.</td></tr>'}</tbody></table></div></div>`;
-  } else if(tab==='pool'){
-    body=`<div class="card panel"><h2>Общий каталог</h2><p class="ink2" style="max-width:60ch">Здесь все объекты участников Liberterra. Вы видите комиссию и можете работать с любым объектом: закрыв сделку, получите половину агентской части.</p><div class="row wrapf" style="margin-top:16px"><a class="btn primary" href="#/catalog" data-a="tocat" data-v="rent">Аренда</a><a class="btn dark" href="#/catalog" data-a="tocat" data-v="sale">Продажа</a></div></div>`;
+
   } else if(tab==='requests'){
     body=`<div class="grid g2">${REQUESTS.concat(S.reqExtra).slice().sort((a,b)=>b.id-a.id).map(reqCard).join('')}</div>`;
-  } else {
+
+  } else if(tab==='calendar'){
+    const days=['Пн 21','Вт 22','Ср 23','Чт 24','Пт 25','Сб 26','Вс 27'];
+    body=`<div class="card panel"><h2>Календарь</h2><p class="muted" style="margin-bottom:18px">Неделя 21–27 октября (демо)</p>
+      <div class="scroll-x"><div style="display:grid;grid-template-columns:repeat(7,1fr);gap:8px;min-width:700px">${days.map((d,i)=>`<div style="text-align:center"><div style="font-weight:600;font-size:14px;padding:8px;border-radius:12px;${i===3?'background:var(--brand-t);color:var(--brand-dd)':''}">${d}</div>${i===2?'<div style="margin-top:8px;padding:8px;background:var(--brand-t);border-radius:8px;font-size:13px">10:00 Осмотр Джал</div>':''}${i===3?'<div style="margin-top:8px;padding:8px;background:var(--info-t);border-radius:8px;font-size:13px">14:00 Встреча с Анной</div>':''}${i===4?'<div style="margin-top:8px;padding:8px;background:var(--warn-t);border-radius:8px;font-size:13px">11:00 Документы офис</div>':''}</div>`).join('')}</div></div></div>`;
+
+  } else if(tab==='tasks'){
+    body=`<div class="card panel"><div class="row between wrapf" style="margin-bottom:14px"><h2 style="margin:0">Задачи</h2><button class="btn primary sm">${I.plus} Новая задача (демо)</button></div>
+      ${TASKS_CRM.map(t=>`<div class="task-item"><input type="checkbox" class="task-check" ${t.done?'checked':''} disabled><span class="task-text${t.done?' done':''}">${esc(t.text)}</span><span class="task-due">${dfmt(t.due)}</span></div>`).join('')}</div>`;
+
+  } else if(tab==='partners'){
+    body=`<div class="card panel"><h2>Партнёры</h2><p class="ink2" style="max-width:60ch;margin-top:8px">Здесь будут ваши партнёры — агенты, с которыми вы делите сделки и объекты. Закрыв сделку по чужому объекту, вы получите ${CONFIG.commissionAgentPct}% комиссии.</p>
+      <div style="margin-top:18px">${AGENTS.filter(a=>a.id!=='a1').slice(0,3).map(a=>`<div class="row between wrapf" style="padding:12px 0;border-bottom:1px solid var(--line)"><div class="row" style="gap:12px"><span class="ava">${esc(a.name[0])}</span><div><b>${esc(a.name)}</b><div class="muted" style="font-size:13px">${esc(a.agency)} · ${a.deals} сделок</div></div></div><span class="badge ${a.cert?'ok':'warn'}">${a.cert?'Сертифицирован':'Без сертификата'}</span></div>`).join('')}</div></div>`;
+
+  } else if(tab==='agencies'){
+    body=`<div class="card panel"><h2>Агентства</h2><p class="ink2" style="max-width:60ch;margin-top:8px">Агентства-партнёры Liberterra. Агенты внутри агентства видят общие объекты и делят комиссию по правилам агентства.</p>
+      <div style="margin-top:18px;display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(260px,1fr))">${[{name:'Liberterra',agents:3,objects:8},{name:'Агентство «Демо»',agents:1,objects:2},{name:'Независимые',agents:1,objects:3}].map(a=>`<div class="card" style="padding:18px"><h3 style="font-size:16px">${esc(a.name)}</h3><div class="muted" style="font-size:14px;margin-top:6px">${a.agents} агентов · ${a.objects} объектов</div></div>`).join('')}</div></div>`;
+
+  } else if(tab==='analytics'){
+    body=`<div class="card panel"><h2>Аналитика</h2><p class="muted" style="margin-bottom:18px">Подробная аналитика за 30 дней (демо)</p>
+      <div class="metric-grid" style="margin-bottom:18px">
+        <div class="metric"><span class="label">Конверсия</span><div class="value">12%</div><div class="delta up">+2% к прошлому месяцу</div></div>
+        <div class="metric"><span class="label">Средний чек</span><div class="value">$850</div><div class="delta">Аренда</div></div>
+        <div class="metric"><span class="label">Сделки / мес</span><div class="value">4</div><div class="delta up">+1</div></div>
+        <div class="metric"><span class="label">Доход</span><div class="value">$3 400</div><div class="delta up">+22%</div></div>
+      </div>
+      <p class="ink2">Графики по источникам, районам и типам объектов будут доступны в рабочей версии.</p></div>`;
+
+  } else if(tab==='documents'){
+    body=`<div class="card panel"><h2>Документы</h2><p class="ink2" style="margin-top:8px;max-width:60ch">Шаблоны договоров, актов и доверенностей. В рабочей версии документы формируются автоматически при переводе сделки на этап «Документы».</p>
+      <div style="margin-top:18px;display:grid;gap:10px">${[['Договор аренды (шаблон)','PDF'],['Договор купли-продажи (шаблон)','PDF'],['Акт приёма-передачи','PDF'],['Согласие собственника','DOCX']].map(d=>`<div class="row between wrapf" style="padding:12px;border:1px solid var(--line);border-radius:12px"><div class="row" style="gap:10px">${I.doc}<b>${d[0]}</b></div><span class="badge">${d[1]}</span></div>`).join('')}</div></div>`;
+
+  } else if(tab==='profile'){
     body=`<div class="card panel"><h2>Профиль агента</h2><div class="agentbox" style="margin-bottom:18px"><span class="ava lg">А</span><div><b>Айгерим С.</b> <span class="muted">(демо)</span><div class="row wrapf" style="margin-top:6px"><span class="badge ok">${I.check} Одобрен</span><span class="badge ok">${I.check} Сертификат проверен</span></div></div></div>
       <div class="steps">${[['Заявка','Отправлена'],['Интервью','Пройдено'],['Договор','Подписан'],['Одобрен','Комиссии открыты']].map((s,i)=>`<div class="step done"><div class="n">✓</div><h3>${s[0]}</h3><p>${s[1]}</p></div>`).join('')}</div>
       <p class="note" style="margin-top:16px">Работаете по направлениям: Аренда, Продажа. Направление можно изменить на «оба» в любой момент.</p></div>`;
+
+  } else if(tab==='settings'){
+    body=`<div class="card panel"><h2>Настройки</h2>
+      <div style="margin-top:18px;display:grid;gap:16px">${[['Уведомления','Telegram, push, email — настройка каналов'],['Валюта по умолчанию','Сом / Доллар'],['Язык','Русский (Кыргызча, English в разработке)'],['Тема','Светлая (тёмная в разработке)']].map(s=>`<div class="row between wrapf" style="padding:14px;border:1px solid var(--line);border-radius:12px"><div><b>${s[0]}</b><div class="muted" style="font-size:13px">${s[1]}</div></div><button class="btn sm">Изменить (демо)</button></div>`).join('')}</div></div>`;
+
+  } else {
+    body=`<div class="card panel"><h2>Общий каталог</h2><p class="ink2" style="max-width:60ch">Здесь все объекты участников Liberterra. Вы видите комиссию и можете работать с любым объектом: закрыв сделку, получите половину агентской части.</p><div class="row wrapf" style="margin-top:16px"><a class="btn primary" href="#/catalog" data-a="tocat" data-v="rent">Аренда</a><a class="btn dark" href="#/catalog" data-a="tocat" data-v="sale">Продажа</a></div></div>`;
   }
+
+  const navHTML=nav.map(n=>{
+    if(n[0].startsWith('_')) return `<div class="nav-group">${n[1]}</div>`;
+    return `<a href="#/cabinet/${n[0]}" ${n[0]===tab?'aria-current="page"':''}>${n[2]}${n[1]}</a>`;
+  }).join('');
+
   return `<div class="wrap"><div class="cab"><aside class="card side-nav" aria-label="Кабинет"><div class="who"><span class="ava lg" style="width:48px;height:48px;font-size:18px">А</span><div><b>Айгерим С.</b><div class="muted" style="font-size:13px">Агент · одобрен</div></div></div>
-    ${nav.map(n=>`<a href="#/cabinet/${n[0]}" ${n[0]===tab?'aria-current="page"':''}>${n[2]}${n[1]}</a>`).join('')}</aside><section class="stack" style="gap:18px">${body}</section></div></div>`;
+    ${navHTML}</aside><section class="stack" style="gap:18px">${body}</section></div></div>`;
 }
 function pAdd(){
   return `<div class="wrap"><div class="sec" style="max-width:820px;padding-bottom:70px"><div class="sec-head"><div><h1 style="font-size:clamp(26px,3.4vw,38px)">Добавить объект</h1><p>Объект появится в каталоге после проверки. Публикация пока бесплатна.</p></div></div>
