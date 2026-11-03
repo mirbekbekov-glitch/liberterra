@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <script src="/telegram-membership.js?v=20260915-1"></script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Карта риэлторских зон Liberterra по Бишкеку: центр, золотой квадрат, юг, восток, запад и север.">
+  <title>Карта зон Бишкека | Liberterra</title>
+  <meta property="og:title" content="Карта зон Бишкека | Liberterra">
+  <meta property="og:description" content="Риэлторское деление Бишкека по зонам Liberterra.">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://liberterra-kg-catalog.pages.dev/assets/liberterra-mark-adapted.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600&family=Manrope:wght@700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
+<link rel="stylesheet" href="/style.css?v=20260908-agents-mobile-entry-1" data-liberterra-main-styles="true">
+  <script src="/catalog-translations.js?v=20260820-1" defer></script>
+  <script src="/i18n.js?v=20260929-theme-2" defer></script>
+<link rel="stylesheet" href="/site-theme.css?v=20260930-nav-3">
+<script src="/site-theme.js?v=20260930-nav-3" defer></script>
+<link rel="stylesheet" href="/public-v20.css"><script src="/reference-translations.js" defer></script><script src="/public-copy.js" defer></script><script src="/reference-translator.js" defer></script><script src="/public-v20.js" defer></script>  <link rel="stylesheet" href="/v20-global.css?v=20261022-1">
+</head>
+<body class="v20">
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a class="brand" href="/" aria-label="Liberterra">
+        <img class="brand-logo" src="assets/liberterra-logo-adapted.png" alt="Liberterra">
+      </a>
+      <div class="header-controls">
+        <div class="agent-access-slot" data-agent-access-slot aria-live="polite"></div>
+        <a class="header-action" href="add-object.html">Разместить объект</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="map-page">
+    <section class="wrap map-hero">
+      <div>
+        <a class="back-link" href="/requests.html" data-smart-back>← Назад</a>
+        <h1>Карта зон Бишкека</h1>
+        <p>Как устроен город: где центр, где тихо, где новостройки</p>
+      </div>
+    </section>
+
+    <section class="wrap zone-map-shell" aria-label="Карта зон">
+      <div class="zone-map" id="zoneMap"></div>
+      <aside class="zone-panel" aria-label="Описание зон">
+        <h2>Зоны Liberterra</h2>
+        <p class="zone-note">Деление по зонам города — ориентир, чтобы легче искать. Уточняем по фактическим объектам.</p>
+        <div class="zone-list" id="zoneList"></div>
+      </aside>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap footer-inner">
+      <span>Liberterra</span>
+      <div class="footer-contacts">
+        <a href="tel:+996500804402">Аренда: 0500 804 402</a>
+        <a href="tel:+996500804402">Продажа: 0500 804 402</a>
+      </div>
+      <a href="https://t.me/Liberterra_kg_bot" target="_blank" rel="noopener">Telegram-бот</a>
+    </div>
+  </footer>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin="" defer></script>
+  <script src="https://telegram.org/js/telegram-web-app.js" defer></script>
+
+<script src="/agent-access.js?v=20260928-public-cache-1" defer></script>
+<script src="/district-map.js?v=20260724-7" defer></script>
+  <script src="/back-navigation.js?v=20260814-1"></script>
+
+  <script src="/v20-global.js?v=20261022-1" defer></script>
+</body>
+</html>

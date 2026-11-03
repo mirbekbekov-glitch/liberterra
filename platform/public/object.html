@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <script src="/telegram-membership.js?v=20260915-1"></script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Объект недвижимости в Бишкеке — аренда и продажа на Liberterra.">
+  <title>Объект недвижимости в Бишкеке — Liberterra</title>
+  <link id="objectCanonical" rel="canonical" href="https://liberterra.kg/object">
+  <meta name="robots" content="index,follow">
+  <meta property="og:title" content="Объект недвижимости в Бишкеке — Liberterra">
+  <meta property="og:description" content="Каталог недвижимости в Бишкеке: аренда и продажа.">
+  <meta property="og:url" content="https://liberterra.kg/object">
+  <meta property="og:image" content="https://liberterra.kg/assets/liberterra-mark-adapted.png">
+  <meta property="og:type" content="website">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600&family=Manrope:wght@700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css?v=20261024-object-detail-1" data-liberterra-main-styles="true">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
+  <script src="/catalog-translations.js?v=20260820-1" defer></script>
+  <script src="/i18n.js?v=20260929-theme-2" defer></script>
+  <link rel="stylesheet" href="/agent-photo.css?v=20260915-1">
+  <script src="/agent-photo.js?v=20260915-1"></script>
+<link rel="stylesheet" href="/dual-price.css?v=20260920-1">
+<script src="/dual-price.js?v=20260920-2" defer></script>
+<link rel="stylesheet" href="/site-theme.css?v=20260930-nav-3">
+<script src="/site-theme.js?v=20261002-whatsapp-1" defer></script>
+<link rel="stylesheet" href="/public-v20.css"><script src="/reference-translations.js" defer></script><script src="/public-copy.js" defer></script><script src="/reference-translator.js" defer></script><script src="/public-v20.js" defer></script><style>/* Private-navigation presentation for the existing public object renderer. */
+.owner-object-shell,.owner-object-mobile-nav { display: none; }
+html.owner-object-context body.object-detail-page { background: #f8f5ef; }
+html.owner-object-context body.object-detail-page > .site-header,
+html.owner-object-context body.object-detail-page > .site-footer,
+html.owner-object-context body.object-detail-page > .public-header,
+html.owner-object-context body.object-detail-page > .public-footer { display: none; }
+html.owner-object-context .owner-object-shell {
+  display: flex; position: fixed; inset: 0 auto 0 0; width: 260px; z-index: 40;
+  flex-direction: column; box-sizing: border-box; padding: 25px 14px 20px;
+  background: #f8f5ef; border-right: 1px solid #e8e1db; overflow-y: auto;
+  font: 500 14px/1.4 "Golos Text", sans-serif;
+}
+.owner-object-shell a { color: #423c3e; text-decoration: none; }
+.owner-object-shell .owner-object-brand { color: #7b233f; font-size: 22px; font-weight: 700; padding: 0 12px 22px; }
+.owner-object-shell .owner-object-group { color: #8c8585; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; padding: 12px; }
+.owner-object-shell nav { display: grid; gap: 3px; }
+.owner-object-shell nav a { padding: 10px 12px; border-radius: 8px; }
+.owner-object-shell nav a:hover { background: #f0e4e8; }
+.owner-object-shell nav a[aria-current="page"] { color: #7b233f; background: #f0e4e8; font-weight: 700; }
+.owner-object-shell .owner-object-bottom { margin-top: auto; border-top: 1px solid #e8e1db; padding: 16px 12px 0; }
+.owner-object-shell .owner-object-bottom a { color: #7b233f; }
+html.owner-object-context body.object-detail-page > main.object-page { box-sizing: border-box; width: calc(100% - 260px); max-width: none; margin: 0 0 0 260px; padding: 0 24px 70px; min-width: 0; }
+html.owner-object-context .object-page > .wrap,
+html.owner-object-context .object-page > .object-shell { max-width: 1280px; }
+html.owner-object-context .object-page > .wrap:has(> .back-link) { display: none; }
+.owner-object-toolbar { display: none; }
+html.owner-object-context .owner-object-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 20px; max-width: 1280px; margin: 0 auto 22px; padding: 22px 0 10px; }
+.owner-object-toolbar a { color: #7b233f; text-decoration: none; font-weight: 600; }
+.owner-object-toolbar label { display: flex; align-items: center; gap: 8px; font-size: 13px; color: #746e70; }
+.owner-object-toolbar select { border: 1px solid #e8e1db; background: #fff; color: #332b2e; border-radius: 8px; padding: 9px 12px; font: inherit; }
+html.owner-object-context .owner-object-heading { display: block; max-width: 1280px; margin: 0 auto 20px; }
+.owner-object-heading { display: none; }
+.owner-object-heading small { display: block; color: #8c8585; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+.owner-object-heading h1 { margin: 4px 0 0; font: 700 clamp(27px,3vw,38px)/1.2 "Golos Text",sans-serif; color: #272124; }
+html.owner-object-context .object-shell { padding-left: 0; padding-right: 0; }
+html.owner-object-context .object-info { border-color: #e8e1db; }
+html.owner-object-context .owner-edit-jump { background: #7b233f; border-color: #7b233f; color: #fff; }
+@media (max-width: 768px) {
+  html.owner-object-context .owner-object-shell { display: none; }
+  html.owner-object-context body.object-detail-page > main.object-page { width: 100%; margin: 0; padding: 0 12px 90px; }
+  html.owner-object-context .owner-object-toolbar { margin: 0 -12px 16px; padding: 12px 16px; background: #fff; border-bottom: 1px solid #e8e1db; }
+  html.owner-object-context .owner-object-heading { margin-bottom: 12px; }
+  html.owner-object-context .owner-object-mobile-nav { display: flex; justify-content: space-around; position: fixed; inset: auto 0 0; z-index: 50; background: #fff; border-top: 1px solid #e8e1db; padding: 8px; }
+  .owner-object-mobile-nav a { color: #746e70; text-decoration: none; font-size: 12px; padding: 8px; }
+  .owner-object-mobile-nav a[aria-current="page"] { color: #7b233f; font-weight: 700; }
+}
+</style><script>(() => {
+  "use strict";
+  const params = new URLSearchParams(location.search);
+  if (location.pathname !== "/object.html" || params.get("source") !== "my-listings" || !params.get("id")) return;
+  // Presentation context only. Editing remains gated by get_agent_object_workspace.
+  document.documentElement.classList.add("owner-object-context");
+  document.addEventListener("DOMContentLoaded", () => {
+    const picker = document.querySelector("#ownerObjectLanguage");
+    if (!picker) return;
+    const sync = () => {
+      const language = window.LiberterraI18n?.language || document.documentElement.lang || "ru";
+      picker.value = ["ru", "ky", "en", "zh"].includes(language) ? language : "ru";
+    };
+    picker.addEventListener("change", () => window.LiberterraI18n?.setLanguage(picker.value));
+    window.addEventListener("liberterra:languagechange", sync);
+    sync();
+  });
+})();
+</script></head>
+<body class="v20 object-detail-page">
+  <aside class="owner-object-shell" aria-label="Личный кабинет">
+    <a class="owner-object-brand" href="/profile">Liberterra</a>
+    <div class="owner-object-group">Основное</div>
+    <nav><a href="/profile">▦ &nbsp; Обзор</a><a href="/my-listings" aria-current="page">⌂ &nbsp; Мои объекты</a><a href="/my-requests.html">⌕ &nbsp; Мои заявки</a><a href="/profile#profileFavorites">♡ &nbsp; Избранное</a><a href="/agent-cabinet.html">▣ &nbsp; Рабочая база CRM</a></nav>
+    <div class="owner-object-group">Инструменты</div>
+    <nav><a href="/viewing-history.html">◷ &nbsp; История просмотров</a><a href="https://t.me/Liberterra_kg_bot?start=support" target="_blank" rel="noopener">? &nbsp; Поддержка</a></nav>
+    <div class="owner-object-bottom"><a href="/">← На главную</a></div>
+  </aside>
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a class="brand" href="/" aria-label="Liberterra">
+        <img class="brand-logo" src="/assets/liberterra-logo-adapted.png" alt="Liberterra">
+      </a>
+      <div class="header-controls">
+        <a class="header-action" href="add-object.html">Разместить объект</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="object-page">
+    <div class="owner-object-toolbar"><a href="/my-listings">← Мои объявления</a><label>Язык <select id="ownerObjectLanguage" aria-label="Выбор языка"><option value="ru">RU · Русский</option><option value="ky">KG · Кыргызча</option><option value="en">EN · English</option><option value="zh">中文</option></select></label></div>
+    <div class="owner-object-heading"><small>Личный кабинет / объекты</small><h1>Объявление</h1></div>
+    <div class="wrap"><a class="back-link" href="/" data-smart-back>← Назад</a></div>
+    <section class="wrap object-shell" id="objectPage" aria-live="polite">
+      <div class="object-state">
+        <strong>Загружаем объект...</strong>
+        <span>Открываем актуальные данные Liberterra.</span>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap footer-inner">
+      <span>Liberterra</span>
+      <div class="footer-contacts">
+        <a href="tel:+996500804402">Аренда: 0500 804 402</a>
+        <a href="tel:+996500804402">Продажа: 0500 804 402</a>
+      </div>
+      <a href="https://t.me/Liberterra_kg_bot" target="_blank" rel="noopener">Telegram-бот</a>
+    </div>
+  </footer>
+
+  <script src="/back-navigation.js?v=20260814-1"></script>
+  
+  <script src="/catalog-data.js?v=20260812-1" defer></script>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  
+  <script src="/user-registration.js?v=20261011-register-retry-1" defer></script>
+  <script src="/contact-gate.js?v=20261009-public-contact-repair-1" defer></script>
+  <script src="/agent-access.js?v=20261018-crm-session-retry-1" defer></script>
+  <script src="/market-valuation.js?v=20260819-1" defer></script>
+  <script src="/listing-format.js?v=20261006-audit-1" defer></script>
+  <link rel="stylesheet" href="/viewing-requests.css?v=20261008-viewing-placement-2">
+  <link rel="stylesheet" href="/v20-global.css?v=20261022-1">
+  <script src="/viewing-requests.js?v=20261012-guest-viewing-1" defer></script>
+  <script src="/object.js?v=20261024-object-detail-1" defer></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+  <script src="/agent-object-workspace.js?v=20261017-private-agent-crm-1" defer></script>
+
+<script src="/object-layout-v20.js?v=20261024-object-detail-1"></script>  <script src="/v20-global.js?v=20261022-1" defer></script>
+  <nav class="owner-object-mobile-nav" aria-label="Разделы кабинета"><a href="/profile">Обзор</a><a href="/my-listings" aria-current="page">Объекты</a><a href="/my-requests.html">Заявки</a><a href="/agent-cabinet.html">CRM</a></nav>
+</body>
+</html>

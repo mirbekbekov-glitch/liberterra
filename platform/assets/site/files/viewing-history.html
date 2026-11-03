@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>История просмотров — Liberterra</title>
+  <link rel="stylesheet" href="/style.css?v=20261005-login-eye-1">
+  <link rel="stylesheet" href="/site-theme.css?v=20260930-nav-3">
+  <link rel="stylesheet" href="/v20-global.css?v=20261024-profile-v2-1">
+  <link rel="stylesheet" href="/profile-v2.css?v=20261024-profile-v2-1">
+  <link rel="stylesheet" href="/viewing-requests.css?v=20260928-1">
+  <link rel="stylesheet" href="/personal-sections.css?v=20261024-1">
+</head>
+<body class="v20 profile-page personal-section-page viewing-history-page">
+  <div class="pv2-mobile-header">
+    <a href="/" class="pv2-mobile-brand">Liberterra <span class="dot"></span></a>
+    <a href="/profile" class="pv2-mobile-user-btn" aria-label="К профилю">Л</a>
+  </div>
+  <div class="profile-v2-layout">
+    <aside class="profile-v2-sidebar" aria-label="Личный кабинет">
+      <a href="/" class="pv2-sidebar-brand">Liberterra <span class="dot"></span></a>
+      <div class="pv2-sidebar-section">Основное</div>
+      <ul class="pv2-sidebar-nav">
+        <li><a href="/profile"><span class="pv2-nav-icon" aria-hidden="true">▦</span>Обзор</a></li>
+        <li><a href="/my-listings.html"><span class="pv2-nav-icon" aria-hidden="true">⌂</span>Мои объекты</a></li>
+        <li><a href="/my-requests.html"><span class="pv2-nav-icon" aria-hidden="true">⌕</span>Мои заявки</a></li>
+        <li><a href="/profile#profileFavorites"><span class="pv2-nav-icon" aria-hidden="true">♡</span>Избранное</a></li>
+        <li><a href="/agent-cabinet.html"><span class="pv2-nav-icon" aria-hidden="true">▣</span>Рабочая база CRM</a></li>
+      </ul>
+      <div class="pv2-sidebar-section">Инструменты</div>
+      <ul class="pv2-sidebar-nav">
+        <li><a href="/viewing-history.html" class="active" aria-current="page"><span class="pv2-nav-icon" aria-hidden="true">◷</span>История просмотров</a></li>
+        <li><a href="https://t.me/Liberterra_kg_bot?start=support" target="_blank" rel="noopener"><span class="pv2-nav-icon" aria-hidden="true">?</span>Поддержка</a></li>
+      </ul>
+      <div class="pv2-sidebar-bottom"><a class="pv2-sidebar-back" href="/">← На главную</a></div>
+    </aside>
+    <main class="profile-v2-main">
+      <div class="pv2-topbar">
+        <a href="/" class="pv2-back-to-site">← На главную</a>
+        <label class="personal-language-picker">Язык
+          <select id="viewingHistoryLanguage" aria-label="Выбор языка">
+            <option value="ru">RU · Русский</option><option value="ky">KG · Кыргызча</option><option value="en">EN · English</option><option value="zh">中文</option>
+          </select>
+        </label>
+      </div>
+      <p class="personal-section-eyebrow">Личный кабинет / просмотры</p>
+      <div class="personal-viewing-history" data-viewing-history aria-live="polite"></div>
+    </main>
+  </div>
+  <nav class="pv2-mobile-nav" aria-label="Разделы кабинета">
+    <a href="/profile"><span aria-hidden="true">▦</span>Обзор</a>
+    <a href="/my-listings.html"><span aria-hidden="true">⌂</span>Объекты</a>
+    <a href="/my-requests.html"><span aria-hidden="true">⌕</span>Заявки</a>
+    <a href="/viewing-history.html" class="active" aria-current="page"><span aria-hidden="true">◷</span>История</a>
+  </nav>
+  <script>
+    const language = new URLSearchParams(location.search).get('lang');
+    if (['ru', 'ky', 'en', 'zh'].includes(language)) document.documentElement.lang = language;
+    const picker = document.getElementById('viewingHistoryLanguage');
+    picker.value = document.documentElement.lang;
+    picker.onchange = () => { const url = new URL(location.href); url.searchParams.set('lang', picker.value); location.href = url.href; };
+  </script>
+  <script src="/viewing-requests.js?v=20261024-personal-1"></script>
+</body>
+</html>

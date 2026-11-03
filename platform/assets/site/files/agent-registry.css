@@ -1,0 +1,12 @@
+.registry-badge { display:block; padding:12px; border-radius:14px; background:#f2f7f3; color:#24523b; font-size:13px; }
+.registry-badge summary { cursor:pointer; font-weight:600; }
+.registry-badge p { margin:8px 0; }
+.registry-editor { margin-top:24px; padding:20px; border:1px solid #e4d5da; border-radius:18px; }
+.registry-editor form { display:grid; gap:12px; }
+.registry-editor label { display:grid; gap:6px; }
+.registry-editor input:not([type=checkbox]), .registry-editor select { width:100%; padding:12px; border:1px solid #d9c9cf; border-radius:10px; box-sizing:border-box; }
+.registry-editor button { padding:12px; background:#800020; color:white; border:0; border-radius:10px; cursor:pointer; }
+.registry-editor button:disabled { opacity:.5; cursor:wait; }
+.registry-sort-label { display:grid; gap:8px; max-width:420px; }
+.registry-sort-label select { padding:12px; border:1px solid #d9c9cf; border-radius:12px; background:white; max-width:100%; }
+.registry-editor .registry-confirm { display:block; }

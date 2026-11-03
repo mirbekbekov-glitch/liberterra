@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <script src="/telegram-membership.js?v=20260915-1"></script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Каталог недвижимости в Кыргызстане: покупка и аренда. Поиск по типу объекта, району и бюджету.">
+  <title>Объекты недвижимости — Liberterra</title>
+  <link rel="canonical" href="https://liberterra.kg/catalog.html">
+  <meta name="robots" content="index,follow">
+  <meta name="google-site-verification" content="RPCjp3q0kU6JrCc7pMn9TwHehUJZtbWFuxfLoQ43N7E">
+  <meta property="og:title" content="Объекты недвижимости — Liberterra">
+  <meta property="og:description" content="Каталог недвижимости в Кыргызстане: покупка и аренда. Поиск по типу объекта, району и бюджету.">
+  <meta property="og:url" content="https://liberterra.kg/catalog.html">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://liberterra.kg/assets/liberterra-mark-adapted.png">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Liberterra">
+  <meta name="twitter:description" content="Каталог недвижимости в Бишкеке: аренда, покупка и продажа.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://hidden-pine-cbff.mirbekbekov.workers.dev" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600&family=Manrope:wght@700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/style.css?v=20260908-agents-mobile-entry-1" data-liberterra-main-styles="true">
+  
+  <script src="/catalog-translations.js?v=20260820-1" defer></script>
+  <script src="/i18n.js?v=20261021-public-v20-1" defer></script>
+  
+  
+<link rel="stylesheet" href="/dual-price.css?v=20260920-1">
+<script src="/dual-price.js?v=20260920-2" defer></script>
+<link rel="stylesheet" href="/site-theme.css?v=20260930-nav-3">
+<script src="/site-theme.js?v=20261021-public-v20-1" defer></script>
+
+
+<link rel="stylesheet" href="/home-v20.css"><script src="/home-v20.js" defer></script><link rel="stylesheet" href="/public-v20.css"><script src="/reference-translations.js" defer></script><script src="/public-copy.js" defer></script><script src="/reference-translator.js" defer></script><script src="/public-v20.js" defer></script><script src="/public-pagination.js" defer></script>  <link rel="stylesheet" href="/v20-global.css?v=20261022-1">
+</head>
+<body class="v20 home-page v20-rebuild v20-catalog">
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a class="brand" href="/" aria-label="Liberterra">
+        <span class="brand-wordmark" translate="no">Liberterra</span>
+      </a>
+      <nav class="home-navigation" aria-label="Разделы сайта">
+        <a href="/newbuildings.html">Новостройки</a><a href="/agents.html">Агенты</a>
+        <a href="/requests.html">Заявки</a>
+      </nav>
+      <div class="header-controls">
+        <a class="header-directory" href="/agents.html">Агенты</a>
+        <a class="header-profile" href="/profile.html">Профиль</a>
+        <a class="header-action" href="add-object.html">Разместить объект</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="v20-main" data-public-catalog>
+  <section class="v20-hero" aria-labelledby="homeHeroTitle">
+    <span class="v20-eyebrow">LIBERTERRA · КЫРГЫЗСТАН</span>
+    <h1 id="homeHeroTitle" data-public-key="catalog">Объекты недвижимости</h1>
+    <p data-public-key="catalogIntro">Что продают и сдают. Выберите список или карту.</p>
+    <div class="v20-actions"><a class="v20-button" href="/object-map.html" data-public-key="map">Карта объектов →</a></div>
+  </section>
+  <section class="v20-search" aria-label="Поиск недвижимости">
+    <div class="v20-tabs"><button type="button" data-hero-deal="продажа" data-v20="buy">Купить</button><button type="button" data-hero-deal="аренда" data-v20="rent">Арендовать</button></div>
+    <div class="v20-fields"><label><span data-v20="city">Город</span><select id="heroCity"><option value="all">Все города</option></select></label><label><span data-v20="type">Тип недвижимости</span><select id="heroPropertyType"><option value="all">Любой тип</option><option value="apartment">Квартира</option><option value="house">Дом</option><option value="land">Участок</option><option value="commercial">Коммерция</option></select></label><label><span data-v20="budget">Бюджет до</span><div class="v20-budget"><input id="heroPriceMax" aria-label="Бюджет до" type="number" min="0" inputmode="numeric" placeholder="Без ограничений"><select id="priceCurrency" aria-label="Валюта"><option value="usd">USD</option><option value="kgs">KGS</option></select></div></label><button class="v20-button primary" id="heroShowButton" type="button"><span class="search-label">Найти объекты →</span><span id="heroShowCount" class="sr-only"></span></button></div>
+    <details class="v20-extra"><summary data-v20="extra">Дополнительные фильтры</summary><div class="v20-extra-fields"><label><span data-v20="district">Район</span><input id="heroDistrictFilter" type="search" list="heroDistrictOptions" autocomplete="off"><datalist id="heroDistrictOptions"></datalist></label><label><span data-v20="keyword">Поиск по описанию</span><input id="catalogSearch" type="search"></label><button id="resetFilters" class="v20-button" type="button" data-v20="reset">Сбросить фильтры</button></div></details>
+  </section>
+  <section class="v20-listings" aria-labelledby="currentTitle"><div class="v20-section-head"><div><h2 id="currentTitle" data-v20="current">Актуальные объявления</h2><span id="resultCount" role="status" class="v20-small">Загружаем объекты…</span></div><button class="v20-button" hidden id="v20All" type="button" aria-controls="catalogGrid" aria-expanded="false" data-v20="all">Все объекты →</button></div><div id="catalogGrid" class="v20-grid expanded" aria-live="polite"></div></section>
+  
+</main>
+
+
+  <div class="detail-modal" id="objectModal" hidden>
+    <button class="modal-backdrop" type="button" data-close-modal aria-label="Закрыть карточку"></button>
+    <article class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <button class="modal-close" type="button" data-close-modal aria-label="Закрыть">×</button>
+      <div id="modalContent"></div>
+    </article>
+  </div>
+
+  <footer class="site-footer">
+    <div class="wrap footer-inner">
+      <span>Liberterra</span>
+      <div class="footer-contacts">
+        <a href="tel:+996500804402">Аренда: 0500 804 402</a>
+        <a href="tel:+996500804402">Продажа: 0500 804 402</a>
+      </div>
+      <a href="https://t.me/Liberterra_kg_bot" target="_blank" rel="noopener">Telegram-бот</a>
+    </div>
+  </footer>
+
+  
+  <script>
+    if (/[?&#]tgWebApp(?:Version|Platform)=/i.test(`${window.location.search}${window.location.hash}`)) {
+      document.write('<script src="https://telegram.org/js/telegram-web-app.js"><\/script>');
+    }
+  </script>
+
+<script src="/agent-access.js?v=20260928-public-cache-1" defer></script>
+
+
+  <script src="/listing-format.js?v=20261006-audit-1" defer></script>
+  <script src="/contact-gate.js?v=20261003-session-fix-1" defer></script>
+  <script src="/script.js?v=20261021-public-v20-1" defer></script>
+  
+  <script src="/v20-global.js?v=20261022-1" defer></script>
+</body>
+</html>

@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <script src="/telegram-membership.js?v=20260915-1"></script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Агенты — Liberterra</title>
+  <meta name="description" content="Проверенные агенты по недвижимости, зарегистрированные на платформе Liberterra.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600&family=Manrope:wght@700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css?v=20260908-agents-mobile-entry-1" data-liberterra-main-styles="true">
+  <script src="/catalog-translations.js?v=20260820-1" defer></script>
+  <script src="/i18n.js?v=20260929-theme-2" defer></script>
+  <link rel="stylesheet" href="/agent-photo.css?v=20260915-1">
+  <link rel="stylesheet" href="/agent-directory.css?v=20260928-1">
+  <script src="/agent-photo.js?v=20260915-1"></script>
+  <script src="/agent-registry.js?v=20260928-1" defer></script>
+  <link rel="stylesheet" href="/agent-registry.css?v=20260928-1">
+<link rel="stylesheet" href="/site-theme.css?v=20260930-nav-3">
+<script src="/site-theme.js?v=20260930-nav-3" defer></script>
+<link rel="stylesheet" href="/public-v20.css"><script src="/reference-translations.js" defer></script><script src="/public-copy.js" defer></script><script src="/reference-translator.js" defer></script><script src="/public-v20.js" defer></script>  <link rel="stylesheet" href="/v20-global.css?v=20261022-1">
+</head>
+<body class="v20 agent-directory-page">
+  <header class="crm-header">
+    <div class="wrap crm-header-inner">
+      <a class="brand" href="/" aria-label="Liberterra">
+        <img class="brand-logo" src="/assets/liberterra-logo-adapted.png" alt="Liberterra">
+      </a>
+    </div>
+  </header>
+
+  <main class="wrap agent-directory-main" id="agentDirectoryPage">
+    <a class="back-link" href="/" data-smart-back>← Назад</a>
+    <section class="agent-directory-heading">
+      <p class="crm-eyebrow">Специалисты Liberterra</p>
+      <span class="eyebrow">Профессиональная сеть</span><h1>Хорошие сделки начинаются<br>с доверия.</h1><p>Выберите специалиста и посмотрите его опубликованные объекты. Условия совместной сделки согласуются отдельно.</p></section>
+
+    <section class="agent-directory-filters" aria-label="Поиск специалистов">
+      <label class="agent-directory-search" for="agentDirectorySearch">
+        <span class="sr-only">Имя или агентство</span>
+        <input id="agentDirectorySearch" type="search" placeholder="Имя или агентство" autocomplete="off">
+      </label>
+      <label class="agent-directory-specialization" for="agentSpecializationFilter">
+        <span class="sr-only">Специализация</span>
+        <select id="agentSpecializationFilter">
+          <option value="all">Любая специализация</option>
+          <option value="rent">Аренда</option>
+          <option value="sale">Продажа</option>
+        </select>
+      </label>
+    </section>
+
+    <label class="registry-sort-label"><span data-registry-sort-label>Порядок специалистов</span>
+      <select id="agentRegistrySort"><option value="default">По количеству объявлений</option><option value="verified">Сначала с подтверждённым реестром</option><option value="only">Только с подтверждённым реестром</option></select>
+    </label>
+    <div class="agent-directory-summary" id="agentDirectorySummary">Загружаем специалистов...</div>
+    <div class="agent-directory-list" id="agentDirectoryList" aria-live="polite"></div>
+  <section class="panel public-access-note"><h3>Комиссии — только проверенным агентам</h3><p>Регистрация сама по себе не открывает комиссии, документы или контакты собственников. Для доступа требуется отдельное разрешение по объекту.</p><a href="https://liberterra.kg/agent-cabinet.html">Перейти в кабинет агента</a></section></main>
+
+  <script src="https://telegram.org/js/telegram-web-app.js" defer></script>
+  
+  <script src="/agent-access.js?v=20260928-public-cache-1" defer></script>
+  <script src="/back-navigation.js?v=20260814-1"></script>
+  <script src="/agents.js?v=20260928-registry-1" defer></script>
+  
+  
+  <script src="/v20-global.js?v=20261022-1" defer></script>
+</body>
+</html>

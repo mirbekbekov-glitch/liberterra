@@ -1,0 +1,444 @@
+/* V20 overlay on the current public UI. Theme follows body[data-public-theme], set by public-v20.js. */
+
+/* ── Palette ── */
+:root {
+  --v20-ink: #242321;
+  --v20-accent: #7b233f;
+  --v20-accent-hover: #601a31;
+  --v20-accent-soft: #f3e6eb;
+  --v20-accent-secondary: #df8739;
+  --v20-paper: #f8f5ef;
+  --v20-line: #e4dfd8;
+  --v20-muted: #56524d;
+  --v20-field-line: #91867c;
+}
+body.v20[data-public-theme="dark"] {
+  --v20-ink: #eee9e2;
+  --v20-accent: #e49ab0;
+  --v20-accent-hover: #f0b5c6;
+  --v20-paper: #1c1918;
+  --v20-line: #554b47;
+  --v20-muted: #c1b6ae;
+  --v20-field-line: #95847a;
+  --v20-accent-soft: #442735;
+}
+
+body.v20 {
+  margin: 0;
+  background: var(--v20-paper);
+  color: var(--v20-ink);
+  font: 16px/1.5 'Segoe UI', Arial, sans-serif;
+}
+body.v20[data-public-theme="dark"] {
+  background: var(--v20-paper);
+  color: var(--v20-ink);
+}
+
+/* ── Typography ── */
+body.v20 :is(h1, h2, h3) {
+  font-family: 'Segoe UI', Arial, sans-serif;
+  color: var(--v20-ink);
+}
+body.v20 h1 { font-weight: 500; font-size: clamp(30px, 2.8vw, 40px); letter-spacing: -1px; line-height: 1.16; }
+body.v20 h2 { font-weight: 650; font-size: 28px; }
+body.v20 h3 { font-weight: 650; font-size: 18px; }
+body.v20 a { color: var(--v20-accent); }
+
+/* ── Header ── */
+body.v20 .site-header,
+body.v20 .crm-header,
+body.v20 .nb-header,
+body.v20 > header.site-header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 18px;
+  padding: 12px max(24px, calc((100vw - 1320px) / 2));
+  align-items: center;
+  background: var(--v20-paper);
+  border-bottom: 1px solid var(--v20-line);
+}
+body.v20[data-public-theme="dark"] .site-header,
+body.v20[data-public-theme="dark"] .crm-header,
+body.v20[data-public-theme="dark"] > header.site-header {
+  background: var(--v20-paper);
+  border-color: var(--v20-line);
+}
+
+/* Logo — monochrome wordmark */
+body.v20 .brand,
+body.v20 .brand-wordmark,
+body.v20 .logo {
+  font: 850 25px/1.1 'Segoe UI', Arial, sans-serif;
+  letter-spacing: -1px;
+  color: var(--v20-accent) !important;
+  text-decoration: none;
+  white-space: nowrap;
+}
+body.v20 .brand-wordmark { color: var(--v20-accent) !important; }
+body.v20 img.brand-logo,
+body.v20 .brand > img,
+body.v20 .brand .brand-subtitle,
+body.v20 .lt-brand-monogram,
+body.v20 .brand .lt-wordmark small { display: none !important; } /* hide old logo elements — v20-global.css only loads on v20 pages */
+.brand .lt-wordmark {
+  font: 850 25px/1.1 'Segoe UI', Arial, sans-serif !important;
+  letter-spacing: -1px !important;
+  color: var(--v20-accent) !important;
+}
+body.v20[data-public-theme="dark"] .brand .lt-wordmark { color: #f2cad7 !important; }
+body.v20 .brand::after {
+  content: '';
+  display: inline-block;
+  width: 7px; height: 7px;
+  margin-left: 5px;
+  border-radius: 50%;
+  background: var(--v20-accent-secondary);
+  vertical-align: middle;
+}
+body.v20[data-public-theme="dark"] .brand,
+body.v20[data-public-theme="dark"] .brand-wordmark {
+  color: #f2cad7 !important;
+}
+
+/* Navigation */
+body.v20 .site-header nav,
+body.v20 .header-inner nav,
+body.v20 .home-navigation {
+  display: flex;
+  gap: 2px;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+}
+body.v20 .site-header nav a,
+body.v20 .home-navigation a,
+body.v20 .header-inner nav a {
+  padding: 9px 8px;
+  font-size: 12px;
+  line-height: 1.3;
+  font-weight: 600;
+  border-radius: 9px;
+  text-decoration: none;
+  color: var(--v20-ink);
+  border: 0;
+  background: transparent;
+}
+body.v20 .site-header nav a:hover,
+body.v20 .home-navigation a:hover {
+  background: var(--v20-accent-soft);
+  color: var(--v20-accent-hover);
+}
+body.v20 .site-header nav a.active,
+body.v20 nav button.active {
+  background: var(--v20-accent-soft);
+  color: var(--v20-accent-hover);
+  font-weight: 700;
+}
+body.v20[data-public-theme="dark"] .site-header nav a,
+body.v20[data-public-theme="dark"] .home-navigation a {
+  color: var(--v20-ink);
+}
+body.v20[data-public-theme="dark"] nav a.active,
+body.v20[data-public-theme="dark"] nav button.active {
+  background: var(--v20-accent-soft);
+  color: #f4bdd0;
+}
+
+/* Header controls — theme toggle, locale */
+body.v20 .header-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+body.v20 .header-action,
+body.v20 .header-profile,
+body.v20 .header-directory {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 9px 12px;
+  border-radius: 9px;
+  text-decoration: none;
+  color: var(--v20-ink);
+}
+body.v20 .header-action {
+  background: var(--v20-accent);
+  color: #fff;
+  border-radius: 9px;
+  padding: 9px 14px;
+}
+body.v20 .header-action:hover {
+  background: var(--v20-accent-hover);
+}
+
+/* v20 header-tools (theme toggle + locale) */
+body.v20 .v20-header-tools {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+body.v20 .v20-theme-toggle {
+  border: 1px solid var(--v20-line);
+  background: transparent;
+  padding: 7px 10px;
+  border-radius: 8px;
+  font-size: 13px;
+  color: var(--v20-ink);
+  cursor: pointer;
+}
+body.v20 .v20-locale-select {
+  border: 1px solid var(--v20-line);
+  background: transparent;
+  padding: 7px 10px;
+  border-radius: 8px;
+  font-size: 13px;
+  color: var(--v20-ink);
+}
+body.v20[data-public-theme="dark"] .v20-theme-toggle,
+body.v20[data-public-theme="dark"] .v20-locale-select {
+  background: #282321;
+  color: var(--v20-ink);
+  border-color: var(--v20-field-line);
+}
+
+/* ── Footer ── */
+body.v20 .site-footer {
+  border-top: 1px solid var(--v20-line);
+  padding: 22px 24px;
+  color: var(--v20-muted);
+  font-size: 13px;
+  text-align: center;
+  background: var(--v20-paper);
+}
+body.v20[data-public-theme="dark"] .site-footer {
+  border-color: var(--v20-line);
+  color: var(--v20-muted);
+  background: var(--v20-paper);
+}
+
+/* ── Cards ── */
+body.v20 .card {
+  border: 1px solid var(--v20-line);
+  border-radius: 20px;
+  background: white;
+  box-shadow: 0 4px 18px #32291c04;
+}
+body.v20[data-public-theme="dark"] .card {
+  background: #282321;
+  border-color: var(--v20-line);
+  box-shadow: none;
+}
+body.v20[data-public-theme="dark"] .card :is(.title, .price) {
+  color: var(--v20-ink);
+}
+
+/* ── Buttons ── */
+body.v20 button {
+  font: inherit;
+  border: 1px solid var(--v20-line);
+  padding: 11px 18px;
+  background: white;
+  border-radius: 8px;
+  color: var(--v20-ink);
+  cursor: pointer;
+}
+body.v20 button:hover { border-color: var(--v20-accent); }
+body.v20 button.primary,
+body.v20 .btn-primary {
+  background: var(--v20-accent);
+  color: #fff;
+  border-color: var(--v20-accent);
+}
+body.v20 button.primary:hover { background: var(--v20-accent-hover); }
+body.v20[data-public-theme="dark"] button {
+  background: #282321;
+  color: var(--v20-ink);
+  border-color: var(--v20-field-line);
+}
+body.v20[data-public-theme="dark"] button.primary {
+  background: var(--v20-accent);
+  color: #24171c;
+  border-color: var(--v20-accent);
+}
+
+/* ── Inputs ── */
+body.v20 input, body.v20 select, body.v20 textarea {
+  font: inherit;
+  border: 1px solid var(--v20-line);
+  border-radius: 8px;
+  padding: 10px 12px;
+  background: white;
+  color: var(--v20-ink);
+}
+body.v20[data-public-theme="dark"] input,
+body.v20[data-public-theme="dark"] select,
+body.v20[data-public-theme="dark"] textarea {
+  background: #282321;
+  color: var(--v20-ink);
+  border-color: var(--v20-field-line);
+}
+
+/* ── Panels / sections ── */
+body.v20 .panel, body.v20 .search {
+  background: white;
+  border: 1px solid var(--v20-line);
+  border-radius: 16px;
+}
+body.v20[data-public-theme="dark"] .panel,
+body.v20[data-public-theme="dark"] .search {
+  background: #282321;
+  border-color: var(--v20-line);
+  box-shadow: none;
+}
+
+/* ── Dialog ── */
+body.v20[data-public-theme="dark"] dialog {
+  background: #282321;
+  color: var(--v20-ink);
+  border-color: var(--v20-field-line);
+}
+body.v20[data-public-theme="dark"] dialog::backdrop { background: #000a; }
+
+/* ── Eyebrow / pill / badge ── */
+body.v20 .eyebrow, body.v20 .pill {
+  background: var(--v20-accent-soft);
+  color: var(--v20-accent-hover);
+  font-size: 11px;
+  letter-spacing: .08em;
+  padding: 4px 10px;
+  border-radius: 999px;
+}
+body.v20[data-public-theme="dark"] .eyebrow,
+body.v20[data-public-theme="dark"] .pill {
+  background: #442735;
+  color: #f4c6d4;
+}
+
+/* ── Wrap utility ── */
+body.v20 .wrap {
+  width: calc(100% - 48px);
+  max-width: 1200px;
+  margin-inline: auto;
+}
+
+/* ── Responsive ── */
+@media (max-width: 1100px) {
+  body.v20 .site-header,
+  body.v20 .crm-header,
+  body.v20 > header.site-header {
+    grid-template-columns: auto 1fr;
+    gap: 10px 18px;
+  }
+  body.v20 .site-header nav,
+  body.v20 .home-navigation {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    justify-content: flex-start;
+  }
+}
+@media (max-width: 760px) {
+  body.v20 .site-header,
+  body.v20 .crm-header,
+  body.v20 > header.site-header {
+    padding: 12px 16px;
+    gap: 12px 8px;
+  }
+  body.v20 .brand, body.v20 .logo { font-size: 23px; }
+  body.v20 .site-header nav a,
+  body.v20 .home-navigation a {
+    font-size: 12px;
+    padding: 9px 8px;
+    min-height: 36px;
+  }
+  body.v20 .wrap { width: calc(100% - 32px); }
+  body.v20 h1 { font-size: 32px; }
+}
+
+/* ── Submission / internal pages ── */
+body.v20.submission-page main { max-width: 720px; margin: 0 auto; padding: 32px 24px; }
+body.v20.submission-page .submission-back { color: var(--v20-muted); text-decoration: none; font-size: 14px; }
+body.v20 .internal-back-row { background: var(--v20-paper); padding: 12px 0; }
+body.v20 .internal-back-row .wrap { max-width: 1200px; }
+
+/* ── Mortgage page ── */
+body.v20 .mortgage-main { max-width: 800px; margin: 0 auto; padding: 32px 24px; }
+body.v20 .mortgage-main h1 { margin-bottom: 16px; }
+body.v20 .mortgage-main .calc-group { margin: 16px 0; }
+body.v20 .mortgage-main label { display: block; font-size: 14px; font-weight: 600; margin-bottom: 6px; color: var(--v20-ink); }
+body.v20 .mortgage-main input,
+body.v20 .mortgage-main select { width: 100%; }
+body.v20 .mortgage-main .calc-result { background: var(--v20-accent-soft); border-radius: 12px; padding: 16px; margin: 20px 0; }
+
+/* ── Agent directory ── */
+body.v20.agent-directory-page .agent-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+body.v20 .agent-card { border: 1px solid var(--v20-line); border-radius: 16px; padding: 20px; background: white; }
+body.v20[data-public-theme="dark"] .agent-card { background: #282321; border-color: var(--v20-line); }
+
+/* ── Requests page ── */
+body.v20 .request-card { border: 1px solid var(--v20-line); border-radius: 16px; padding: 18px; background: white; }
+body.v20[data-public-theme="dark"] .request-card { background: #282321; border-color: var(--v20-line); }
+
+/* ── Object detail ── */
+body.v20.object-detail-page .object-gallery { border-radius: 16px; overflow: hidden; }
+body.v20.object-detail-page .object-info { padding: 24px; }
+body.v20.object-detail-page .object-sidebar { border: 1px solid var(--v20-line); border-radius: 16px; padding: 20px; }
+body.v20[data-public-theme="dark"].object-detail-page .object-sidebar { background: #282321; border-color: var(--v20-line); }
+
+/* ── Profile page ── */
+body.v20.profile-page main { max-width: 800px; margin: 0 auto; padding: 32px 24px; }
+
+/* ── Newbuildings ── */
+body.v20 .nb-main { max-width: 1200px; margin: 0 auto; padding: 32px 24px; }
+body.v20 .nb-hero { text-align: center; padding: 32px 0; }
+body.v20 .nb-hero h1 { font-weight: 650; }
+body.v20 .nb-project { border: 1px solid var(--v20-line); border-radius: 16px; overflow: hidden; margin-bottom: 24px; }
+body.v20[data-public-theme="dark"] .nb-project { background: #282321; border-color: var(--v20-line); }
+
+/* ── Mortgage: override red buttons to burgundy ── */
+body.v20 .mortgage-cta,
+body.v20 .mortgage-btn,
+body.v20 [class*="mortgage"] .btn,
+body.v20 [class*="mortgage"] a[class*="btn"],
+body.v20 [class*="mortgage"] button[type="submit"] {
+  background: var(--v20-accent) !important;
+  border-color: var(--v20-accent) !important;
+  color: #fff !important;
+  border-radius: 10px;
+}
+
+/* ── Language selector overrides (agents, requests pages) ── */
+body.v20 .locale-buttons a,
+body.v20 .lang-switch a,
+body.v20 .language-selector a {
+  font-size: 12px !important;
+  padding: 4px 8px !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  border-radius: 6px;
+}
+
+/* ── Newbuildings header fix ── */
+body.v20 .nb-header .header-inner,
+body.v20 .nb-header {
+  display: grid !important;
+  grid-template-columns: auto minmax(0, 1fr) auto !important;
+  gap: 18px;
+  padding: 12px max(24px, calc((100vw - 1320px) / 2));
+  align-items: center;
+  background: var(--v20-paper);
+  border-bottom: 1px solid var(--v20-line);
+}
+body.v20 .nb-header .nb-phone-row { display: none; }
+
+/* Some legacy form controls use an explicit white background with high specificity. */
+body.v20[data-public-theme="dark"] :is(input, select, textarea) {
+  background: #282321 !important;
+  color: #eee9e2 !important;
+  border-color: #95847a !important;
+}
+body.v20[data-public-theme="dark"] :is(input, textarea)::placeholder {
+  color: #c1b6ae !important;
+  opacity: 1;
+}
+
+/* Keep the sign-in heading legible over its dark photo background. */
+body.v20 .registration-entry-card h2{color:#fff!important}

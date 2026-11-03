@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /profile
+Disallow: /messages
+Disallow: /my-listings
+Disallow: /my-requests
+Disallow: /viewing-history
+Sitemap: https://liberterra.kg/sitemap.xml
