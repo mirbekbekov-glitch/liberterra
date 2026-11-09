@@ -911,7 +911,7 @@ function requestObjects() {
   const intent=document.getElementById('requestIntent')?.value || state.requestDeal;
   const district=normalizeSearch(document.getElementById('requestZone')?.value || '');
   const type=document.getElementById('requestType')?.value || 'all';
-  return state.requests.filter(item=>(intent==='all'||item.requestDeal===intent)&&(!district||normalizeSearch(item.district).includes(district))&&(type==='all'||item.propertyType===type));
+  return sortRequestsNewestFirst(state.requests.filter(item=>(intent==='all'||item.requestDeal===intent)&&(!district||normalizeSearch(item.district).includes(district))&&(type==='all'||item.propertyType===type)));
 }
 
 function requestSubmittedTimestamp(value) {
@@ -1484,19 +1484,37 @@ function initSearch() {
   });
 }
 
+function districtsFromObjects() {
+  const found = new Map();
+  state.objects.forEach((item) => {
+    if (normalize(item.deal).toLowerCase() !== state.deal) return;
+    const name = normalize(item.district);
+    if (!name || name === "Район уточняется") return;
+    const key = normalizeSearch(name);
+    const entry = found.get(key);
+    if (entry) entry.count += 1;
+    else found.set(key, { name, count: 1 });
+  });
+  return [...found.values()].sort((a, b) => a.name.localeCompare(b.name, "ru"));
+}
+
 function updateDistrictOptions() {
   const current = state.district;
+  const derived = districtsFromObjects();
+  const districts = derived.length || state.objects.length
+    ? derived
+    : DISTRICT_OPTIONS.map((name) => ({ name, count: 0 }));
   const options = `
     <option value="all">Любой район</option>
-    ${DISTRICT_OPTIONS.map((district) => `<option value="${escapeHtml(district)}">${escapeHtml(district)}</option>`).join("")}
+    ${districts.map(({ name, count }) => `<option value="${escapeHtml(name)}">${escapeHtml(name)}${count ? ` (${count})` : ""}</option>`).join("")}
   `;
   if (districtFilter) {
     districtFilter.innerHTML = options;
-    districtFilter.value = DISTRICT_OPTIONS.includes(current) ? current : "all";
+    districtFilter.value = districts.some(({ name }) => name === current) ? current : "all";
   }
   if (heroDistrictOptions) {
-    heroDistrictOptions.innerHTML = DISTRICT_OPTIONS
-      .map((district) => `<option value="${escapeHtml(district)}"></option>`)
+    heroDistrictOptions.innerHTML = districts
+      .map(({ name, count }) => `<option value="${escapeHtml(name)}">${count ? `${count}` : ""}</option>`)
       .join("");
   }
   if (heroDistrictFilter) {
@@ -1586,6 +1604,7 @@ function initFieldFilters() {
     button.addEventListener("click", () => {
       state.deal = button.dataset.heroDeal || "аренда";
       if (state.deal === "продажа") state.occupancy = "all";
+      updateDistrictOptions();
       render();
     });
   });
@@ -1594,6 +1613,7 @@ function initFieldFilters() {
     button.addEventListener("click", () => {
       state.rentTerm = button.dataset.rentTerm || "monthly";
       state.deal = "аренда";
+      updateDistrictOptions();
       render();
     });
   });
@@ -1602,6 +1622,7 @@ function initFieldFilters() {
     button.addEventListener("click", () => {
       state.occupancy = button.dataset.heroOccupancy || "all";
       if (state.occupancy === "sharing") state.deal = "аренда";
+      updateDistrictOptions();
       render();
     });
   });
