@@ -93,10 +93,18 @@
 }
 .pv2-nav-icon {
   width: 18px; height: 18px;
-  opacity: 0.6;
   flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
-.pv2-sidebar-nav li a.active .pv2-nav-icon { opacity: 1; }
+.pv2-nav-icon svg {
+  width: 18px; height: 18px;
+  opacity: 0.55;
+  transition: opacity 150ms ease;
+}
+.pv2-sidebar-nav li a:hover .pv2-nav-icon svg,
+.pv2-sidebar-nav li a.active .pv2-nav-icon svg { opacity: 1; }
 .pv2-sidebar-bottom {
   margin-top: auto;
   padding: 12px 20px;
@@ -202,24 +210,26 @@ body.v20.profile-v2-runtime > .internal-back-row { display: none; }
 .pv2-profile-header {
   display: flex;
   align-items: flex-start;
-  gap: 20px;
-  padding: 20px 24px;
+  gap: 24px;
+  padding: 28px 28px;
   background: var(--v20-paper);
   border: 1px solid var(--v20-line);
-  border-radius: 10px;
+  border-radius: 14px;
   margin-bottom: 24px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
 }
 .pv2-avatar-wrapper { position: relative; flex-shrink: 0; }
 .pv2-avatar {
-  width: 72px; height: 72px;
+  width: 96px; height: 96px;
   border-radius: 50%;
   background: var(--v20-accent);
   color: #fff;
   display: grid;
   place-items: center;
-  font: 600 24px/1 'Onest', system-ui, sans-serif;
+  font: 600 36px/1 'Onest', system-ui, sans-serif;
   overflow: hidden;
   position: relative;
+  box-shadow: 0 0 0 3px var(--v20-paper), 0 0 0 5px var(--v20-accent-soft);
 }
 .pv2-avatar img {
   width: 100%; height: 100%;
@@ -241,8 +251,8 @@ body.v20.profile-v2-runtime > .internal-back-row { display: none; }
 .pv2-avatar-upload svg { width: 12px; height: 12px; color: var(--v20-muted); }
 .pv2-profile-info { flex: 1; min-width: 0; padding-top: 4px; }
 .pv2-profile-name {
-  font: 600 24px/1.2 'Onest', system-ui, sans-serif;
-  letter-spacing: -0.01em;
+  font: 700 28px/1.2 'Onest', system-ui, sans-serif;
+  letter-spacing: -0.02em;
   margin: 0;
   color: var(--v20-ink);
 }
@@ -328,6 +338,9 @@ body.v20.profile-v2-runtime > .internal-back-row { display: none; }
   box-shadow: 0 1px 3px rgba(0,0,0,0.06);
 }
 .pv2-stat-card.highlight { border-left: 3px solid var(--v20-accent); }
+.pv2-stat-card:nth-child(2) { border-left: 3px solid #1a7a3a; }
+.pv2-stat-card:nth-child(3) { border-left: 3px solid #2563a0; }
+.pv2-stat-card:nth-child(4) { border-left: 3px solid var(--v20-accent-secondary); }
 .pv2-stat-value {
   font: 700 32px/1 'Onest', system-ui, sans-serif;
   letter-spacing: -0.02em;
@@ -428,15 +441,26 @@ body.v20.profile-v2-runtime > .internal-back-row { display: none; }
   gap: 16px 32px;
 }
 .pv2-data-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
   font: 400 13px/1.2 'Onest', system-ui, sans-serif;
   color: var(--v20-muted);
   margin-bottom: 4px;
+}
+.pv2-data-icon {
+  width: 14px; height: 14px;
+  flex-shrink: 0;
+  opacity: 0.6;
 }
 .pv2-data-value {
   font: 500 15px/1.3 'Onest', system-ui, sans-serif;
   color: var(--v20-ink);
 }
-.pv2-data-value.empty { color: var(--v20-muted); }
+.pv2-data-value.empty {
+  color: var(--v20-muted);
+  font-style: italic;
+}
 .pv2-data-value.linked {
   display: flex;
   align-items: center;
@@ -692,7 +716,72 @@ html[data-theme="dark"] .pv2-cert-badge {
   .pv2-stat-value { font-size: 26px; }
 }
 
-/* Profile navigation and compact language control. */
+/* ── Workspace Toolbar ── */
+.pv2-workspace-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 0 0 16px;
+  margin-bottom: 24px;
+  border-bottom: 1px solid var(--v20-line);
+  font: 500 14px/1 'Onest', system-ui, sans-serif;
+}
+.pv2-toolbar-back {
+  color: var(--v20-accent);
+  text-decoration: none;
+  font-weight: 600;
+  white-space: nowrap;
+  transition: opacity 150ms ease;
+}
+.pv2-toolbar-back:hover { opacity: 0.8; }
+.pv2-toolbar-controls {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.pv2-toolbar-link {
+  padding: 7px 14px;
+  border: 1px solid var(--v20-line);
+  border-radius: 8px;
+  color: var(--v20-ink);
+  text-decoration: none;
+  font: 500 13px/1 'Onest', system-ui, sans-serif;
+  white-space: nowrap;
+  transition: border-color 150ms ease, color 150ms ease;
+}
+.pv2-toolbar-link:hover { border-color: var(--v20-accent); color: var(--v20-accent); }
+.pv2-toolbar-lang {
+  padding: 7px 10px;
+  border: 1px solid var(--v20-line);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--v20-ink);
+  font: 500 13px/1 'Onest', system-ui, sans-serif;
+  cursor: pointer;
+  min-width: 56px;
+}
+.pv2-toolbar-theme {
+  padding: 7px 10px;
+  border: 1px solid var(--v20-line);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--v20-ink);
+  font: 500 13px/1 'Onest', system-ui, sans-serif;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.pv2-toolbar-theme:hover,
+.pv2-toolbar-lang:hover { border-color: var(--v20-accent); }
+.pv2-toolbar-link:focus-visible,
+.pv2-toolbar-lang:focus-visible,
+.pv2-toolbar-theme:focus-visible,
+.pv2-toolbar-back:focus-visible {
+  outline: 2px solid var(--v20-accent);
+  outline-offset: 3px;
+}
+
+/* Legacy topbar fallback */
 body.v20.profile-page .pv2-topbar,
 body.v20.profile-v2-runtime .pv2-topbar {
   display: flex;
@@ -711,13 +800,6 @@ body.v20.profile-v2-runtime .pv2-back-to-site {
 }
 body.v20.profile-page .pv2-back-to-site:hover,
 body.v20.profile-v2-runtime .pv2-back-to-site:hover { text-decoration: underline; }
-body.v20.profile-page .pv2-back-to-site:focus-visible,
-body.v20.profile-v2-runtime .pv2-back-to-site:focus-visible,
-body.v20.profile-page .pv2-language-picker select:focus-visible,
-body.v20.profile-v2-runtime .pv2-language-picker select:focus-visible {
-  outline: 2px solid var(--v20-accent);
-  outline-offset: 3px;
-}
 body.v20.profile-page .pv2-language-picker,
 body.v20.profile-v2-runtime .pv2-language-picker {
   position: static;
@@ -743,7 +825,49 @@ body.v20.profile-v2-runtime .pv2-language-picker select {
   font: inherit;
   cursor: pointer;
 }
+
+/* ── Dark Theme ── */
+body.v20.profile-page[data-public-theme="dark"] .pv2-profile-header,
+body.v20.profile-page[data-public-theme="dark"] .pv2-stat-card,
+body.v20.profile-page[data-public-theme="dark"] .pv2-action-btn:not(.primary),
+body.v20.profile-page[data-public-theme="dark"] .pv2-data-grid {
+  background: #282321;
+  border-color: var(--v20-line);
+  box-shadow: none;
+}
+body.v20.profile-page[data-public-theme="dark"] .pv2-avatar {
+  box-shadow: 0 0 0 3px var(--v20-paper), 0 0 0 5px var(--v20-accent-soft);
+}
+body.v20.profile-page[data-public-theme="dark"] .pv2-workspace-toolbar {
+  border-bottom-color: var(--v20-line);
+}
+body.v20.profile-page[data-public-theme="dark"] .pv2-toolbar-link,
+body.v20.profile-page[data-public-theme="dark"] .pv2-toolbar-lang,
+body.v20.profile-page[data-public-theme="dark"] .pv2-toolbar-theme {
+  border-color: var(--v20-line);
+  color: var(--v20-ink);
+}
+body.v20.profile-page[data-public-theme="dark"] .pv2-toolbar-lang option {
+  background: #282321;
+}
+body.v20.profile-page[data-public-theme="dark"] .pv2-stat-card:nth-child(2) { border-left-color: #4ade80; }
+body.v20.profile-page[data-public-theme="dark"] .pv2-stat-card:nth-child(3) { border-left-color: #60a5fa; }
+body.v20.profile-page[data-public-theme="dark"] .pv2-stat-card:nth-child(4) { border-left-color: #f3c477; }
+body.v20.profile-page[data-public-theme="dark"] .pv2-sidebar-nav li a:hover {
+  background: #342a29;
+}
+body.v20.profile-page[data-public-theme="dark"] .pv2-sidebar-nav li a.active {
+  background: var(--v20-accent-soft);
+}
+body.v20.profile-page[data-public-theme="dark"] .pv2-mobile-header,
+body.v20.profile-page[data-public-theme="dark"] .pv2-mobile-nav {
+  background: var(--v20-paper);
+  border-color: var(--v20-line);
+}
+
 @media (max-width: 480px) {
+  .pv2-workspace-toolbar { gap: 8px; flex-wrap: wrap; }
+  .pv2-toolbar-link { display: none; }
   body.v20.profile-page .pv2-topbar,
   body.v20.profile-v2-runtime .pv2-topbar { gap: 8px; margin-bottom: 10px; }
   body.v20.profile-page .pv2-language-picker span,
@@ -751,3 +875,10 @@ body.v20.profile-v2-runtime .pv2-language-picker select {
   body.v20.profile-page .pv2-language-picker select,
   body.v20.profile-v2-runtime .pv2-language-picker select { min-width: 130px; max-width: 45vw; }
 }
+
+/* ── Mobile Nav SVG Icons ── */
+.pv2-mobile-nav a svg {
+  width: 22px; height: 22px;
+  opacity: 0.6;
+}
+.pv2-mobile-nav a.active svg { opacity: 1; }

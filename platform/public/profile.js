@@ -168,20 +168,20 @@
         </div>
         ${showAgentCta ? '<div class="pv2-agent-cta"><div class="pv2-agent-cta-icon" aria-hidden="true">⌂</div><div class="pv2-agent-cta-text"><strong>Стать риелтором</strong><span>Создайте профиль агента и размещайте объекты</span></div><button class="pv2-btn" type="button" data-agent-open>Подать заявку</button></div>' : ""}
         <div class="pv2-quick-actions">
-          <a class="pv2-action-btn primary" href="/add-object.html"><span class="pv2-action-icon" aria-hidden="true">＋</span><span class="pv2-action-text"><strong>Разместить объект</strong><span>Добавить в каталог</span></span></a>
-          <a class="pv2-action-btn" href="/add-request.html"><span class="pv2-action-icon" aria-hidden="true">⌕</span><span class="pv2-action-text"><strong>Оставить заявку</strong><span>Запрос на подбор</span></span></a>
+          <a class="pv2-action-btn primary" href="/add-object.html"><span class="pv2-action-icon" aria-hidden="true"><svg width="20" height="20" fill="none" viewBox="0 0 20 20"><path d="M10 4v12M4 10h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span><span class="pv2-action-text"><strong>Разместить объект</strong><span>Добавить в каталог</span></span></a>
+          <a class="pv2-action-btn" href="/add-request.html"><span class="pv2-action-icon" aria-hidden="true"><svg width="20" height="20" fill="none" viewBox="0 0 20 20"><circle cx="8.5" cy="8.5" r="5.5" stroke="currentColor" stroke-width="1.5"/><path d="M13 13l4.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span><span class="pv2-action-text"><strong>Оставить заявку</strong><span>Запрос на подбор</span></span></a>
           ${emailLink}
         </div>
         <section class="pv2-section"><div class="pv2-section-header"><h3 class="pv2-section-title">Личные данные</h3><span class="pv2-data-edit-note" title="Пока нет подтверждённого API сохранения профиля">Редактирование появится позже</span></div>
           <div class="pv2-data-grid">
-            <div><div class="pv2-data-label">Имя</div><div class="pv2-data-value">${escapeHtml(user.name || "Не указано")}</div></div>
-            <div><div class="pv2-data-label">Email</div><div class="pv2-data-value">${escapeHtml(email || "Не указан")}</div></div>
-            <div><div class="pv2-data-label">Телефон</div><div class="pv2-data-value">${escapeHtml(phone || "Не указан")}</div></div>
-            <div><div class="pv2-data-label">Агентство</div><div class="pv2-data-value${agency ? "" : " empty"}">${escapeHtml(agency || "Не указано")}</div></div>
-            ${specialization ? `<div><div class="pv2-data-label">Специализация</div><div class="pv2-data-value">${escapeHtml(specialization)}</div></div>` : ""}
-            <div><div class="pv2-data-label">Telegram</div><div class="pv2-data-value">${user.telegram_id || hasTelegramSession ? "Привязан" : "Не привязан"}</div></div>
-            <div><div class="pv2-data-label">Дата регистрации</div><div class="pv2-data-value">${escapeHtml(registrationLabel)}</div></div>
-            ${certificate ? `<div class="pv2-data-full"><div class="pv2-data-label">Сертификат аттестации риэлтора</div><div class="pv2-data-value linked">№ ${escapeHtml(certificate)}</div></div>` : ""}
+            <div><div class="pv2-data-label"><svg class="pv2-data-icon" width="14" height="14" fill="none" viewBox="0 0 14 14"><circle cx="7" cy="4.5" r="2.5" stroke="currentColor" stroke-width="1.3"/><path d="M2 12.5c0-2.5 2.2-4 5-4s5 1.5 5 4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>Имя</div><div class="pv2-data-value">${escapeHtml(user.name || "Не указано")}</div></div>
+            <div><div class="pv2-data-label"><svg class="pv2-data-icon" width="14" height="14" fill="none" viewBox="0 0 14 14"><rect x="1.5" y="3" width="11" height="8" rx="1.5" stroke="currentColor" stroke-width="1.2"/><path d="M2 4l5 3.5L12 4" stroke="currentColor" stroke-width="1.2"/></svg>Email</div><div class="pv2-data-value">${escapeHtml(email || "Не указан")}</div></div>
+            <div><div class="pv2-data-label"><svg class="pv2-data-icon" width="14" height="14" fill="none" viewBox="0 0 14 14"><path d="M5.5 2H4a1.5 1.5 0 00-1.5 1.5c0 4.7 3.8 8.5 8.5 8.5A1.5 1.5 0 0012.5 10.5V9l-2.5-1-1 1.5c-1.5-.7-2.8-2-3.5-3.5L7 5 5.5 2z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/></svg>Телефон</div><div class="pv2-data-value">${escapeHtml(phone || "Не указан")}</div></div>
+            <div><div class="pv2-data-label"><svg class="pv2-data-icon" width="14" height="14" fill="none" viewBox="0 0 14 14"><rect x="2" y="3" width="10" height="9" rx="1" stroke="currentColor" stroke-width="1.2"/><path d="M5 6h1.5M5 8.5h1.5M7.5 6H9M7.5 8.5H9M5.5 12V10.5h3V12" stroke="currentColor" stroke-width="1.1"/></svg>Агентство</div><div class="pv2-data-value${agency ? "" : " empty"}">${escapeHtml(agency || "Не указано")}</div></div>
+            ${specialization ? `<div><div class="pv2-data-label"><svg class="pv2-data-icon" width="14" height="14" fill="none" viewBox="0 0 14 14"><path d="M7 1.5l1.8 3.6 4 .6-2.9 2.8.7 4L7 10.7 3.4 12.5l.7-4L1.2 5.7l4-.6z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/></svg>Специализация</div><div class="pv2-data-value">${escapeHtml(specialization)}</div></div>` : ""}
+            <div><div class="pv2-data-label"><svg class="pv2-data-icon" width="14" height="14" fill="none" viewBox="0 0 14 14"><path d="M12.5 2L5.5 9l-2.5 1 1-2.5L11 .5l1.5 1.5z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M1.5 12.5h11" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>Telegram</div><div class="pv2-data-value">${user.telegram_id || hasTelegramSession ? "Привязан" : "Не привязан"}</div></div>
+            <div><div class="pv2-data-label"><svg class="pv2-data-icon" width="14" height="14" fill="none" viewBox="0 0 14 14"><rect x="1.5" y="3" width="11" height="9" rx="1.5" stroke="currentColor" stroke-width="1.2"/><path d="M1.5 6.5h11M4.5 1.5v3M9.5 1.5v3" stroke="currentColor" stroke-width="1.2"/></svg>Дата регистрации</div><div class="pv2-data-value">${escapeHtml(registrationLabel)}</div></div>
+            ${certificate ? `<div class="pv2-data-full"><div class="pv2-data-label"><svg class="pv2-data-icon" width="14" height="14" fill="none" viewBox="0 0 14 14"><path d="M7 1L2 3.5v4c0 3.5 5 5.5 5 5.5s5-2 5-5.5v-4z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M5.5 7l1.5 1.5L9 5.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>Сертификат аттестации риэлтора</div><div class="pv2-data-value linked">№ ${escapeHtml(certificate)}</div></div>` : ""}
           </div>
         </section>
         <button class="profile-logout pv2-btn pv2-btn-secondary" type="button" data-profile-logout>Выйти из аккаунта</button>
@@ -261,6 +261,21 @@
     modal.setAttribute("aria-hidden", "true");
     profileNode.querySelector("[data-pv2-avatar-edit]")?.focus();
   });
+  const toolbarControls = document.querySelector('.pv2-toolbar-controls');
+  if (toolbarControls && !toolbarControls.querySelector('.pv2-toolbar-theme')) {
+    const themeBtn = document.createElement('button');
+    themeBtn.type = 'button';
+    themeBtn.className = 'pv2-toolbar-theme';
+    const isDark = () => document.body.getAttribute('data-public-theme') === 'dark';
+    themeBtn.textContent = isDark() ? '☀ Светлая' : '☾ Тёмная';
+    themeBtn.addEventListener('click', () => {
+      const next = isDark() ? 'light' : 'dark';
+      document.body.setAttribute('data-public-theme', next);
+      try { localStorage.setItem('liberterra_theme', next); } catch (_) {}
+      themeBtn.textContent = next === 'dark' ? '☀ Светлая' : '☾ Тёмная';
+    });
+    toolbarControls.append(themeBtn);
+  }
   loadProfile();
 })();
 
