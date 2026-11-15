@@ -48,7 +48,7 @@ body.v20.agent-crm-page .crm-header-inner {
   min-height: 72px;
   max-width: 1200px;
 }
-body.v20.agent-crm-page .crm-main { padding-top: 38px; }
+body.v20.agent-crm-page .crm-main { padding-top: 16px; }
 body.v20.agent-crm-page .crm-page-heading h1 { letter-spacing: -1px; }
 body.v20.agent-crm-page .crm-theme-toggle { margin-left: auto; white-space: nowrap; }
 body.v20.agent-crm-page .crm-eyebrow { color: var(--v20-accent); }
