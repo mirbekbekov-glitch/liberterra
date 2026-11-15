@@ -88,6 +88,24 @@ body.v20.agent-crm-page[data-public-theme="dark"] :is(.crm-panel,.crm-dialog,.cr
   color: var(--v20-ink);
   border-color: var(--v20-line);
 }
+body.v20.agent-crm-page[data-public-theme="dark"] .crm-workspace-toolbar {
+  border-bottom-color: var(--v20-line);
+}
+body.v20.agent-crm-page[data-public-theme="dark"] .crm-toolbar-back {
+  color: #e8a0b5;
+}
+body.v20.agent-crm-page[data-public-theme="dark"] .crm-toolbar-link {
+  border-color: var(--v20-line);
+  color: var(--v20-ink);
+}
+body.v20.agent-crm-page[data-public-theme="dark"] .crm-toolbar-lang,
+body.v20.agent-crm-page[data-public-theme="dark"] .crm-toolbar-controls .crm-theme-toggle {
+  border-color: var(--v20-line);
+  color: var(--v20-ink);
+}
+body.v20.agent-crm-page[data-public-theme="dark"] .crm-toolbar-lang option {
+  background: #282321;
+}
 body.v20.agent-crm-page[data-public-theme="dark"] :is(.crm-panel-heading p,.crm-object-location,.crm-actuality,.crm-counter span,.crm-page-heading p:not(.crm-eyebrow)) {
   color: var(--v20-muted);
 }

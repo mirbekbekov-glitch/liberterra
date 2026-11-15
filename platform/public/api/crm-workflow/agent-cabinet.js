@@ -4,8 +4,8 @@
   const root = document.querySelector("#agentCabinet");
   if (!root) return;
 
-  const headerRow = document.querySelector(".crm-header-inner");
-  if (headerRow && !headerRow.querySelector(".crm-theme-toggle")) {
+  const toolbarControls = document.querySelector(".crm-toolbar-controls") || document.querySelector(".crm-header-inner");
+  if (toolbarControls && !toolbarControls.querySelector(".crm-theme-toggle")) {
     const themeButton = document.createElement("button");
     themeButton.type = "button";
     themeButton.className = "v20-theme-toggle crm-theme-toggle";
@@ -15,15 +15,15 @@
       ? savedTheme : (window.matchMedia?.("(prefers-color-scheme: dark)").matches ? "dark" : "light");
     const applyTheme = () => {
       document.body.dataset.publicTheme = theme;
-      themeButton.textContent = theme === "dark" ? "Светлая тема" : "Тёмная тема";
-      themeButton.setAttribute("aria-label", themeButton.textContent);
+      themeButton.textContent = theme === "dark" ? "☀ Светлая" : "☾ Тёмная";
+      themeButton.setAttribute("aria-label", theme === "dark" ? "Переключить на светлую тему" : "Переключить на тёмную тему");
     };
     themeButton.addEventListener("click", () => {
       theme = theme === "dark" ? "light" : "dark";
       try { localStorage.setItem("v20-public-theme", theme); } catch (_) {}
       applyTheme();
     });
-    headerRow.querySelector(".crm-catalog-link")?.before(themeButton);
+    toolbarControls.append(themeButton);
     applyTheme();
   }
 
@@ -120,7 +120,7 @@
     const currentStatus = statusKey(item.status);
     const actualAt = item.actuality_at || item.updated_at;
     const photos = photoCandidates(item.photo_url);
-    const facts = [text(item.deal), text(item.area) && `Площадь: ${text(item.area)}${/[мm]/i.test(text(item.area)) ? "" : " м²"}`, text(item.rooms) && `Комнат: ${text(item.rooms)}`, text(item.floor) && `Этаж: ${text(item.floor)}`].filter(Boolean);
+    const facts = [text(item.deal), text(item.area) && `Площадь: ${text(item.area)}${/[ммm]/i.test(text(item.area)) ? "" : " м²"}`, text(item.rooms) && `Комнат: ${text(item.rooms)}`, text(item.floor) && `Этаж: ${text(item.floor)}`].filter(Boolean);
     return `
       <article class="crm-object-card" data-crm-object-id="${escapeHtml(item.id)}">
         <a class="crm-object-photo-link" href="/object.html?id=${encodeURIComponent(item.id)}" aria-label="Открыть ${escapeHtml(objectLabel(item))}">
