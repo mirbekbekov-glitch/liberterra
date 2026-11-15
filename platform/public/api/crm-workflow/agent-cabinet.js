@@ -219,8 +219,17 @@
   function render() {
     const dashboard = state.dashboard;
     if (!dashboard) return;
+    const heading = root.querySelector(".crm-page-heading");
+    heading.querySelector("h1").textContent = dashboard.agent.name;
     root.querySelector("[data-crm-agent-summary]").textContent =
-      `${dashboard.agent.name} · ${specializationLabel(dashboard.agent.specialization)}`;
+      `Агент · ${specializationLabel(dashboard.agent.specialization)}`;
+    if (!heading.querySelector(".crm-edit-profile-link")) {
+      const editLink = document.createElement("a");
+      editLink.className = "crm-edit-profile-link";
+      editLink.href = "/profile.html";
+      editLink.innerHTML = '<svg width="16" height="16" fill="none" viewBox="0 0 18 18"><path d="M13.5 2.5l2 2L6 14H4v-2l9.5-9.5z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg> Редактировать профиль';
+      heading.querySelector("div").append(editLink);
+    }
     const publicLink = root.querySelector("[data-crm-public-link]");
     if (dashboard.agent.public_ref) {
       publicLink.href = `/agent-public.html?agent=${encodeURIComponent(dashboard.agent.public_ref)}`;
