@@ -951,3 +951,19 @@ body.v20.profile-page #profileCard:has(>.pv2-readiness)>.pv2-section.pv2-span-fu
 body.v20.profile-page #profileCard:has(>.pv2-readiness)>.pv2-section>.pv2-section-header{min-height:72px;align-items:flex-start}
 body.v20.profile-page #profileCard:has(>.pv2-readiness)>.pv2-section .pv2-section-description{max-width:none}
 }
+
+/* Profile density 20261116-2: tighter cards, larger key text, three columns on wide screens. */
+body.v20.profile-page .pv2-profile-header:not(#lt0){padding:18px 20px}
+body.v20.profile-page .pv2-readiness:not(#lt0){padding:16px 20px}
+body.v20.profile-page .pv2-data-grid:not(#lt0){padding:14px 18px;gap:12px 24px}
+body.v20.profile-page .pv2-profile-name:not(#lt0){font-size:22px!important}
+body.v20.profile-page .pv2-data-value:not(#lt0){font-size:18px}
+body.v20.profile-page .pv2-readiness-chip:not(#lt0){font-size:14px}
+html[data-theme=dark] body.v20.profile-page .pv2-readiness.is-complete .pv2-readiness-value:not(#lt0){color:#7bdcab!important}
+@media(min-width:1500px){
+body.v20.profile-page #profileCard:has(>.pv2-readiness){grid-template-columns:repeat(6,minmax(0,1fr))}
+body.v20.profile-page #profileCard:has(>.pv2-readiness)>:is(.pv2-profile-header,.pv2-readiness,.pv2-section){grid-column:span 3}
+body.v20.profile-page #profileCard:has(>.pv2-professional)>.pv2-section,body.v20.profile-page #profileCard:has(>.pv2-professional)>.pv2-section.pv2-span-full{grid-column:span 2}
+body.v20.profile-page #profileCard:has(>.pv2-readiness)>.pv2-section>.pv2-section-header{min-height:84px}
+body.v20.profile-page #profileCard:has(>.pv2-readiness) .pv2-professional .pv2-data-full{grid-column:1/-1}
+}

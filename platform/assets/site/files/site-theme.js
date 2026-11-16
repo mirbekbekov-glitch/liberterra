@@ -460,12 +460,14 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
     + '.lt-frame-back:hover{background:#f2f0ed}'
     + '.lt-frame-title{font-weight:600;font-size:17px}'
     + '.lt-frame-ext{margin-left:auto;font-size:14px;opacity:.65;text-decoration:none;color:inherit}'
+    + '.lt-frame-lang{margin-left:auto;height:34px;padding:0 8px;border:1px solid rgba(0,0,0,.14);border-radius:9px;background:#fff;color:inherit;font:inherit;font-size:14px;cursor:pointer}'
+    + '.lt-frame-lang + .lt-frame-ext{margin-left:0}'
     + '.lt-frame-wrap{position:relative;min-height:280px}'
     + '.lt-frame{width:100%;border:0;display:block;background:transparent;transition:opacity .18s ease}'
     + '.lt-frame-spin{position:absolute;left:0;right:0;top:40px;text-align:center;font-size:15px;opacity:.6}'
     + 'body.lt-frame-open .crm-workflow-toolbar,body.lt-frame-open .crm-request-notice{display:none!important}';
 
-  var HIDE = ['.public-header','.public-footer','.owner-object-shell','.owner-object-mobile-nav','.app-bottom-nav','.pv2-mobile-nav','.profile-v2-sidebar','.back-link','.pv2-mobile-header','.pv2-topbar .lt-theme-toggle','.pv2-back-to-site','.pv2-page-title','.pv2-page-summary','.pv2-stats-grid','.pv2-quick-actions','.profile-help-menu'];
+  var HIDE = ['.pv2-topbar','.public-header','.public-footer','.owner-object-shell','.owner-object-mobile-nav','.app-bottom-nav','.pv2-mobile-nav','.profile-v2-sidebar','.back-link','.pv2-mobile-header','.pv2-topbar .lt-theme-toggle','.pv2-back-to-site','.pv2-page-title','.pv2-page-summary','.pv2-stats-grid','.pv2-quick-actions','.profile-help-menu'];
   var INNER = '';
   for (var q = 0; q < HIDE.length; q++) INNER += (q ? ',' : '') + 'html.lt-embed body ' + HIDE[q] + ':not(#lt0)';
   INNER += '{display:none!important}'
@@ -500,7 +502,23 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
     back.addEventListener('click', function(){ shut(kind); });
     var ttl = document.createElement('span'); ttl.className = 'lt-frame-title';
     var ext = document.createElement('a'); ext.className = 'lt-frame-ext'; ext.target = '_blank'; ext.rel = 'noopener'; ext.textContent = 'Отдельной страницей';
-    bar.appendChild(back); bar.appendChild(ttl); bar.appendChild(ext);
+    bar.appendChild(back); bar.appendChild(ttl);
+    if (kind === 'profile') {
+      var lang = document.createElement('select');
+      lang.className = 'lt-frame-lang';
+      lang.setAttribute('aria-label', 'Выбор языка');
+      [['ru', 'RU'], ['ky', 'KG'], ['en', 'EN'], ['zh', '中文']].forEach(function(o){ var op = document.createElement('option'); op.value = o[0]; op.textContent = o[1]; lang.appendChild(op); });
+      var cur = 'ru';
+      try { cur = localStorage.getItem('liberterra_language_v1') || (window.LiberterraI18n && window.LiberterraI18n.language) || 'ru'; } catch (e) {}
+      lang.value = cur;
+      lang.addEventListener('change', function(){
+        try { if (window.LiberterraI18n) window.LiberterraI18n.setLanguage(lang.value); } catch (e) {}
+        try { var w = p.querySelector('.lt-frame').contentWindow; if (w && w.LiberterraI18n) w.LiberterraI18n.setLanguage(lang.value); } catch (e) {}
+      });
+      window.addEventListener('liberterra:languagechange', function(ev){ var l = ev.detail && ev.detail.language; if (l) lang.value = l; });
+      bar.appendChild(lang);
+    }
+    bar.appendChild(ext);
     var wrap = document.createElement('div'); wrap.className = 'lt-frame-wrap';
     var spin = document.createElement('div'); spin.className = 'lt-frame-spin'; spin.textContent = 'Загружаю…';
     var f = document.createElement('iframe'); f.className = 'lt-frame';
