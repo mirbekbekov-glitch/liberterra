@@ -47,6 +47,24 @@
   };
   const objectById = new Map(rows.map((row) => [clean(row.id), row]));
   const profileCacheKey = "liberterra-profile-v2-view";
+  const profileCacheVersion = 2;
+  const formatPhone = (raw) => {
+    const text = String(raw || "").trim();
+    const digits = text.replace(/\D/g, "");
+    return /^996\d{9}$/.test(digits) ? `+996 (${digits.slice(3, 6)}) ${digits.slice(6, 9)}-${digits.slice(9)}` : text;
+  };
+  const specializationLabels = { sale: "Продажа", rent: "Аренда" };
+  const fieldIcons = {
+    user: '<circle cx="12" cy="8.2" r="3.6"/><path d="M4.8 20c0-3.6 3.2-5.6 7.2-5.6s7.2 2 7.2 5.6"/>',
+    mail: '<rect x="3.2" y="5.2" width="17.6" height="13.6" rx="2.2"/><path d="m4 7.2 8 6 8-6"/>',
+    phone: '<path d="M6.6 3.8h2.6l1.3 4-1.9 1.4a11 11 0 0 0 6.2 6.2l1.4-1.9 4 1.3v2.6a2 2 0 0 1-2.2 2A16.4 16.4 0 0 1 4.6 6a2 2 0 0 1 2-2.2z"/>',
+    building: '<path d="M5 20.5V5.2a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v15.3"/><path d="M15 10.2h3.2a1 1 0 0 1 1 1v9.3"/><path d="M3.5 20.5h17"/><path d="M8.3 8h3.4M8.3 11.5h3.4M8.3 15h3.4"/>',
+    tag: '<path d="M3.8 12.6V5a1.2 1.2 0 0 1 1.2-1.2h7.6l7.3 7.3a1.2 1.2 0 0 1 0 1.7l-7.1 7.1a1.2 1.2 0 0 1-1.7 0z"/><circle cx="8.2" cy="8.2" r="1.2"/>',
+    send: '<path d="M20.5 4 3.6 10.6l5.6 2.2 2.2 5.6z"/><path d="m9.2 12.8 4.6-3.6"/>',
+    calendar: '<rect x="3.6" y="5" width="16.8" height="15.4" rx="2.2"/><path d="M3.6 9.8h16.8M8 3.2v3.4M16 3.2v3.4"/>',
+    award: '<circle cx="12" cy="9.2" r="5.2"/><path d="m8.8 13.6-1.4 6.6 4.6-2.4 4.6 2.4-1.4-6.6"/>',
+  };
+  const fieldIcon = (name) => `<svg class="pv2-data-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${fieldIcons[name] || ""}</svg>`;
   const profileCacheViewer = () => {
     try {
       const record = JSON.parse(localStorage.getItem("liberterra-verified-web-user") || "null");
@@ -98,6 +116,7 @@
       const kept = JSON.parse(localStorage.getItem(profileCacheKey) || "null");
       if (kept?.viewer && kept.viewer === profileCacheViewer() && Date.now() - Number(kept.t) < 86400000) cached = kept;
     }
+    if (cached?.v !== profileCacheVersion) cached = null;
     if (cached?.profileHtml) profileNode.innerHTML = cached.profileHtml;
     if (cached?.favoritesHtml) favoritesNode.innerHTML = cached.favoritesHtml;
   } catch (_) {}
@@ -158,7 +177,7 @@
       const showAgentCta = Boolean(window.LiberterraAgentAccess?.getState?.()?.isTelegramSession) && !isAgent && !["pending", "approved", "rejected", "blocked"].includes(agentRole);
       const avatarEditorEnabled = Boolean(user.can_edit_photo && window.LiberterraAgentPhoto?.editor);
       const contactHtml = phone
-        ? `<a class="pv2-profile-phone" href="tel:${escapeHtml(phone.replace(/[^+\d]/g, ""))}">${escapeHtml(phone)}</a>`
+        ? `<a class="pv2-profile-phone" href="tel:${escapeHtml(phone.replace(/[^+\d]/g, ""))}">${escapeHtml(formatPhone(phone))}</a>`
         : email ? `<span class="pv2-profile-phone">${escapeHtml(email)}</span>` : "";
       // CRM authorization is enforced by its API; profile labels can lag the
       // agent's actual access, so do not hide the entry based on account_type.
@@ -169,7 +188,7 @@
             <h2 class="pv2-profile-name">${escapeHtml(user.name || "Пользователь Liberterra")}</h2>
             <div class="pv2-profile-meta"><span class="pv2-role-badge">${escapeHtml(displayRole)}</span>${contactHtml}</div>
           </div>
-          ${avatarEditorEnabled ? '<div class="pv2-profile-actions"><button class="pv2-btn pv2-btn-secondary" type="button" data-pv2-avatar-edit>Изменить фото</button></div>' : ""}
+          ${avatarEditorEnabled ? '<div class="pv2-profile-actions"><button class="pv2-btn pv2-btn-secondary" type="button" data-pv2-avatar-edit><svg class="pv2-btn-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8.5h3l1.6-2.4h6.8L17 8.5h3a1 1 0 0 1 1 1V18a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5a1 1 0 0 1 1-1z"/><circle cx="12" cy="13.3" r="3.3"/></svg>Изменить фото</button></div>' : ""}
         </div>
         <div class="pv2-stats-grid" aria-label="Статистика профиля">
           <a class="pv2-stat-card highlight" href="/my-listings.html"><div class="pv2-stat-value">${Number(response.own_object_count || 0)}</div><div class="pv2-stat-label">Мои объекты</div><div class="pv2-stat-sub">всего</div></a>
@@ -184,16 +203,16 @@
           <a class="pv2-action-btn" href="/agent-cabinet.html"><span class="pv2-action-icon" aria-hidden="true">▣</span><span class="pv2-action-text"><strong>Открыть кабинет</strong><span>Рабочая база</span></span></a>
           ${emailLink}
         </div>
-        <section class="pv2-section"><div class="pv2-section-header"><h3 class="pv2-section-title">Личные данные</h3><span class="pv2-data-edit-note" title="Пока нет подтверждённого API сохранения профиля">Редактирование появится позже</span></div>
+        <section class="pv2-section"><div class="pv2-section-header"><h3 class="pv2-section-title">Личные данные</h3><button class="pv2-btn pv2-btn-secondary pv2-edit-soon" type="button" disabled title="Редактирование личных данных появится позже"><svg class="pv2-btn-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4.2L19.4 8.8a2 2 0 0 0 0-2.8l-1.4-1.4a2 2 0 0 0-2.8 0L4 15.8z"/><path d="m13.6 6.2 4.2 4.2"/></svg>Редактировать<span class="pv2-soon-badge">скоро</span></button></div>
           <div class="pv2-data-grid">
-            <div><div class="pv2-data-label">Имя</div><div class="pv2-data-value">${escapeHtml(user.name || "Не указано")}</div></div>
-            <div><div class="pv2-data-label">Email</div><div class="pv2-data-value">${escapeHtml(email || "Не указан")}</div></div>
-            <div><div class="pv2-data-label">Телефон</div><div class="pv2-data-value">${escapeHtml(phone || "Не указан")}</div></div>
-            <div><div class="pv2-data-label">Агентство</div><div class="pv2-data-value${agency ? "" : " empty"}">${escapeHtml(agency || "Не указано")}</div></div>
-            ${specialization ? `<div><div class="pv2-data-label">Специализация</div><div class="pv2-data-value">${escapeHtml(specialization)}</div></div>` : ""}
-            <div><div class="pv2-data-label">Telegram</div><div class="pv2-data-value">${user.telegram_id || hasTelegramSession ? "Привязан" : "Не привязан"}</div></div>
-            <div><div class="pv2-data-label">Дата регистрации</div><div class="pv2-data-value">${escapeHtml(registrationLabel)}</div></div>
-            ${certificate ? `<div class="pv2-data-full"><div class="pv2-data-label">Сертификат аттестации риэлтора</div><div class="pv2-data-value linked">№ ${escapeHtml(certificate)}</div></div>` : ""}
+            <div><div class="pv2-data-label">${fieldIcon("user")}Имя</div><div class="pv2-data-value">${escapeHtml(user.name || "Не указано")}</div></div>
+            <div><div class="pv2-data-label">${fieldIcon("mail")}Email</div><div class="pv2-data-value">${escapeHtml(email || "Не указан")}</div></div>
+            <div><div class="pv2-data-label">${fieldIcon("phone")}Телефон</div><div class="pv2-data-value">${escapeHtml(formatPhone(phone) || "Не указан")}</div></div>
+            <div><div class="pv2-data-label">${fieldIcon("building")}Агентство</div><div class="pv2-data-value${agency ? "" : " empty"}">${escapeHtml(agency || "Не указано")}</div></div>
+            ${specialization ? `<div><div class="pv2-data-label">${fieldIcon("tag")}Специализация</div><div class="pv2-data-value"><span class="pv2-tag">${escapeHtml(specializationLabels[specialization] || specialization)}</span></div></div>` : ""}
+            <div><div class="pv2-data-label">${fieldIcon("send")}Telegram</div><div class="pv2-data-value">${user.telegram_id || hasTelegramSession ? "Привязан" : "Не привязан"}</div></div>
+            ${registrationLabel === "—" ? "" : `<div><div class="pv2-data-label">${fieldIcon("calendar")}Дата регистрации</div><div class="pv2-data-value">${escapeHtml(registrationLabel)}</div></div>`}
+            ${certificate ? `<div class="pv2-data-full"><div class="pv2-data-label">${fieldIcon("award")}Сертификат аттестации риэлтора</div><div class="pv2-data-value linked">№ ${escapeHtml(certificate)}</div></div>` : ""}
           </div>
         </section>
         <button class="profile-logout pv2-btn pv2-btn-secondary" type="button" data-profile-logout>Выйти из аккаунта</button>
@@ -213,8 +232,8 @@
         const badge = document.querySelector(`.pv2-sidebar-nav .badge[data-count="${key}"]`);
         if (badge) badge.textContent = String(count);
       }
-      try { sessionStorage.setItem(profileCacheKey, JSON.stringify({ profileHtml: profileNode.innerHTML, favoritesHtml: favoritesNode.innerHTML })); } catch (_) {}
-      try { const viewer = profileCacheViewer(); if (viewer) localStorage.setItem(profileCacheKey, JSON.stringify({ t: Date.now(), viewer, profileHtml: profileNode.innerHTML, favoritesHtml: favoritesNode.innerHTML })); } catch (_) {}
+      try { sessionStorage.setItem(profileCacheKey, JSON.stringify({ v: profileCacheVersion, profileHtml: profileNode.innerHTML, favoritesHtml: favoritesNode.innerHTML })); } catch (_) {}
+      try { const viewer = profileCacheViewer(); if (viewer) localStorage.setItem(profileCacheKey, JSON.stringify({ v: profileCacheVersion, t: Date.now(), viewer, profileHtml: profileNode.innerHTML, favoritesHtml: favoritesNode.innerHTML })); } catch (_) {}
       window.LiberterraAgentPhoto?.editor(profileNode, user, (url) => {
         try { sessionStorage.removeItem(profileCacheKey); localStorage.removeItem(profileCacheKey); } catch (_) {}
         window.LiberterraAgentPhoto.show(avatar, url, user.name);
@@ -316,15 +335,15 @@
     const config = options || {};
     const accessReady = Boolean(value(source.email) || value(source.telegram_id) || config.hasTelegramSession);
     const checks = [
-      { id: 'name', label: 'Указать имя', complete: Boolean(value(source.name)), action: 'profile' },
-      { id: 'phone', label: 'Добавить телефон', complete: Boolean(value(source.phone)), action: 'profile' },
-      { id: 'access', label: 'Настроить способ входа', complete: accessReady, action: 'access' },
+      { id: 'name', label: 'Указать имя', done: 'Имя', complete: Boolean(value(source.name)), action: 'profile' },
+      { id: 'phone', label: 'Добавить телефон', done: 'Телефон', complete: Boolean(value(source.phone)), action: 'profile' },
+      { id: 'access', label: 'Настроить способ входа', done: 'Способ входа', complete: accessReady, action: 'access' },
     ];
     if (config.isAgent) {
       checks.push(
-        { id: 'agency', label: 'Указать агентство или частную практику', complete: Boolean(value(source.agency)), action: 'profile' },
-        { id: 'specialization', label: 'Выбрать направление работы', complete: ['sale', 'rent'].includes(value(source.specialization)), action: 'profile' },
-        { id: 'certificate', label: 'Подтвердить сертификат', complete: Boolean(value(source.certificate_number)), action: 'support' }
+        { id: 'agency', label: 'Указать агентство или частную практику', done: 'Агентство', complete: Boolean(value(source.agency)), action: 'profile' },
+        { id: 'specialization', label: 'Выбрать направление работы', done: 'Направление работы', complete: ['sale', 'rent'].includes(value(source.specialization)), action: 'profile' },
+        { id: 'certificate', label: 'Подтвердить сертификат', done: 'Сертификат', complete: Boolean(value(source.certificate_number)), action: 'support' }
       );
     }
     const completed = checks.filter(item => item.complete).length;
@@ -333,6 +352,7 @@
       total: checks.length,
       percent: Math.round((completed / checks.length) * 100),
       missing: checks.filter(item => !item.complete),
+      done: checks.filter(item => item.complete),
     };
   }
 
@@ -406,12 +426,14 @@
       const professionalGrid = node('div', undefined, 'pv2-data-grid');
       professionalFields.forEach(field => professionalGrid.append(field));
       professional.element.append(professionalGrid);
+      professional.element.classList.add('pv2-professional');
       personal.after(professional.element);
     }
 
     const securityFields = ['Email', 'Telegram'].map(label => findField(grid, label)).filter(Boolean);
     if (securityFields.length) {
       const security = section('Безопасность и вход', 'Email меняется только после подтверждения кода; привязка Telegram сохраняет прежнее владение объектами.');
+      if (profile.querySelector('.pv2-professional')) security.element.classList.add('pv2-span-full');
       const securityGrid = node('div', undefined, 'pv2-data-grid');
       securityFields.forEach(field => securityGrid.append(field));
       security.element.append(securityGrid);
@@ -447,7 +469,7 @@
     profile.querySelector('.pv2-readiness')?.remove();
     const result = model.profileReadiness(detail.user, detail);
     const canEditProfile = Boolean(profile.querySelector('#pv2ProfileEdit'));
-    const block = node('section', undefined, 'pv2-readiness');
+    const block = node('section', undefined, result.percent === 100 ? 'pv2-readiness is-complete' : 'pv2-readiness');
     block.setAttribute('aria-labelledby', 'pv2ReadinessTitle');
     const top = node('div', undefined, 'pv2-readiness-top');
     const copy = node('div');
@@ -464,8 +486,12 @@
       const actions = node('div', undefined, 'pv2-readiness-actions');
       result.missing.slice(0, 3).forEach(item => actions.append(readinessAction(item, detail.hasTelegramSession, canEditProfile)));
       block.append(actions);
-    } else {
-      block.append(node('p', 'Контактные и профессиональные данные заполнены.', 'pv2-readiness-complete'));
+    }
+    if (result.done.length) {
+      const chips = node('ul', undefined, 'pv2-readiness-chips');
+      chips.setAttribute('aria-label', 'Заполнено');
+      result.done.forEach(item => chips.append(node('li', item.done, 'pv2-readiness-chip')));
+      block.append(chips);
     }
     profile.querySelector('.pv2-profile-header')?.after(block);
   }

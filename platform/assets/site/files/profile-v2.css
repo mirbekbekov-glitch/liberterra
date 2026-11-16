@@ -23,7 +23,7 @@
 .profile-v2-main {
   flex: 1;
   min-width: 0;
-  padding: 14px 24px 48px;
+  padding: 24px 32px 48px;
 }
 
 /* ── Sidebar ── */
@@ -32,7 +32,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  font: 700 20px/1 'Onest', system-ui, sans-serif;
+  font: 700 18px/1 'Geologica', system-ui, sans-serif;
   color: var(--v20-accent);
   letter-spacing: -0.02em;
   text-decoration: none;
@@ -44,7 +44,7 @@
 }
 .pv2-sidebar-section {
   padding: 8px 12px 4px;
-  font: 600 12px/1 'Onest', system-ui, sans-serif;
+  font: 600 11px/1 'Geologica', system-ui, sans-serif;
   color: var(--v20-muted);
   text-transform: uppercase;
   letter-spacing: 0.06em;
@@ -65,7 +65,7 @@
   border-radius: 6px;
   color: var(--v20-muted);
   text-decoration: none;
-  font: 500 15px/1.3 'Onest', system-ui, sans-serif;
+  font: 500 13.5px/1.3 'Geologica', system-ui, sans-serif;
   transition: background 150ms ease, color 150ms ease;
 }
 .pv2-sidebar-nav li a:hover {
@@ -79,7 +79,7 @@
 }
 .pv2-sidebar-nav .badge {
   margin-left: auto;
-  font: 600 13px/1 'Onest', system-ui, sans-serif;
+  font: 600 12px/1 'Geologica', system-ui, sans-serif;
   background: var(--v20-accent-soft);
   color: var(--v20-muted);
   padding: 2px 7px;
@@ -93,18 +93,10 @@
 }
 .pv2-nav-icon {
   width: 18px; height: 18px;
+  opacity: 0.6;
   flex-shrink: 0;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
 }
-.pv2-nav-icon svg {
-  width: 18px; height: 18px;
-  opacity: 0.55;
-  transition: opacity 150ms ease;
-}
-.pv2-sidebar-nav li a:hover .pv2-nav-icon svg,
-.pv2-sidebar-nav li a.active .pv2-nav-icon svg { opacity: 1; }
+.pv2-sidebar-nav li a.active .pv2-nav-icon { opacity: 1; }
 .pv2-sidebar-bottom {
   margin-top: auto;
   padding: 12px 20px;
@@ -123,7 +115,7 @@
   color: #fff;
   display: grid;
   place-items: center;
-  font: 600 14px/1 'Onest', system-ui, sans-serif;
+  font: 600 13px/1 'Geologica', system-ui, sans-serif;
   flex-shrink: 0;
   overflow: hidden;
 }
@@ -132,18 +124,18 @@
   object-fit: cover;
 }
 .pv2-sidebar-user-name {
-  font: 500 14px/1.2 'Onest', system-ui, sans-serif;
+  font: 500 13px/1.2 'Geologica', system-ui, sans-serif;
   color: var(--v20-ink);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 .pv2-sidebar-user-role {
-  font: 400 13px/1.2 'Onest', system-ui, sans-serif;
+  font: 400 12px/1.2 'Geologica', system-ui, sans-serif;
   color: var(--v20-muted);
 }
-.pv2-sidebar-back { display: inline-block; margin-top: 12px; font-size: 13px; color: var(--v20-accent); }
-.pv2-data-edit-note { color: var(--v20-muted); font-size: 13px; }
+.pv2-sidebar-back { display: inline-block; margin-top: 12px; font-size: 12px; color: var(--v20-accent); }
+.pv2-data-edit-note { color: var(--v20-muted); font-size: 12px; }
 body.v20.profile-v2-runtime > header.site-header,
 body.v20.profile-v2-runtime > .internal-back-row { display: none; }
 
@@ -152,9 +144,9 @@ body.v20.profile-v2-runtime > .internal-back-row { display: none; }
   display: flex;
   align-items: center;
   gap: 16px;
-  padding: 16px 20px;
+  padding: 18px 20px;
   border-radius: 10px;
-  margin: 0 0 8px;
+  margin: 0 0 24px;
 }
 .pv2-agent-cta {
   background: linear-gradient(135deg, var(--v20-accent), #a03050);
@@ -173,9 +165,9 @@ body.v20.profile-v2-runtime > .internal-back-row { display: none; }
 .pv2-agent-cta-text,
 .pv2-agent-status-text { flex: 1; min-width: 0; }
 .pv2-agent-cta-text strong,
-.pv2-agent-status-text strong { display: block; font-size: 16px; }
+.pv2-agent-status-text strong { display: block; font-size: 15px; }
 .pv2-agent-cta-text span,
-.pv2-agent-status-text span { display: block; margin-top: 3px; font-size: 14px; }
+.pv2-agent-status-text span { display: block; margin-top: 3px; font-size: 13px; }
 .pv2-agent-cta .pv2-btn { flex: 0 0 auto; background: #fff; color: var(--v20-accent); }
 .pv2-agent-status { background: var(--v20-accent-soft); border: 1px solid var(--v20-line); }
 .pv2-agent-status-icon {
@@ -199,7 +191,7 @@ body.v20.profile-v2-runtime > .internal-back-row { display: none; }
 }
 .pv2-soon-badge {
   margin-left: auto;
-  font: 500 11px/1 'Onest', system-ui, sans-serif;
+  font: 500 10px/1 'Geologica', system-ui, sans-serif;
   color: var(--v20-muted);
   background: var(--v20-accent-soft);
   padding: 2px 6px;
@@ -214,22 +206,20 @@ body.v20.profile-v2-runtime > .internal-back-row { display: none; }
   padding: 20px 24px;
   background: var(--v20-paper);
   border: 1px solid var(--v20-line);
-  border-radius: 14px;
-  margin-bottom: 8px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  border-radius: 10px;
+  margin-bottom: 24px;
 }
 .pv2-avatar-wrapper { position: relative; flex-shrink: 0; }
 .pv2-avatar {
-  width: 96px; height: 96px;
+  width: 72px; height: 72px;
   border-radius: 50%;
   background: var(--v20-accent);
   color: #fff;
   display: grid;
   place-items: center;
-  font: 600 36px/1 'Onest', system-ui, sans-serif;
+  font: 600 24px/1 'Geologica', system-ui, sans-serif;
   overflow: hidden;
   position: relative;
-  box-shadow: 0 0 0 3px var(--v20-paper), 0 0 0 5px var(--v20-accent-soft);
 }
 .pv2-avatar img {
   width: 100%; height: 100%;
@@ -251,8 +241,8 @@ body.v20.profile-v2-runtime > .internal-back-row { display: none; }
 .pv2-avatar-upload svg { width: 12px; height: 12px; color: var(--v20-muted); }
 .pv2-profile-info { flex: 1; min-width: 0; padding-top: 4px; }
 .pv2-profile-name {
-  font: 700 32px/1.2 'Onest', system-ui, sans-serif;
-  letter-spacing: -0.02em;
+  font: 600 20px/1.2 'Geologica', system-ui, sans-serif;
+  letter-spacing: -0.01em;
   margin: 0;
   color: var(--v20-ink);
 }
@@ -262,19 +252,19 @@ body.v20.profile-v2-runtime > .internal-back-row { display: none; }
   align-items: center;
   gap: 6px 12px;
   margin-top: 6px;
-  font: 400 15px/1.3 'Onest', system-ui, sans-serif;
+  font: 400 13px/1.3 'Geologica', system-ui, sans-serif;
   color: var(--v20-muted);
 }
 .pv2-role-badge {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  padding: 3px 10px;
+  padding: 2px 8px;
   border-radius: 999px;
   background: var(--v20-accent-soft);
   color: var(--v20-accent);
   font-weight: 600;
-  font-size: 14px;
+  font-size: 12px;
 }
 .pv2-profile-phone {
   color: var(--v20-muted);
@@ -296,7 +286,7 @@ body.v20.profile-v2-runtime > .internal-back-row { display: none; }
   gap: 6px;
   padding: 8px 16px;
   border-radius: 6px;
-  font: 500 14px/1 'Onest', system-ui, sans-serif;
+  font: 500 13px/1 'Geologica', system-ui, sans-serif;
   transition: all 150ms ease;
   white-space: nowrap;
   border: none;
@@ -320,7 +310,7 @@ body.v20.profile-v2-runtime > .internal-back-row { display: none; }
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 12px;
-  margin-bottom: 8px;
+  margin-bottom: 24px;
 }
 .pv2-stat-card {
   background: var(--v20-paper);
@@ -338,22 +328,19 @@ body.v20.profile-v2-runtime > .internal-back-row { display: none; }
   box-shadow: 0 1px 3px rgba(0,0,0,0.06);
 }
 .pv2-stat-card.highlight { border-left: 3px solid var(--v20-accent); }
-.pv2-stat-card:nth-child(2) { border-left: 3px solid #1a7a3a; }
-.pv2-stat-card:nth-child(3) { border-left: 3px solid #2563a0; }
-.pv2-stat-card:nth-child(4) { border-left: 3px solid var(--v20-accent-secondary); }
 .pv2-stat-value {
-  font: 700 36px/1 'Onest', system-ui, sans-serif;
+  font: 700 28px/1 'Geologica', system-ui, sans-serif;
   letter-spacing: -0.02em;
   font-variant-numeric: tabular-nums;
   color: var(--v20-ink);
 }
 .pv2-stat-label {
-  font: 500 15px/1.2 'Onest', system-ui, sans-serif;
+  font: 500 13px/1.2 'Geologica', system-ui, sans-serif;
   color: var(--v20-muted);
   margin-top: 4px;
 }
 .pv2-stat-sub {
-  font: 400 13px/1.2 'Onest', system-ui, sans-serif;
+  font: 400 12px/1.2 'Geologica', system-ui, sans-serif;
   color: var(--v20-field-line);
   margin-top: 2px;
 }
@@ -362,7 +349,7 @@ body.v20.profile-v2-runtime > .internal-back-row { display: none; }
 .pv2-quick-actions {
   display: flex;
   gap: 10px;
-  margin-bottom: 8px;
+  margin-bottom: 24px;
 }
 .pv2-action-btn {
   flex: 1;
@@ -400,16 +387,16 @@ body.v20.profile-v2-runtime > .internal-back-row { display: none; }
 .pv2-action-icon svg { width: 18px; height: 18px; }
 .pv2-action-text strong {
   display: block;
-  font: 600 16px/1.3 'Onest', system-ui, sans-serif;
+  font: 600 14px/1.3 'Geologica', system-ui, sans-serif;
 }
 .pv2-action-text span {
-  font: 400 14px/1.3 'Onest', system-ui, sans-serif;
+  font: 400 12px/1.3 'Geologica', system-ui, sans-serif;
   color: var(--v20-muted);
 }
 .pv2-action-btn.primary .pv2-action-text span { color: rgba(255,255,255,0.7); }
 
 /* ── Section ── */
-.pv2-section { margin-bottom: 8px; }
+.pv2-section { margin-bottom: 24px; }
 .pv2-section-header {
   display: flex;
   align-items: center;
@@ -417,11 +404,11 @@ body.v20.profile-v2-runtime > .internal-back-row { display: none; }
   margin-bottom: 12px;
 }
 .pv2-section-title {
-  font: 600 22px/1.3 'Onest', system-ui, sans-serif;
+  font: 600 15px/1.3 'Geologica', system-ui, sans-serif;
   color: var(--v20-ink);
 }
 .pv2-section-link {
-  font: 500 15px/1 'Onest', system-ui, sans-serif;
+  font: 500 13px/1 'Geologica', system-ui, sans-serif;
   color: var(--v20-accent);
   text-decoration: none;
   display: flex;
@@ -441,26 +428,15 @@ body.v20.profile-v2-runtime > .internal-back-row { display: none; }
   gap: 16px 32px;
 }
 .pv2-data-label {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font: 400 14px/1.2 'Onest', system-ui, sans-serif;
+  font: 400 12px/1.2 'Geologica', system-ui, sans-serif;
   color: var(--v20-muted);
   margin-bottom: 4px;
 }
-.pv2-data-icon {
-  width: 14px; height: 14px;
-  flex-shrink: 0;
-  opacity: 0.6;
-}
 .pv2-data-value {
-  font: 500 16px/1.3 'Onest', system-ui, sans-serif;
+  font: 500 14px/1.3 'Geologica', system-ui, sans-serif;
   color: var(--v20-ink);
 }
-.pv2-data-value.empty {
-  color: var(--v20-muted);
-  font-style: italic;
-}
+.pv2-data-value.empty { color: var(--v20-muted); }
 .pv2-data-value.linked {
   display: flex;
   align-items: center;
@@ -475,7 +451,7 @@ body.v20.profile-v2-runtime > .internal-back-row { display: none; }
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  font: 500 12px/1 'Onest', system-ui, sans-serif;
+  font: 500 11px/1 'Geologica', system-ui, sans-serif;
   color: #1a7a3a;
   background: #edf7f0;
   padding: 2px 8px;
@@ -526,7 +502,7 @@ html[data-theme="dark"] .pv2-cert-badge {
   border-bottom: 1px solid var(--v20-line);
 }
 .pv2-modal-header h3 {
-  font: 600 18px/1.2 'Onest', system-ui, sans-serif;
+  font: 600 16px/1.2 'Geologica', system-ui, sans-serif;
   margin: 0;
 }
 .pv2-modal-close {
@@ -561,7 +537,7 @@ html[data-theme="dark"] .pv2-cert-badge {
   object-fit: cover;
 }
 .pv2-avatar-preview .initials {
-  font: 600 40px/1 'Onest', system-ui, sans-serif;
+  font: 600 40px/1 'Geologica', system-ui, sans-serif;
   color: var(--v20-muted);
 }
 .pv2-upload-zone {
@@ -575,7 +551,7 @@ html[data-theme="dark"] .pv2-cert-badge {
 }
 .pv2-upload-zone:hover { border-color: var(--v20-accent); }
 .pv2-upload-zone p {
-  font: 400 14px/1.4 'Onest', system-ui, sans-serif;
+  font: 400 13px/1.4 'Geologica', system-ui, sans-serif;
   color: var(--v20-muted);
   margin: 4px 0 0;
 }
@@ -598,7 +574,7 @@ html[data-theme="dark"] .pv2-cert-badge {
   accent-color: var(--v20-accent);
 }
 .pv2-zoom-label {
-  font: 500 13px/1 'Onest', system-ui, sans-serif;
+  font: 500 12px/1 'Geologica', system-ui, sans-serif;
   color: var(--v20-muted);
   white-space: nowrap;
 }
@@ -613,7 +589,7 @@ html[data-theme="dark"] .pv2-cert-badge {
   color: var(--v20-paper);
   padding: 10px 20px;
   border-radius: 999px;
-  font: 500 14px/1.3 'Onest', system-ui, sans-serif;
+  font: 500 13px/1.3 'Geologica', system-ui, sans-serif;
   z-index: 200;
   transition: transform 300ms ease;
   pointer-events: none;
@@ -642,7 +618,7 @@ html[data-theme="dark"] .pv2-cert-badge {
     z-index: 50;
   }
   .pv2-mobile-brand {
-    font: 700 16px/1 'Onest', system-ui, sans-serif;
+    font: 700 16px/1 'Geologica', system-ui, sans-serif;
     color: var(--v20-accent);
     letter-spacing: -0.02em;
     display: flex;
@@ -661,7 +637,7 @@ html[data-theme="dark"] .pv2-cert-badge {
     color: #fff;
     display: grid;
     place-items: center;
-    font: 600 12px/1 'Onest', system-ui, sans-serif;
+    font: 600 12px/1 'Geologica', system-ui, sans-serif;
     border: none;
     cursor: pointer;
     overflow: hidden;
@@ -689,7 +665,7 @@ html[data-theme="dark"] .pv2-cert-badge {
     gap: 2px;
     padding: 6px 12px;
     border-radius: 6px;
-    font: 500 10px/1.2 'Onest', system-ui, sans-serif;
+    font: 500 10px/1.2 'Geologica', system-ui, sans-serif;
     color: var(--v20-muted);
     text-decoration: none;
     transition: color 150ms ease;
@@ -713,76 +689,10 @@ html[data-theme="dark"] .pv2-cert-badge {
 @media (max-width: 440px) {
   .pv2-stats-grid { gap: 8px; }
   .pv2-stat-card { padding: 12px 14px; }
-  .pv2-stat-value { font-size: 26px; }
+  .pv2-stat-value { font-size: 24px; }
 }
 
-/* ── Workspace Toolbar ── */
-.pv2-workspace-toolbar {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  padding: 0 0 6px;
-  margin-bottom: 6px;
-  border-bottom: 1px solid var(--v20-line);
-  font: 500 15px/1 'Onest', system-ui, sans-serif;
-}
-.pv2-toolbar-back {
-  color: var(--v20-accent);
-  text-decoration: none;
-  font-weight: 600;
-  font-size: 15px;
-  white-space: nowrap;
-  transition: opacity 150ms ease;
-}
-.pv2-toolbar-back:hover { opacity: 0.8; }
-.pv2-toolbar-controls {
-  margin-left: auto;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.pv2-toolbar-link {
-  padding: 7px 14px;
-  border: 1px solid var(--v20-line);
-  border-radius: 8px;
-  color: var(--v20-ink);
-  text-decoration: none;
-  font: 500 14px/1 'Onest', system-ui, sans-serif;
-  white-space: nowrap;
-  transition: border-color 150ms ease, color 150ms ease;
-}
-.pv2-toolbar-link:hover { border-color: var(--v20-accent); color: var(--v20-accent); }
-.pv2-toolbar-lang {
-  padding: 7px 10px;
-  border: 1px solid var(--v20-line);
-  border-radius: 8px;
-  background: transparent;
-  color: var(--v20-ink);
-  font: 500 14px/1 'Onest', system-ui, sans-serif;
-  cursor: pointer;
-  min-width: 56px;
-}
-.pv2-toolbar-theme {
-  padding: 7px 10px;
-  border: 1px solid var(--v20-line);
-  border-radius: 8px;
-  background: transparent;
-  color: var(--v20-ink);
-  font: 500 14px/1 'Onest', system-ui, sans-serif;
-  cursor: pointer;
-  white-space: nowrap;
-}
-.pv2-toolbar-theme:hover,
-.pv2-toolbar-lang:hover { border-color: var(--v20-accent); }
-.pv2-toolbar-link:focus-visible,
-.pv2-toolbar-lang:focus-visible,
-.pv2-toolbar-theme:focus-visible,
-.pv2-toolbar-back:focus-visible {
-  outline: 2px solid var(--v20-accent);
-  outline-offset: 3px;
-}
-
-/* Legacy topbar fallback */
+/* Profile navigation and compact language control. */
 body.v20.profile-page .pv2-topbar,
 body.v20.profile-v2-runtime .pv2-topbar {
   display: flex;
@@ -790,7 +700,7 @@ body.v20.profile-v2-runtime .pv2-topbar {
   justify-content: space-between;
   gap: 16px;
   min-height: 44px;
-  margin-bottom: 8px;
+  margin-bottom: 18px;
 }
 body.v20.profile-page .pv2-back-to-site,
 body.v20.profile-v2-runtime .pv2-back-to-site {
@@ -801,6 +711,13 @@ body.v20.profile-v2-runtime .pv2-back-to-site {
 }
 body.v20.profile-page .pv2-back-to-site:hover,
 body.v20.profile-v2-runtime .pv2-back-to-site:hover { text-decoration: underline; }
+body.v20.profile-page .pv2-back-to-site:focus-visible,
+body.v20.profile-v2-runtime .pv2-back-to-site:focus-visible,
+body.v20.profile-page .pv2-language-picker select:focus-visible,
+body.v20.profile-v2-runtime .pv2-language-picker select:focus-visible {
+  outline: 2px solid var(--v20-accent);
+  outline-offset: 3px;
+}
 body.v20.profile-page .pv2-language-picker,
 body.v20.profile-v2-runtime .pv2-language-picker {
   position: static;
@@ -826,87 +743,7 @@ body.v20.profile-v2-runtime .pv2-language-picker select {
   font: inherit;
   cursor: pointer;
 }
-
-/* ── Dark Theme ── */
-body.v20.profile-page[data-public-theme="dark"] .pv2-profile-header,
-body.v20.profile-v2-runtime[data-public-theme="dark"] .pv2-profile-header,
-body.v20.profile-page[data-public-theme="dark"] .pv2-stat-card,
-body.v20.profile-v2-runtime[data-public-theme="dark"] .pv2-stat-card,
-body.v20.profile-page[data-public-theme="dark"] .pv2-action-btn:not(.primary),
-body.v20.profile-v2-runtime[data-public-theme="dark"] .pv2-action-btn:not(.primary),
-body.v20.profile-page[data-public-theme="dark"] .pv2-data-grid,
-body.v20.profile-v2-runtime[data-public-theme="dark"] .pv2-data-grid {
-  background: #282321;
-  border-color: var(--v20-line);
-  box-shadow: none;
-}
-body.v20.profile-page[data-public-theme="dark"] .pv2-avatar,
-body.v20.profile-v2-runtime[data-public-theme="dark"] .pv2-avatar {
-  box-shadow: 0 0 0 3px var(--v20-paper), 0 0 0 5px var(--v20-accent-soft);
-}
-body.v20.profile-page[data-public-theme="dark"] .pv2-workspace-toolbar,
-body.v20.profile-v2-runtime[data-public-theme="dark"] .pv2-workspace-toolbar {
-  border-bottom-color: var(--v20-line);
-}
-body.v20.profile-page[data-public-theme="dark"] .pv2-toolbar-link,
-body.v20.profile-v2-runtime[data-public-theme="dark"] .pv2-toolbar-link,
-body.v20.profile-page[data-public-theme="dark"] .pv2-toolbar-lang,
-body.v20.profile-v2-runtime[data-public-theme="dark"] .pv2-toolbar-lang,
-body.v20.profile-page[data-public-theme="dark"] .pv2-toolbar-theme,
-body.v20.profile-v2-runtime[data-public-theme="dark"] .pv2-toolbar-theme {
-  border-color: var(--v20-line);
-  color: var(--v20-ink);
-}
-body.v20.profile-page[data-public-theme="dark"] .pv2-toolbar-lang option,
-body.v20.profile-v2-runtime[data-public-theme="dark"] .pv2-toolbar-lang option {
-  background: #282321;
-}
-body.v20.profile-page[data-public-theme="dark"] .pv2-stat-card:nth-child(2),
-body.v20.profile-v2-runtime[data-public-theme="dark"] .pv2-stat-card:nth-child(2) { border-left-color: #4ade80; }
-body.v20.profile-page[data-public-theme="dark"] .pv2-stat-card:nth-child(3),
-body.v20.profile-v2-runtime[data-public-theme="dark"] .pv2-stat-card:nth-child(3) { border-left-color: #60a5fa; }
-body.v20.profile-page[data-public-theme="dark"] .pv2-stat-card:nth-child(4),
-body.v20.profile-v2-runtime[data-public-theme="dark"] .pv2-stat-card:nth-child(4) { border-left-color: #f3c477; }
-body.v20.profile-page[data-public-theme="dark"] .pv2-sidebar-nav li a:hover,
-body.v20.profile-v2-runtime[data-public-theme="dark"] .pv2-sidebar-nav li a:hover {
-  background: #342a29;
-}
-body.v20.profile-page[data-public-theme="dark"] .pv2-sidebar-nav li a.active,
-body.v20.profile-v2-runtime[data-public-theme="dark"] .pv2-sidebar-nav li a.active {
-  background: var(--v20-accent-soft);
-}
-body.v20.profile-page[data-public-theme="dark"] .pv2-mobile-header,
-body.v20.profile-v2-runtime[data-public-theme="dark"] .pv2-mobile-header,
-body.v20.profile-page[data-public-theme="dark"] .pv2-mobile-nav,
-body.v20.profile-v2-runtime[data-public-theme="dark"] .pv2-mobile-nav {
-  background: var(--v20-paper);
-  border-color: var(--v20-line);
-}
-body.v20.profile-v2-runtime[data-public-theme="dark"] .pv2-agent-cta {
-  background: linear-gradient(135deg, #5a1a2e, #7b233f);
-}
-body.v20.profile-v2-runtime[data-public-theme="dark"] .pv2-agent-status {
-  background: #282321;
-  border-color: var(--v20-line);
-}
-body.v20.profile-v2-runtime[data-public-theme="dark"] .profile-logout {
-  background: #282321;
-  border-color: var(--v20-line);
-  color: var(--v20-ink);
-}
-body.v20.profile-v2-runtime[data-public-theme="dark"] .pv2-language-picker select {
-  background: #282321;
-  color: var(--v20-ink);
-  border-color: var(--v20-line);
-}
-body.v20.profile-v2-runtime[data-public-theme="dark"] .profile-v2-sidebar {
-  background: var(--v20-paper);
-  border-right-color: var(--v20-line);
-}
-
 @media (max-width: 480px) {
-  .pv2-workspace-toolbar { gap: 8px; flex-wrap: wrap; }
-  .pv2-toolbar-link { display: none; }
   body.v20.profile-page .pv2-topbar,
   body.v20.profile-v2-runtime .pv2-topbar { gap: 8px; margin-bottom: 10px; }
   body.v20.profile-page .pv2-language-picker span,
@@ -915,9 +752,202 @@ body.v20.profile-v2-runtime[data-public-theme="dark"] .profile-v2-sidebar {
   body.v20.profile-v2-runtime .pv2-language-picker select { min-width: 130px; max-width: 45vw; }
 }
 
-/* ── Mobile Nav SVG Icons ── */
-.pv2-mobile-nav a svg {
-  width: 22px; height: 22px;
-  opacity: 0.6;
+/* Match the public Liberterra palette on the standalone profile route. */
+body.v20.profile-page,
+body.v20.profile-v2-runtime {
+  --v20-ink: #252a31;
+  --v20-accent: #BE2C28;
+  --v20-accent-hover: #9E231F;
+  --v20-accent-soft: #FBEEED;
+  --v20-accent-secondary: #E3A3A1;
+  --v20-paper: #fff;
+  --v20-line: #ECE3E2;
+  --v20-muted: #6B6560;
+  --v20-field-line: #B9ADAB;
+  --v20-surface: #fff;
+  --v20-text: #252a31;
+  background: #FAF8F7;
+  color: var(--v20-ink);
+  font-family: 'Geologica', system-ui, sans-serif;
 }
-.pv2-mobile-nav a.active svg { opacity: 1; }
+body.v20.profile-page :is(h1, h2, h3),
+body.v20.profile-v2-runtime :is(h1, h2, h3) {
+  font-family: 'Geologica', 'Geologica', system-ui, sans-serif;
+  color: var(--v20-ink);
+}
+body.v20.profile-page .profile-v2-sidebar,
+body.v20.profile-v2-runtime .profile-v2-sidebar {
+  background: #fff;
+}
+body.v20.profile-page :is(.pv2-profile-header, .pv2-stat-card, .pv2-action-btn, .pv2-data-grid),
+body.v20.profile-v2-runtime :is(.pv2-profile-header, .pv2-stat-card, .pv2-action-btn, .pv2-data-grid) {
+  border-radius: 18px;
+  box-shadow: 0 1px 3px rgba(37, 42, 49, .06);
+}
+body.v20.profile-page .pv2-agent-cta,
+body.v20.profile-v2-runtime .pv2-agent-cta {
+  background: linear-gradient(135deg, #BE2C28, #9E231F);
+}
+body.v20.profile-page .pv2-mobile-brand,
+body.v20.profile-v2-runtime .pv2-mobile-brand {
+  text-decoration: none;
+}
+@media (max-width: 768px) {
+  body.v20.profile-page .pv2-mobile-nav,
+  body.v20.profile-v2-runtime .pv2-mobile-nav {
+    display: none;
+  }
+  body.v20.profile-page .app-bottom-nav a.is-active,
+  body.v20.profile-v2-runtime .app-bottom-nav a.is-active {
+    background: #FBEEED;
+    color: #BE2C28;
+  }
+  body.v20.profile-page .app-bottom-nav a:focus-visible,
+  body.v20.profile-v2-runtime .app-bottom-nav a:focus-visible {
+    outline-color: #E3A3A1;
+  }
+}
+
+body.v20.profile-page .pv2-page-title{margin:0;font:700 24px/1.25 'Geologica','Geologica',system-ui,sans-serif}body.v20.profile-page .pv2-page-summary{margin:6px 0 22px;max-width:680px;color:var(--v20-muted);font-size:14px;line-height:1.5}body.v20.profile-page .pv2-sidebar-section{text-transform:none;letter-spacing:0;font-size:12px}body.v20.profile-page :is(.pv2-profile-header,.pv2-stat-card,.pv2-action-btn,.pv2-data-grid){box-shadow:none}body.v20.profile-page .pv2-agent-cta{background:var(--v20-accent);border:0}
+body.v20.profile-page .pv2-stats-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:0;border:1px solid var(--v20-line);border-radius:18px;overflow:hidden;background:var(--v20-paper)}body.v20.profile-page .pv2-stat-card{border:0;border-right:1px solid var(--v20-line);border-radius:0}body.v20.profile-page .pv2-stat-card:last-child{border-right:0}body.v20.profile-page .pv2-stat-card.highlight{border-left:0}body.v20.profile-page .pv2-stat-card:hover{background:var(--v20-accent-soft);box-shadow:none}
+body.v20.profile-page .pv2-readiness{margin:0 0 24px;padding:20px 22px;border:1px solid var(--v20-line);border-radius:18px;background:var(--v20-paper)}body.v20.profile-page .pv2-readiness-top{display:flex;align-items:flex-start;justify-content:space-between;gap:20px}body.v20.profile-page .pv2-section-description{margin:5px 0 0;max-width:620px;color:var(--v20-muted);font-size:13px;line-height:1.5;font-weight:400}body.v20.profile-page .pv2-readiness-value{font-size:24px;line-height:1;font-variant-numeric:tabular-nums}body.v20.profile-page .pv2-readiness progress{display:block;width:100%;height:8px;margin:16px 0 0;border:0;border-radius:4px;overflow:hidden;background:var(--v20-accent-soft)}body.v20.profile-page .pv2-readiness progress::-webkit-progress-bar{background:var(--v20-accent-soft)}body.v20.profile-page .pv2-readiness progress::-webkit-progress-value{background:var(--v20-accent)}body.v20.profile-page .pv2-readiness progress::-moz-progress-bar{background:var(--v20-accent)}body.v20.profile-page .pv2-readiness-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}body.v20.profile-page .pv2-readiness-actions :is(button,a){min-height:40px;padding:8px 12px;border:1px solid var(--v20-line);border-radius:8px;background:var(--v20-paper);color:var(--v20-accent);font:inherit;font-size:13px;font-weight:600;line-height:1.3;text-decoration:none;cursor:pointer}body.v20.profile-page .pv2-readiness-actions :is(button,a):hover{background:var(--v20-accent-soft)}body.v20.profile-page .pv2-readiness-actions :is(button,a):focus-visible{outline:2px solid var(--v20-accent);outline-offset:2px}body.v20.profile-page .pv2-readiness-complete{margin:12px 0 0;color:var(--v20-muted);font-size:13px}
+body.v20.profile-page .pv2-workspace-section .pv2-section-header{align-items:flex-start;gap:16px}body.v20.profile-page .pv2-workspace-section .pv2-data-full{grid-column:auto;padding-top:0;border-top:0}body.v20.profile-page .pv2-quick-actions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}body.v20.profile-page .pv2-action-btn{border-radius:10px;box-shadow:none}body.v20.profile-page .pv2-action-btn:hover{box-shadow:none}
+@media(max-width:768px){body.v20.profile-page .pv2-stats-grid{grid-template-columns:repeat(2,minmax(0,1fr))}body.v20.profile-page .pv2-stat-card:nth-child(2){border-right:0}body.v20.profile-page .pv2-stat-card:nth-child(-n+2){border-bottom:1px solid var(--v20-line)}body.v20.profile-page .pv2-quick-actions{grid-template-columns:1fr}body.v20.profile-page .pv2-readiness{padding:18px}body.v20.profile-page .pv2-readiness-actions :is(button,a){width:100%;justify-content:center;text-align:center}body.v20.profile-page .pv2-page-title{font-size:22px}}
+@media(max-width:420px){body.v20.profile-page .pv2-stats-grid{display:block}body.v20.profile-page .pv2-stat-card{display:flex;align-items:baseline;justify-content:space-between;gap:14px;border-right:0;border-bottom:1px solid var(--v20-line)}body.v20.profile-page .pv2-stat-card:last-child{border-bottom:0}body.v20.profile-page .pv2-stat-value{font-size:22px}body.v20.profile-page .pv2-stat-sub{display:none}}
+
+/* Liberterra brand red on graphite, shared with the rest of the site. */
+body.v20.profile-page[data-profile-brand] {
+  --v20-ink: #252a31;
+  --v20-text: #252a31;
+  --v20-accent: #BE2C28;
+  --v20-accent-hover: #9E231F;
+  --v20-accent-soft: #FBEEED;
+  --v20-accent-secondary: #E3A3A1;
+  --v20-paper: #fff;
+  --v20-surface: #fff;
+  --v20-line: #ECE3E2;
+  --v20-field-line: #D8C9C7;
+  --v20-muted: #6B6560;
+  --profile-ground: #FAF8F7;
+  --profile-nav: #252a31;
+  --profile-nav-hover: #343a43;
+  --profile-nav-line: #3E444E;
+  --profile-nav-text: #E8E5E3;
+  --profile-nav-muted: #B4AEA9;
+  background: var(--profile-ground);
+  color: var(--v20-ink);
+  font-family: 'Geologica', 'Segoe UI', sans-serif;
+}
+body[data-profile-brand] .profile-v2-layout { max-width: none; width: 100%; margin: 0; min-height: 100dvh; }
+body.v20[data-profile-brand] .profile-v2-sidebar {
+  width: 244px; padding: 24px 12px 0; background: var(--profile-nav); border: 0;
+  top: 0; height: 100dvh; position: sticky; scrollbar-width: thin;
+  scrollbar-color: var(--profile-nav-line) var(--profile-nav);
+}
+body[data-profile-brand] .profile-v2-main { max-width: 1320px; padding: 28px clamp(24px, 3vw, 48px) 56px; margin: 0 auto; }
+body[data-profile-brand] .pv2-sidebar-brand { display: block; padding: 0; margin: 0 8px 28px; }
+body[data-profile-brand] .pv2-brand-image { display: block; width: 184px; max-width: 100%; height: auto; background: #fff; padding: 12px; border-radius: 8px; box-sizing: border-box; }
+body[data-profile-brand] .pv2-sidebar-section { color: var(--profile-nav-muted); padding: 8px 12px; font-size: 12px; font-weight: 500; }
+body[data-profile-brand] .pv2-sidebar-nav li a { color: var(--profile-nav-text); min-height: 44px; padding: 12px; margin: 2px 0; border-radius: 7px; font-size: 14px; }
+body[data-profile-brand] .pv2-sidebar-nav li a:hover { background: var(--profile-nav-hover); color: #fff; }
+body[data-profile-brand] .pv2-sidebar-nav li a.active { background: var(--v20-accent); color: #fff; }
+body[data-profile-brand] .pv2-sidebar-nav .badge { color: var(--profile-nav-text); background: var(--profile-nav-hover); border: 0; min-height: 22px; display: inline-grid; place-items: center; }
+body[data-profile-brand] .pv2-nav-icon { display: inline-flex; align-items: center; justify-content: center; opacity: 1; }
+body[data-profile-brand] .pv2-nav-icon svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 1.7; }
+body[data-profile-brand] .pv2-sidebar-bottom { border-color: var(--profile-nav-line); padding: 20px 8px; margin-top: auto; }
+body[data-profile-brand] .pv2-sidebar-user-name { color: #fff; }
+body[data-profile-brand] .pv2-sidebar-user-role { color: var(--profile-nav-muted); }
+body[data-profile-brand] .pv2-sidebar-avatar { background: var(--profile-nav-hover); color: #fff; }
+body[data-profile-brand] .pv2-topbar { margin-bottom: 28px; }
+body[data-profile-brand] .pv2-page-title { font-size: 28px; }
+body[data-profile-brand] .pv2-page-summary { max-width: 760px; margin-bottom: 24px; }
+body[data-profile-brand] .pv2-profile-header { align-items: center; gap: 20px; padding: 24px; border-radius: 14px; margin-bottom: 20px; }
+body[data-profile-brand] .pv2-profile-name { font-size: clamp(22px, 2.2vw, 30px); overflow-wrap: anywhere; }
+body[data-profile-brand] .pv2-avatar { background: var(--profile-nav); width: 72px; height: 72px; }
+body[data-profile-brand] .pv2-role-badge { color: var(--v20-accent-hover); background: var(--v20-accent-soft); }
+body[data-profile-brand] :is(.pv2-readiness, .pv2-stats-grid, .pv2-data-grid) { border-radius: 14px; background: var(--v20-paper); border-color: var(--v20-line); }
+body[data-profile-brand] .pv2-readiness { padding: 20px 24px; margin-bottom: 20px; }
+body[data-profile-brand] .pv2-readiness-top .pv2-section-title { margin: 0; }
+body[data-profile-brand] .pv2-readiness-value { color: var(--v20-accent-hover); font-size: 24px; }
+body[data-profile-brand] .pv2-readiness progress { height: 6px; }
+body[data-profile-brand] .pv2-section-title { font-size: 20px; }
+body[data-profile-brand] .pv2-section-header { flex-wrap: wrap; gap: 12px; }
+body[data-profile-brand] .pv2-section-header > div { flex: 1 1 220px; min-width: 0; }
+body[data-profile-brand] .pv2-data-edit-note { white-space: normal; }
+body[data-profile-brand] .pv2-stat-value { font-size: 28px; font-variant-numeric: tabular-nums; }
+body[data-profile-brand] .pv2-stat-card { padding: 18px 20px; }
+body[data-profile-brand] .pv2-stats-grid { margin-bottom: 20px; }
+body[data-profile-brand] .pv2-quick-actions { gap: 12px; margin-bottom: 32px; }
+body[data-profile-brand] .pv2-action-btn { padding: 16px; min-height: 76px; border-radius: 10px; }
+body[data-profile-brand] .pv2-action-btn.primary { background: var(--v20-accent); border-color: var(--v20-accent); color: #fff; }
+body[data-profile-brand] .pv2-action-icon { width: 24px; height: 24px; background: transparent; border: 0; border-radius: 0; font-size: 20px; }
+body[data-profile-brand] .pv2-action-btn.primary .pv2-action-icon { background: transparent; }
+body[data-profile-brand] .pv2-btn { min-height: 44px; }
+body[data-profile-brand] :is(.pv2-profile-header,.pv2-stat-card,.pv2-action-btn,.pv2-data-grid) { box-shadow: none; }
+body[data-profile-brand] :is(a,button,input,select,textarea,summary):focus-visible { outline: 3px solid var(--v20-accent-secondary); outline-offset: 3px; }
+body[data-profile-brand] .pv2-mobile-menu { display: none; }
+body[data-profile-brand] :is(.pv2-profile-info, .pv2-data-item) { min-width: 0; }
+body[data-profile-brand] .pv2-data-value { overflow-wrap: anywhere; }
+body[data-profile-brand][data-v20-theme="dark"] { --profile-ground: #1A1D22; --v20-paper: #252a31; --v20-surface: #252a31; --v20-ink: #F3EFEE; --v20-text: #F3EFEE; --v20-muted: #B4AEA9; --v20-line: #3E444E; --v20-accent-soft: #3A2522; --v20-accent-hover: #E3A3A1; }
+@media (max-width: 900px) {
+  body[data-profile-brand] .profile-v2-sidebar { display: none; }
+  body[data-profile-brand] .profile-v2-layout { display: block; min-height: auto; }
+  body[data-profile-brand] .profile-v2-main { width: 100%; padding: 24px 20px 96px; }
+  body[data-profile-brand] .pv2-mobile-header { display: flex; align-items: center; gap: 12px; justify-content: space-between; position: sticky; top: 0; z-index: 60; padding: 10px 16px; background: var(--profile-nav); border: 0; }
+  body[data-profile-brand] .pv2-mobile-brand { margin-right: auto; }
+  body[data-profile-brand] .pv2-mobile-brand .pv2-brand-image { width: 146px; padding: 8px; border-radius: 6px; }
+  body.v20.profile-page[data-profile-brand] .pv2-mobile-user-btn { width: 44px; height: 44px; background: var(--profile-nav-hover); color: #fff; }
+  body[data-profile-brand] .pv2-mobile-menu { display: block; }
+  body[data-profile-brand] .pv2-mobile-menu summary { list-style: none; cursor: pointer; min-height: 44px; display: flex; align-items: center; padding: 8px 12px; border: 1px solid var(--profile-nav-line); border-radius: 7px; color: #fff; font: 500 14px/1.3 'Geologica',sans-serif; }
+  body[data-profile-brand] .pv2-mobile-menu summary::-webkit-details-marker { display: none; }
+  body[data-profile-brand] .pv2-mobile-menu nav { position: absolute; top: 100%; left: 0; right: 0; max-height: calc(100dvh - 80px); overflow-y: auto; padding: 12px 16px 20px; background: var(--profile-nav); border-top: 1px solid var(--profile-nav-line); }
+  body[data-profile-brand] .pv2-mobile-menu nav a { display: flex; align-items: center; color: var(--profile-nav-text); padding: 12px; min-height: 44px; border-radius: 6px; text-decoration: none; }
+  body[data-profile-brand] .pv2-mobile-menu nav a[aria-current="page"] { color: #fff; background: var(--v20-accent); }
+  body[data-profile-brand] .pv2-stats-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  body[data-profile-brand] .pv2-stat-card:nth-child(2) { border-right: 0; }
+  body[data-profile-brand] .pv2-stat-card:nth-child(-n+2) { border-bottom: 1px solid var(--v20-line); }
+}
+@media (max-width: 600px) {
+  body[data-profile-brand] .profile-v2-main { padding: 20px 16px 96px; }
+  body[data-profile-brand] .pv2-topbar { margin-bottom: 24px; }
+  body[data-profile-brand] .pv2-page-title { font-size: 24px; }
+  body[data-profile-brand] .pv2-profile-header { padding: 20px; text-align: left; align-items: flex-start; }
+  body[data-profile-brand] .pv2-profile-meta { justify-content: flex-start; flex-wrap: wrap; }
+  body[data-profile-brand] .pv2-profile-actions { justify-content: flex-start; }
+  body[data-profile-brand] .pv2-profile-actions .pv2-btn { flex: 1; }
+  body[data-profile-brand] .pv2-readiness { padding: 20px; }
+  body[data-profile-brand] .pv2-readiness-top { gap: 12px; }
+  body[data-profile-brand] .pv2-readiness .pv2-section-title { font-size: 18px; }
+  body[data-profile-brand] .pv2-quick-actions { grid-template-columns: 1fr; }
+  body[data-profile-brand] .pv2-action-btn { min-height: 64px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  body[data-profile-brand] :is(a,button,progress) { transition: none; }
+}
+body.has-app-bottom-nav .app-bottom-nav a{color:var(--v20-muted,#6B6560)}body.has-app-bottom-nav .app-bottom-nav a.is-active{color:var(--v20-accent,#BE2C28);background:var(--v20-accent-soft,#FBEEED)}body.has-app-bottom-nav .app-bottom-nav a:focus-visible{outline-color:var(--v20-accent-secondary,#E3A3A1)}
+/* Profile polish 20261116: readiness chips, field icons, two-column cards. */
+body.v20.profile-page .pv2-readiness.is-complete progress::-webkit-progress-value{background:#1f9d61}
+body.v20.profile-page .pv2-readiness.is-complete progress::-moz-progress-bar{background:#1f9d61}
+body.v20.profile-page .pv2-readiness.is-complete progress,body.v20.profile-page .pv2-readiness.is-complete progress::-webkit-progress-bar{background:rgba(31,157,97,.16)}
+body.v20.profile-page .pv2-readiness.is-complete .pv2-readiness-value{color:#18794a}
+body.v20.profile-page .pv2-readiness-chips{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 0;padding:0;list-style:none}
+body.v20.profile-page .pv2-readiness-chip{display:inline-flex;align-items:center;gap:6px;padding:5px 11px;border-radius:999px;background:rgba(31,157,97,.13);color:#18794a;font:500 13px/1.25 'Geologica',system-ui,sans-serif}
+body.v20.profile-page .pv2-readiness-chip::before{content:"\2713";font-weight:700}
+html[data-theme="dark"] body.v20.profile-page .pv2-readiness-chip,html[data-theme="dark"] body.v20.profile-page .pv2-readiness.is-complete .pv2-readiness-value{color:#7bdcab}
+body.v20.profile-page .pv2-data-label{display:flex;align-items:center;gap:6px}
+body.v20.profile-page .pv2-data-ico{flex:0 0 15px;width:15px;height:15px;opacity:.72}
+body.v20.profile-page .pv2-tag{display:inline-flex;align-items:center;padding:3px 11px;border-radius:999px;background:var(--v20-accent-soft);color:var(--v20-accent-hover,var(--v20-accent));font-weight:600;font-size:13px;line-height:1.35}
+body.v20.profile-page .pv2-btn .pv2-btn-ico{width:16px;height:16px;flex:0 0 16px}
+body.v20.profile-page .pv2-edit-soon[disabled]{cursor:not-allowed;color:var(--v20-muted);background:transparent}
+body.v20.profile-page .pv2-edit-soon[disabled]:hover{background:transparent}
+body.v20.profile-page .pv2-edit-soon .pv2-soon-badge{margin-left:2px}
+body.v20.profile-page .pv2-profile-phone{font-variant-numeric:tabular-nums;white-space:nowrap}
+@media(min-width:1000px){
+body.v20.profile-page #profileCard:has(>.pv2-readiness){display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:20px;align-items:start}
+body.v20.profile-page #profileCard:has(>.pv2-readiness)>*{grid-column:1/-1}
+body.v20.profile-page #profileCard:has(>.pv2-readiness)>:is(.pv2-profile-header,.pv2-readiness,.pv2-section){grid-column:auto}
+body.v20.profile-page #profileCard:has(>.pv2-readiness)>:is(.pv2-profile-header,.pv2-readiness){align-self:stretch}
+body.v20.profile-page #profileCard:has(>.pv2-readiness)>.pv2-section.pv2-span-full{grid-column:1/-1}
+body.v20.profile-page #profileCard:has(>.pv2-readiness)>.pv2-section>.pv2-section-header{min-height:72px;align-items:flex-start}
+body.v20.profile-page #profileCard:has(>.pv2-readiness)>.pv2-section .pv2-section-description{max-width:none}
+}
