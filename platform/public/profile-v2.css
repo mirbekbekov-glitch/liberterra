@@ -829,41 +829,79 @@ body.v20.profile-v2-runtime .pv2-language-picker select {
 
 /* ── Dark Theme ── */
 body.v20.profile-page[data-public-theme="dark"] .pv2-profile-header,
+body.v20.profile-v2-runtime[data-public-theme="dark"] .pv2-profile-header,
 body.v20.profile-page[data-public-theme="dark"] .pv2-stat-card,
+body.v20.profile-v2-runtime[data-public-theme="dark"] .pv2-stat-card,
 body.v20.profile-page[data-public-theme="dark"] .pv2-action-btn:not(.primary),
-body.v20.profile-page[data-public-theme="dark"] .pv2-data-grid {
+body.v20.profile-v2-runtime[data-public-theme="dark"] .pv2-action-btn:not(.primary),
+body.v20.profile-page[data-public-theme="dark"] .pv2-data-grid,
+body.v20.profile-v2-runtime[data-public-theme="dark"] .pv2-data-grid {
   background: #282321;
   border-color: var(--v20-line);
   box-shadow: none;
 }
-body.v20.profile-page[data-public-theme="dark"] .pv2-avatar {
+body.v20.profile-page[data-public-theme="dark"] .pv2-avatar,
+body.v20.profile-v2-runtime[data-public-theme="dark"] .pv2-avatar {
   box-shadow: 0 0 0 3px var(--v20-paper), 0 0 0 5px var(--v20-accent-soft);
 }
-body.v20.profile-page[data-public-theme="dark"] .pv2-workspace-toolbar {
+body.v20.profile-page[data-public-theme="dark"] .pv2-workspace-toolbar,
+body.v20.profile-v2-runtime[data-public-theme="dark"] .pv2-workspace-toolbar {
   border-bottom-color: var(--v20-line);
 }
 body.v20.profile-page[data-public-theme="dark"] .pv2-toolbar-link,
+body.v20.profile-v2-runtime[data-public-theme="dark"] .pv2-toolbar-link,
 body.v20.profile-page[data-public-theme="dark"] .pv2-toolbar-lang,
-body.v20.profile-page[data-public-theme="dark"] .pv2-toolbar-theme {
+body.v20.profile-v2-runtime[data-public-theme="dark"] .pv2-toolbar-lang,
+body.v20.profile-page[data-public-theme="dark"] .pv2-toolbar-theme,
+body.v20.profile-v2-runtime[data-public-theme="dark"] .pv2-toolbar-theme {
   border-color: var(--v20-line);
   color: var(--v20-ink);
 }
-body.v20.profile-page[data-public-theme="dark"] .pv2-toolbar-lang option {
+body.v20.profile-page[data-public-theme="dark"] .pv2-toolbar-lang option,
+body.v20.profile-v2-runtime[data-public-theme="dark"] .pv2-toolbar-lang option {
   background: #282321;
 }
-body.v20.profile-page[data-public-theme="dark"] .pv2-stat-card:nth-child(2) { border-left-color: #4ade80; }
-body.v20.profile-page[data-public-theme="dark"] .pv2-stat-card:nth-child(3) { border-left-color: #60a5fa; }
-body.v20.profile-page[data-public-theme="dark"] .pv2-stat-card:nth-child(4) { border-left-color: #f3c477; }
-body.v20.profile-page[data-public-theme="dark"] .pv2-sidebar-nav li a:hover {
+body.v20.profile-page[data-public-theme="dark"] .pv2-stat-card:nth-child(2),
+body.v20.profile-v2-runtime[data-public-theme="dark"] .pv2-stat-card:nth-child(2) { border-left-color: #4ade80; }
+body.v20.profile-page[data-public-theme="dark"] .pv2-stat-card:nth-child(3),
+body.v20.profile-v2-runtime[data-public-theme="dark"] .pv2-stat-card:nth-child(3) { border-left-color: #60a5fa; }
+body.v20.profile-page[data-public-theme="dark"] .pv2-stat-card:nth-child(4),
+body.v20.profile-v2-runtime[data-public-theme="dark"] .pv2-stat-card:nth-child(4) { border-left-color: #f3c477; }
+body.v20.profile-page[data-public-theme="dark"] .pv2-sidebar-nav li a:hover,
+body.v20.profile-v2-runtime[data-public-theme="dark"] .pv2-sidebar-nav li a:hover {
   background: #342a29;
 }
-body.v20.profile-page[data-public-theme="dark"] .pv2-sidebar-nav li a.active {
+body.v20.profile-page[data-public-theme="dark"] .pv2-sidebar-nav li a.active,
+body.v20.profile-v2-runtime[data-public-theme="dark"] .pv2-sidebar-nav li a.active {
   background: var(--v20-accent-soft);
 }
 body.v20.profile-page[data-public-theme="dark"] .pv2-mobile-header,
-body.v20.profile-page[data-public-theme="dark"] .pv2-mobile-nav {
+body.v20.profile-v2-runtime[data-public-theme="dark"] .pv2-mobile-header,
+body.v20.profile-page[data-public-theme="dark"] .pv2-mobile-nav,
+body.v20.profile-v2-runtime[data-public-theme="dark"] .pv2-mobile-nav {
   background: var(--v20-paper);
   border-color: var(--v20-line);
+}
+body.v20.profile-v2-runtime[data-public-theme="dark"] .pv2-agent-cta {
+  background: linear-gradient(135deg, #5a1a2e, #7b233f);
+}
+body.v20.profile-v2-runtime[data-public-theme="dark"] .pv2-agent-status {
+  background: #282321;
+  border-color: var(--v20-line);
+}
+body.v20.profile-v2-runtime[data-public-theme="dark"] .profile-logout {
+  background: #282321;
+  border-color: var(--v20-line);
+  color: var(--v20-ink);
+}
+body.v20.profile-v2-runtime[data-public-theme="dark"] .pv2-language-picker select {
+  background: #282321;
+  color: var(--v20-ink);
+  border-color: var(--v20-line);
+}
+body.v20.profile-v2-runtime[data-public-theme="dark"] .profile-v2-sidebar {
+  background: var(--v20-paper);
+  border-right-color: var(--v20-line);
 }
 
 @media (max-width: 480px) {
