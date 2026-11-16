@@ -167,6 +167,12 @@
       const agency = clean(user.agency);
       const specialization = clean(user.specialization);
       const certificate = clean(user.certificate_number);
+      const certificateState = clean(user.certificate_verification && user.certificate_verification.status) || (clean(user.certificate_number) ? "unverified" : "");
+      const certificateChips = { verified: ["Подтверждён", "ok"], pending: ["На проверке", "wait"], rejected: ["Не подтверждён", "no"], unverified: ["Не подтверждён", "no"] };
+      const certificateChip = (state) => {
+        const chip = certificateChips[state];
+        return chip ? `<span class="pv2-cert-chip is-${chip[1]}" data-pv2-cert-chip>${chip[0]}</span>` : "";
+      };
       const registrationDate = user.created_at ? new Date(user.created_at) : null;
       const registrationLabel = registrationDate && !Number.isNaN(registrationDate.getTime())
         ? registrationDate.toLocaleDateString("ru", { day: "numeric", month: "short", year: "numeric" }) : "—";
@@ -211,7 +217,7 @@
             ${specialization ? `<div><div class="pv2-data-label">${fieldIcon("tag")}Специализация</div><div class="pv2-data-value"><span class="pv2-tag">${escapeHtml(specializationLabels[specialization] || specialization)}</span></div></div>` : ""}
             <div><div class="pv2-data-label">${fieldIcon("send")}Telegram</div><div class="pv2-data-value">${user.telegram_id || hasTelegramSession ? "Привязан" : "Не привязан"}</div></div>
             ${registrationLabel === "—" ? "" : `<div><div class="pv2-data-label">${fieldIcon("calendar")}Дата регистрации</div><div class="pv2-data-value">${escapeHtml(registrationLabel)}</div></div>`}
-            ${certificate ? `<div class="pv2-data-full"><div class="pv2-data-label">${fieldIcon("award")}Сертификат аттестации риэлтора</div><div class="pv2-data-value linked">№ ${escapeHtml(certificate)}</div></div>` : ""}
+            ${certificate ? `<div class="pv2-data-full"><div class="pv2-data-label">${fieldIcon("award")}Сертификат аттестации риэлтора</div><div class="pv2-data-value linked">№ ${escapeHtml(certificate)}${certificateChip(certificateState)}</div></div>` : ""}
           </div>
         </section>
         <button class="profile-logout pv2-btn pv2-btn-secondary" type="button" data-profile-logout>Выйти из аккаунта</button>
@@ -529,21 +535,33 @@
 
   heading();
   function syncCachedReadiness(profile) {
-    const block = profile.querySelector('.pv2-readiness');
-    if (!block) return;
-    for (const store of [window.sessionStorage, window.localStorage]) {
-      try {
-        const cached = JSON.parse(store.getItem('liberterra-profile-v2-view') || 'null');
-        if (!cached || !cached.profileHtml) continue;
-        const holder = document.createElement('template');
-        holder.innerHTML = cached.profileHtml;
-        const old = holder.content.querySelector('.pv2-readiness');
-        if (!old) continue;
-        old.replaceWith(block.cloneNode(true));
-        cached.profileHtml = holder.innerHTML;
-        store.setItem('liberterra-profile-v2-view', JSON.stringify(cached));
-      } catch (_) {}
+    for (const selector of ['.pv2-readiness', '.pv2-data-full:has([data-pv2-cert-chip])']) {
+      const block = profile.querySelector(selector);
+      if (!block) continue;
+      for (const store of [window.sessionStorage, window.localStorage]) {
+        try {
+          const cached = JSON.parse(store.getItem('liberterra-profile-v2-view') || 'null');
+          if (!cached || !cached.profileHtml) continue;
+          const holder = document.createElement('template');
+          holder.innerHTML = cached.profileHtml;
+          const old = holder.content.querySelector(selector);
+          if (!old) continue;
+          old.replaceWith(block.cloneNode(true));
+          cached.profileHtml = holder.innerHTML;
+          store.setItem('liberterra-profile-v2-view', JSON.stringify(cached));
+        } catch (_) {}
+      }
     }
+  }
+
+  const CERT_CHIPS = { verified: ['Подтверждён', 'ok'], pending: ['На проверке', 'wait'], rejected: ['Не подтверждён', 'no'], unverified: ['Не подтверждён', 'no'] };
+
+  function refreshCertificateChip(profile, status) {
+    const chip = profile.querySelector('[data-pv2-cert-chip]');
+    const next = CERT_CHIPS[status];
+    if (!chip || !next) return;
+    chip.textContent = next[0];
+    chip.className = 'pv2-cert-chip is-' + next[1];
   }
 
   window.addEventListener('liberterra:certificate-status', event => {
@@ -553,6 +571,7 @@
     const profile = document.querySelector('#profileCard');
     if (!profile || !lastDetail) return;
     renderReadiness(profile, Object.assign({}, lastDetail, { certificateStatus }));
+    refreshCertificateChip(profile, status);
     syncCachedReadiness(profile);
   });
 

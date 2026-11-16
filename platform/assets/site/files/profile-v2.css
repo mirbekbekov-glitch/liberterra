@@ -982,3 +982,14 @@ html[data-theme=dark] body.v20.profile-page .pv2-edit-soon .pv2-soon-badge:not(#
 body.v20.profile-page #profileCard:has(>.pv2-readiness)>.pv2-profile-header:not(#lt0){align-items:center}
 body.v20.profile-page .pv2-data-email{grid-column:1/-1}
 body.v20.profile-page .pv2-data-email .pv2-data-value:not(#lt0){overflow-wrap:break-word;word-break:normal}
+
+/* Certificate status chip 20261116-5: the number never reads as verified on its own. */
+body.v20.profile-page .pv2-cert-chip{display:inline-flex;align-items:center;gap:5px;margin-left:10px;padding:3px 10px;border-radius:999px;font:600 13px/1.35 'Geologica',system-ui,sans-serif;vertical-align:middle}
+body.v20.profile-page .pv2-cert-chip.is-ok{background:rgba(31,157,97,.13);color:#18794a}
+body.v20.profile-page .pv2-cert-chip.is-ok::before{content:"\2713"}
+body.v20.profile-page .pv2-cert-chip.is-wait{background:#FFF0D1;color:#8A5300}
+body.v20.profile-page .pv2-cert-chip.is-no{background:#EBEEF2;color:#4A525C}
+html[data-theme=dark] body.v20.profile-page .pv2-cert-chip.is-no{background:rgba(255,255,255,.12);color:#D2D8E0}
+body.v20.profile-page .pv2-data-value.linked:has(.pv2-cert-chip){flex-wrap:wrap;row-gap:6px}
+html[data-theme=dark] body.v20.profile-page .pv2-cert-chip.is-ok{background:rgba(31,157,97,.2);color:#7bdcab}
+html[data-theme=dark] body.v20.profile-page .pv2-cert-chip.is-wait{background:rgba(255,184,77,.18);color:#ffcf8a}
