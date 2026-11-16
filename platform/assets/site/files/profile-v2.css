@@ -967,3 +967,18 @@ body.v20.profile-page #profileCard:has(>.pv2-professional)>.pv2-section,body.v20
 body.v20.profile-page #profileCard:has(>.pv2-readiness)>.pv2-section>.pv2-section-header{min-height:84px}
 body.v20.profile-page #profileCard:has(>.pv2-readiness) .pv2-professional .pv2-data-full{grid-column:1/-1}
 }
+
+/* Profile fixes 20261116-3: phone colour, avatar overlay button, «скоро» badge, certificate status, email wrapping. */
+body.v20.profile-page .pv2-profile-phone:not(#lt0){color:var(--v20-ink)}
+body.v20.profile-page a.pv2-profile-phone:not(#lt0):hover{color:var(--v20-accent)}
+body.v20.profile-page .pv2-avatar-upload:not(#lt0){width:30px;height:30px;right:-4px;bottom:-4px;padding:0;color:var(--v20-ink);box-shadow:0 1px 4px rgba(37,42,49,.18)}
+body.v20.profile-page .pv2-avatar-upload:not(#lt0) svg{width:15px;height:15px;color:inherit}
+body.v20.profile-page .pv2-avatar-upload:focus-visible{outline:2px solid var(--v20-accent);outline-offset:2px}
+body.v20.profile-page .pv2-avatar-hint{margin:0 0 14px;color:var(--v20-muted);font-size:14px;line-height:1.5}
+body.v20.profile-page .pv2-edit-soon[disabled]:not(#lt0){opacity:1}
+body.v20.profile-page .pv2-edit-soon .pv2-soon-badge:not(#lt0){padding:3px 8px;background:#FFF0D1;color:#8A5300;font-size:11px;font-weight:600;letter-spacing:.02em}
+body.v20.profile-page .pv2-readiness-actions .pv2-readiness-wait{display:inline-flex;align-items:center;min-height:40px;padding:8px 12px;border-radius:8px;background:#FFF0D1;color:#8A5300;font-size:13px;font-weight:600;line-height:1.3}
+html[data-theme=dark] body.v20.profile-page .pv2-edit-soon .pv2-soon-badge:not(#lt0),html[data-theme=dark] body.v20.profile-page .pv2-readiness-actions .pv2-readiness-wait{background:rgba(255,184,77,.18);color:#ffcf8a}
+body.v20.profile-page #profileCard:has(>.pv2-readiness)>.pv2-profile-header:not(#lt0){align-items:center}
+body.v20.profile-page .pv2-data-email{grid-column:1/-1}
+body.v20.profile-page .pv2-data-email .pv2-data-value:not(#lt0){overflow-wrap:break-word;word-break:normal}

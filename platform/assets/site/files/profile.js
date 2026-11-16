@@ -183,12 +183,11 @@
       // agent's actual access, so do not hide the entry based on account_type.
       profileNode.innerHTML = `
         <div class="pv2-profile-header">
-          <div class="pv2-avatar-wrapper"><div class="pv2-avatar" aria-label="Фото профиля">${escapeHtml(initial)}</div></div>
+          <div class="pv2-avatar-wrapper"><div class="pv2-avatar" aria-label="Фото профиля">${escapeHtml(initial)}</div>${avatarEditorEnabled ? '<button class="pv2-avatar-upload" type="button" data-pv2-avatar-edit aria-label="Изменить фото" title="Изменить фото. Лучше всего — портрет: клиенты больше доверяют агенту, когда видят лицо."><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8.5h3l1.6-2.4h6.8L17 8.5h3a1 1 0 0 1 1 1V18a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5a1 1 0 0 1 1-1z"/><circle cx="12" cy="13.3" r="3.3"/></svg></button>' : ""}</div>
           <div class="pv2-profile-info">
             <h2 class="pv2-profile-name">${escapeHtml(user.name || "Пользователь Liberterra")}</h2>
             <div class="pv2-profile-meta"><span class="pv2-role-badge">${escapeHtml(displayRole)}</span>${contactHtml}</div>
           </div>
-          ${avatarEditorEnabled ? '<div class="pv2-profile-actions"><button class="pv2-btn pv2-btn-secondary" type="button" data-pv2-avatar-edit><svg class="pv2-btn-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8.5h3l1.6-2.4h6.8L17 8.5h3a1 1 0 0 1 1 1V18a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5a1 1 0 0 1 1-1z"/><circle cx="12" cy="13.3" r="3.3"/></svg>Изменить фото</button></div>' : ""}
         </div>
         <div class="pv2-stats-grid" aria-label="Статистика профиля">
           <a class="pv2-stat-card highlight" href="/my-listings.html"><div class="pv2-stat-value">${Number(response.own_object_count || 0)}</div><div class="pv2-stat-label">Мои объекты</div><div class="pv2-stat-sub">всего</div></a>
@@ -206,7 +205,7 @@
         <section class="pv2-section"><div class="pv2-section-header"><h3 class="pv2-section-title">Личные данные</h3><button class="pv2-btn pv2-btn-secondary pv2-edit-soon" type="button" disabled title="Редактирование личных данных появится позже"><svg class="pv2-btn-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4.2L19.4 8.8a2 2 0 0 0 0-2.8l-1.4-1.4a2 2 0 0 0-2.8 0L4 15.8z"/><path d="m13.6 6.2 4.2 4.2"/></svg>Редактировать<span class="pv2-soon-badge">скоро</span></button></div>
           <div class="pv2-data-grid">
             <div><div class="pv2-data-label">${fieldIcon("user")}Имя</div><div class="pv2-data-value">${escapeHtml(user.name || "Не указано")}</div></div>
-            <div><div class="pv2-data-label">${fieldIcon("mail")}Email</div><div class="pv2-data-value">${escapeHtml(email || "Не указан")}</div></div>
+            <div class="pv2-data-email"><div class="pv2-data-label">${fieldIcon("mail")}Email</div><div class="pv2-data-value">${email ? escapeHtml(email).replace("@", "@<wbr>") : "Не указан"}</div></div>
             <div><div class="pv2-data-label">${fieldIcon("phone")}Телефон</div><div class="pv2-data-value">${escapeHtml(formatPhone(phone) || "Не указан")}</div></div>
             <div><div class="pv2-data-label">${fieldIcon("building")}Агентство</div><div class="pv2-data-value${agency ? "" : " empty"}">${escapeHtml(agency || "Не указано")}</div></div>
             ${specialization ? `<div><div class="pv2-data-label">${fieldIcon("tag")}Специализация</div><div class="pv2-data-value"><span class="pv2-tag">${escapeHtml(specializationLabels[specialization] || specialization)}</span></div></div>` : ""}
@@ -216,7 +215,7 @@
           </div>
         </section>
         <button class="profile-logout pv2-btn pv2-btn-secondary" type="button" data-profile-logout>Выйти из аккаунта</button>
-        ${avatarEditorEnabled ? '<div class="pv2-modal-overlay" id="pv2AvatarModal" role="dialog" aria-modal="true" aria-label="Фото профиля" aria-hidden="true"><div class="pv2-modal"><div class="pv2-modal-header"><h3>Фото профиля</h3><button class="pv2-modal-close" type="button" data-pv2-avatar-close aria-label="Закрыть">×</button></div><div class="pv2-modal-body" data-pv2-avatar-editor-slot></div></div></div>' : ""}`;
+        ${avatarEditorEnabled ? '<div class="pv2-modal-overlay" id="pv2AvatarModal" role="dialog" aria-modal="true" aria-label="Фото профиля" aria-hidden="true"><div class="pv2-modal"><div class="pv2-modal-header"><h3>Фото профиля</h3><button class="pv2-modal-close" type="button" data-pv2-avatar-close aria-label="Закрыть">×</button></div><div class="pv2-modal-body"><p class="pv2-avatar-hint">Загрузите портретное фото: клиенты больше доверяют агенту, когда видят лицо. Документы и скриншоты для аватара не подходят.</p><div data-pv2-avatar-editor-slot></div></div></div></div>' : ""}`;
       window.dispatchEvent(new CustomEvent('liberterra:profile-data', { detail: { user, response, hasTelegramSession, isAgent } }));
       renderFavorites(favorites);
       const avatar = profileNode.querySelector(".pv2-avatar");
@@ -339,11 +338,12 @@
       { id: 'phone', label: 'Добавить телефон', done: 'Телефон', complete: Boolean(value(source.phone)), action: 'profile' },
       { id: 'access', label: 'Настроить способ входа', done: 'Способ входа', complete: accessReady, action: 'access' },
     ];
+    const certificateStatus = value(config.certificateStatus) || value(source.certificate_verification && source.certificate_verification.status) || (value(source.certificate_number) ? 'unverified' : 'missing');
     if (config.isAgent) {
       checks.push(
         { id: 'agency', label: 'Указать агентство или частную практику', done: 'Агентство', complete: Boolean(value(source.agency)), action: 'profile' },
         { id: 'specialization', label: 'Выбрать направление работы', done: 'Направление работы', complete: ['sale', 'rent'].includes(value(source.specialization)), action: 'profile' },
-        { id: 'certificate', label: 'Подтвердить сертификат', done: 'Сертификат', complete: Boolean(value(source.certificate_number)), action: 'support' }
+        { id: 'certificate', label: certificateStatus === 'pending' ? 'Сертификат на проверке' : certificateStatus === 'missing' ? 'Указать сертификат' : 'Подтвердить сертификат', done: 'Сертификат', complete: certificateStatus === 'verified', action: certificateStatus === 'pending' ? 'wait' : 'certificate' }
       );
     }
     const completed = checks.filter(item => item.complete).length;
@@ -444,6 +444,13 @@
   }
 
   function readinessAction(item, hasTelegramSession, canEditProfile) {
+    if (item.action === 'wait') return node('span', item.label, 'pv2-readiness-wait');
+    if (item.action === 'certificate') {
+      const jump = node('button', item.label);
+      jump.type = 'button';
+      jump.setAttribute('data-pv2-certificate-jump', '');
+      return jump;
+    }
     if (item.action === 'support' || (item.action === 'profile' && !canEditProfile)) {
       const link = node('a', item.label);
       link.href = 'https://t.me/Liberterra_kg_bot?start=support';
@@ -506,16 +513,58 @@
     actions.prepend(crm);
   }
 
+  let lastDetail = null;
+  let certificateStatus = '';
+
   function render(event) {
     const detail = event.detail || {};
     const profile = document.querySelector('#profileCard');
     if (!profile || !detail.user) return;
     heading();
-    renderReadiness(profile, detail);
+    lastDetail = detail;
+    renderReadiness(profile, Object.assign({}, detail, { certificateStatus }));
     prioritizeActions(profile, detail.isAgent);
     moveProfileSections(profile, detail.isAgent);
   }
 
   heading();
+  function syncCachedReadiness(profile) {
+    const block = profile.querySelector('.pv2-readiness');
+    if (!block) return;
+    for (const store of [window.sessionStorage, window.localStorage]) {
+      try {
+        const cached = JSON.parse(store.getItem('liberterra-profile-v2-view') || 'null');
+        if (!cached || !cached.profileHtml) continue;
+        const holder = document.createElement('template');
+        holder.innerHTML = cached.profileHtml;
+        const old = holder.content.querySelector('.pv2-readiness');
+        if (!old) continue;
+        old.replaceWith(block.cloneNode(true));
+        cached.profileHtml = holder.innerHTML;
+        store.setItem('liberterra-profile-v2-view', JSON.stringify(cached));
+      } catch (_) {}
+    }
+  }
+
+  window.addEventListener('liberterra:certificate-status', event => {
+    const status = event.detail && event.detail.status;
+    if (!status || status === certificateStatus && !lastDetail) return;
+    certificateStatus = status;
+    const profile = document.querySelector('#profileCard');
+    if (!profile || !lastDetail) return;
+    renderReadiness(profile, Object.assign({}, lastDetail, { certificateStatus }));
+    syncCachedReadiness(profile);
+  });
+
+  document.addEventListener('click', event => {
+    const jump = event.target.closest ? event.target.closest('[data-pv2-certificate-jump]') : null;
+    if (!jump) return;
+    const box = document.querySelector('[data-registry-editor]');
+    if (!box) return;
+    box.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    const field = box.querySelector('input');
+    if (field) setTimeout(() => field.focus({ preventScroll: true }), 400);
+  });
+
   window.addEventListener('liberterra:profile-data', render);
 })();

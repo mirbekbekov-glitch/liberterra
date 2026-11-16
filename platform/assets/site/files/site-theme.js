@@ -542,6 +542,17 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
         var s = d.createElement('style'); s.id = 'lt-embed-styles'; s.textContent = INNER;
         (d.head || d.documentElement).appendChild(s);
       }
+      if (!d.ltDialogWatch && d.body) {
+        d.ltDialogWatch = true;
+        new MutationObserver(function(){
+          var open = d.querySelector('.pv2-modal-overlay.open');
+          if (!open) return;
+          var box = open.querySelector('.pv2-modal') || open;
+          var fr = f.getBoundingClientRect(), br = box.getBoundingClientRect();
+          var top = window.pageYOffset + fr.top + br.top - Math.max(16, (window.innerHeight - br.height) / 2);
+          try { window.scrollTo({ top: top, behavior: 'smooth' }); } catch (e2) { window.scrollTo(0, top); }
+        }).observe(d.body, { attributes: true, attributeFilter: ['class'], subtree: true });
+      }
     } catch (e) {}
   }
 
