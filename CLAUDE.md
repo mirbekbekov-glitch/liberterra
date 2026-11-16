@@ -34,4 +34,5 @@ The live platform is not built from this repo; its files live inline in Cloudfla
 - **`hidden-pine-cbff`** is only its backend (service binding `BACKEND`): `/api/*`, `/api/crm/*`, `/api/crm-workflow/*`, `/web-registration.js`. It carries a stale embedded copy of the UI that is never served on the domain — patching that copy changes nothing on the site.
 - Response headers show the source: `x-liberterra-release` = listing-ui, `x-liberterra-crm-release` / `x-liberterra-crm-workflow` = backend.
 - Deploy code-only changes with `PUT /workers/scripts/<name>/content` (keeps bindings), then purge the zone cache. Verify against the live URL, not the bundle.
+- A page's inline scripts can have a **third copy** of the same code baked into the worker's own source, outside `const files={…}` and outside the `files["…"]=` overrides. That copy is what gets inlined into the served HTML, so patching the matching `/*.js` entry alone changes nothing. Search the whole worker body for the snippet and count every hit before editing.
 - `platform/assets/site/files/` holds copies of listing-ui files changed from here; `platform/public/` is older and does not match production.
