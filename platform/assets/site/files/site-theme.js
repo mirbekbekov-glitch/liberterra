@@ -264,7 +264,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
   function wipe(){ try { localStorage.removeItem('lt-agent-menu'); localStorage.removeItem('lt-crm-cache-v1'); localStorage.removeItem('lt-dashboard-cache-v1'); } catch (e) {} }
   document.addEventListener('click', function(e){
     var b = e.target && e.target.closest ? e.target.closest('a,button') : null;
-    if (b && /^\s*(Выйти|Чыгуу|Log out|Sign out)\s*$/i.test(b.textContent || '')) wipe();
+    if (b && /^\s*(Выйти|Чыгуу|Log out|Sign out)\s*$/i.test(b.textContent || '')) { wipe(); try { localStorage.removeItem('liberterra-profile-v2-view'); } catch (e2) {} }
   }, true);
   function role(){
     var r = document.documentElement.getAttribute('data-agent-role');
@@ -527,15 +527,26 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
     } catch (e) {}
   }
 
+  var lastScroll = 0;
+  window.addEventListener('scroll', function(){ lastScroll = Date.now(); }, { passive: true });
   function fit(f){
     try {
       var d = f.contentDocument;
       if (!d || !d.body) return;
+      var h;
+      if (Date.now() - lastScroll < 800) {
+        h = Math.max(d.body.scrollHeight || 0, d.documentElement.scrollHeight || 0);
+        if (h > f.clientHeight + 1) f.style.height = (h + 24) + 'px';
+        return;
+      }
+      var sx = window.pageXOffset, sy = window.pageYOffset;
       var prev = f.style.height;
       f.style.height = '0px';
-      var h = Math.max(d.body.scrollHeight || 0, d.documentElement.scrollHeight || 0);
-      if (!(h > 160)) { f.style.height = prev; return; }
-      f.style.height = (h + 24) + 'px';
+      h = Math.max(d.body.scrollHeight || 0, d.documentElement.scrollHeight || 0);
+      f.style.height = h > 160 ? (h + 24) + 'px' : prev;
+      if (window.pageYOffset !== sy || window.pageXOffset !== sx) {
+        try { window.scrollTo({ left: sx, top: sy, behavior: 'instant' }); } catch (e2) { window.scrollTo(sx, sy); }
+      }
     } catch (e) {}
   }
 
@@ -567,7 +578,10 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
     f.style.opacity = '0';
     f.style.height = '320px';
     spin.hidden = false;
-    f.addEventListener('load', function(){
+    var shown = false;
+    function ready(){
+      if (shown) return;
+      shown = true;
       dress(f); label(f, p); fit(f);
       spin.hidden = true;
       f.style.opacity = '1';
@@ -577,8 +591,16 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
         var d = f.contentDocument;
         if (d && window.ResizeObserver) new ResizeObserver(function(){ fit(f); }).observe(d.body);
       } catch (e) {}
-    }, { once: true });
+    }
+    f.addEventListener('load', ready, { once: true });
     f.src = url;
+    var tries = 0, early = setInterval(function(){
+      if (shown || ++tries > 300) { clearInterval(early); return; }
+      try {
+        var d = f.contentDocument;
+        if (d && d.body && d.readyState !== 'loading' && String(d.URL || '').indexOf('about:') !== 0) { clearInterval(early); ready(); }
+      } catch (e) {}
+    }, 100);
   }
 
   function shut(kind){

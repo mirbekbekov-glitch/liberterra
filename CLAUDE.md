@@ -30,6 +30,7 @@ Vanilla JS, string-template rendering, no framework:
 The live platform is not built from this repo; its files live inline in Cloudflare Workers.
 
 - `liberterra.kg/*` is routed to the Worker **`liberterra-listing-ui`**: pages and assets are string values of its `const files={...}` literal (`/agent-cabinet.html`, `/site-theme.js`, `/profile.html`, …). UI fixes go here.
+- Some keys are reassigned after that literal (`files["/profile.js"]="…"`, also `/profile.html`, `/index.html`, `/login.html`, …); the last assignment is what is served. Compare a file's hash with the live URL before patching it.
 - **`hidden-pine-cbff`** is only its backend (service binding `BACKEND`): `/api/*`, `/api/crm/*`, `/api/crm-workflow/*`, `/web-registration.js`. It carries a stale embedded copy of the UI that is never served on the domain — patching that copy changes nothing on the site.
 - Response headers show the source: `x-liberterra-release` = listing-ui, `x-liberterra-crm-release` / `x-liberterra-crm-workflow` = backend.
 - Deploy code-only changes with `PUT /workers/scripts/<name>/content` (keeps bindings), then purge the zone cache. Verify against the live URL, not the bundle.
