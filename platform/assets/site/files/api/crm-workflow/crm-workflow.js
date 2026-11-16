@@ -462,6 +462,18 @@
   if(digits.length<9)row.append(el('span','Телефон не указан','crm-deal-tool-hint'));
   return row;
  }
+
+ const BISHKEK=value=>new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Bishkek',year:'numeric',month:'2-digit',day:'2-digit'}).format(value);
+ function dealTag(deal){
+  if(['won','lost'].includes(deal.stage))return null;
+  const at=deal.next_action_at&&Number.isFinite(Date.parse(deal.next_action_at))?Date.parse(deal.next_action_at):null;
+  if(!String(deal.next_action||'').trim()&&at===null)return tagNode('Нет действия','none','Следующее действие не назначено');
+  if(at===null)return null;
+  if(at<Date.now())return tagNode('Просрочено','late','Срок следующего действия прошёл');
+  if(BISHKEK(new Date(at))===BISHKEK(new Date()))return tagNode('Сегодня','today','Следующее действие сегодня');
+  return null;
+ }
+ function tagNode(text,kind,hint){const tag=el('span',text,'crm-deal-tag');tag.dataset.kind=kind;tag.title=hint;return tag;}
  function renderBoard(){
   syncStageRail();
   board.replaceChildren();create.disabled=!state.ready||!state.stages.length;
@@ -478,7 +490,8 @@
    for(const deal of deals){
     const card=el('article',undefined,'crm-deal-card');card.dataset.dealId=deal.id;card.draggable=!busy.has(deal.id)&&stage.transitions.length>0;
     card.addEventListener('dragstart',event=>{if(!state.ready||busy.has(deal.id)){event.preventDefault();return;}dragging=deal.id;event.dataTransfer.setData('text/plain',deal.id);event.dataTransfer.effectAllowed='move';});card.addEventListener('dragend',()=>{dragging='';});
-    const open=button(deal.title,()=>openForm(deal),'crm-deal-open');open.setAttribute('aria-label',`Открыть сделку: ${deal.title}`);open.disabled=busy.has(deal.id);card.append(open,el('p',clientName(deal.client_id),'crm-deal-client'),dealTools(deal),el('strong',money(deal.amount,deal.currency),'crm-deal-amount'));
+    const open=button(deal.title,()=>openForm(deal),'crm-deal-open');open.setAttribute('aria-label',`Открыть сделку: ${deal.title}`);open.disabled=busy.has(deal.id);const tag=dealTag(deal);if(tag)card.append(tag);
+    card.append(open,el('p',clientName(deal.client_id),'crm-deal-client'),dealTools(deal),el('strong',money(deal.amount,deal.currency),'crm-deal-amount'));
     if(deal.object_id)card.append(el('p',objectName(deal.object_id),'crm-deal-muted'));
     const next=el('p',undefined,'crm-deal-next');next.append(el('span','Следующее действие'),el('strong',deal.next_action||'Укажите следующее действие'));
     card.append(next,el('small',deal.next_action_at?'Срок: '+date(deal.next_action_at):'Срок не назначен','crm-deal-due'),el('small','План комиссии: '+money(deal.planned_commission,deal.currency),'crm-deal-commission'));
