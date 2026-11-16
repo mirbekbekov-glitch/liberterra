@@ -451,13 +451,15 @@
    const chat=el('a',undefined,'crm-deal-tool');chat.href='https://wa.me/'+intl;chat.target='_blank';chat.rel='noopener noreferrer';
    chat.title='Написать в WhatsApp: '+phone;chat.setAttribute('aria-label','Написать клиенту в WhatsApp, '+phone);chat.append(dealIcon(DEAL_ICONS.chat));row.append(chat);
   }
-  const open=Array.isArray(tasks)?tasks.filter(task=>task.client_id&&task.client_id===deal.client_id&&task.status!=='done'):[];
+  const live=Array.isArray(tasks)?tasks.filter(task=>task.status!=='done'):[];
+  const open=live.filter(task=>task.deal_id?task.deal_id===deal.id:(task.client_id&&task.client_id===deal.client_id));
+  const linked=open.length>0&&open.every(task=>task.deal_id);
   const late=open.filter(task=>task.due_at&&Date.parse(task.due_at)<Date.now()).length;
-  const badge=button('',()=>window.dispatchEvent(new CustomEvent('liberterra:crm-task',{detail:{client_id:deal.client_id||'',object_id:deal.object_id||'',title:deal.next_action||''}})),'crm-deal-tool crm-deal-tasks');
+  const badge=button('',()=>window.dispatchEvent(new CustomEvent('liberterra:crm-task',{detail:{client_id:deal.client_id||'',deal_id:deal.id,object_id:deal.object_id||'',title:deal.next_action||''}})),'crm-deal-tool crm-deal-tasks');
   badge.append(dealIcon(DEAL_ICONS.task),el('span',tasks===null?'—':String(open.length)));
   if(late)badge.dataset.late='true';
   if(!open.length&&tasks!==null)badge.dataset.empty='true';
-  badge.title=tasks===null?'Задачи ещё не загружены. Нажмите, чтобы поставить задачу клиенту':'Открытых задач клиента: '+open.length+(late?', просрочено: '+late:'')+'. Нажмите, чтобы поставить задачу';
+  badge.title=tasks===null?'Задачи ещё не загружены. Нажмите, чтобы поставить задачу':'Открытых задач '+(linked?'по сделке':'клиента')+': '+open.length+(late?', просрочено: '+late:'')+'. Нажмите, чтобы поставить задачу';
   badge.setAttribute('aria-label',badge.title);row.append(badge);
   if(digits.length<9)row.append(el('span','Телефон не указан','crm-deal-tool-hint'));
   return row;
