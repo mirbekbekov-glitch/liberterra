@@ -223,6 +223,7 @@
     ["ownObjects", "Мои объекты", "objects"],
     ["requests", "Заявки ждут ответа", "requests"],
     ["activeClients", "Клиенты в работе", "clients"],
+    ["openTasks", "Задачи в работе", "tasks"],
     ["plannedShowings", "Показы запланированы", "clients"],
   ];
   const metricNodes = new Map();
