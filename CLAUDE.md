@@ -36,4 +36,14 @@ The live platform is not built from this repo; its files live inline in Cloudfla
 - Deploy code-only changes with `PUT /workers/scripts/<name>/content` (keeps bindings), then purge the zone cache. Verify against the live URL, not the bundle.
 - A page's inline scripts can have a **third copy** of the same code baked into the worker's own source, outside `const files={…}` and outside the `files["…"]=` overrides. That copy is what gets inlined into the served HTML, so patching the matching `/*.js` entry alone changes nothing. Search the whole worker body for the snippet and count every hit before editing.
 - The deal board's renderer lives in the backend worker as `crmWorkflowAssets["crm-workflow.js"]` (served at `/api/crm-workflow/crm-workflow.js`), not in `const files={…}`; patch that string the same way (verify its SHA against the live URL first).
+## Apps Script backend (data storage)
+
+`/api/crm-action` in `hidden-pine-cbff` only proxies a whitelisted set of fields to `ACCOUNT_WEBHOOK_URL` — a Google Apps Script web app. Everything is stored in Google Sheets, not in Cloudflare.
+
+- The live project is **«Проект без названия»**, bound to the **Liberterra Objects** spreadsheet (Extensions → Apps Script; the chooser also lists a stale copy, «Copy of Проект без названия», which has only 3 files and is not deployed).
+- Code is split across files; `Код.gs` holds the `doPost` dispatcher, CRM and task handlers live in `crm-workflow-server.gs` (`agentTasksAction_`, `crmWorkflowAction_`, `crmWorkflowContext_`, `crmClientOwned_`).
+- Bound projects are not reachable through the Drive API, so their source cannot be read from here; only standalone projects export via `files.export` with `application/vnd.google-apps.script+json`.
+- Data lives in the **Liberterra Private CRM** spreadsheet: sheets `CRM Workflow` (clients/deals/selections as `record_json`), `Agent Tasks`, `Agent Private Objects`, `Agent Private Access`. `ensureHeaders_` appends missing columns, so adding a field to a `*_HEADERS` array is enough to create its column.
+- `/exec` serves the **deployed** version: after editing, update the existing «Воронка сделок» deployment (Deploy → Manage deployments → edit → New version). A new deployment would get a different URL the Worker does not know.
+
 - `platform/assets/site/files/` holds copies of listing-ui files changed from here (and, under `api/`, backend-served assets); `platform/public/` is older and does not match production.
