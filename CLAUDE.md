@@ -24,3 +24,13 @@ Vanilla JS, string-template rendering, no framework:
 - Keep it a single self-contained file; don't introduce external JS dependencies or a build.
 - Everything is fictional demo data and forms send nothing — keep "(демо)" wording on actions that don't really do anything.
 - Role-dependent UI (agent commission badges, cabinet, "my listings" filter) branches on `isAgent()`.
+
+## Production site (liberterra.kg)
+
+The live platform is not built from this repo; its files live inline in Cloudflare Workers.
+
+- `liberterra.kg/*` is routed to the Worker **`liberterra-listing-ui`**: pages and assets are string values of its `const files={...}` literal (`/agent-cabinet.html`, `/site-theme.js`, `/profile.html`, …). UI fixes go here.
+- **`hidden-pine-cbff`** is only its backend (service binding `BACKEND`): `/api/*`, `/api/crm/*`, `/api/crm-workflow/*`, `/web-registration.js`. It carries a stale embedded copy of the UI that is never served on the domain — patching that copy changes nothing on the site.
+- Response headers show the source: `x-liberterra-release` = listing-ui, `x-liberterra-crm-release` / `x-liberterra-crm-workflow` = backend.
+- Deploy code-only changes with `PUT /workers/scripts/<name>/content` (keeps bindings), then purge the zone cache. Verify against the live URL, not the bundle.
+- `platform/assets/site/files/` holds copies of listing-ui files changed from here; `platform/public/` is older and does not match production.
