@@ -37,6 +37,8 @@ body.v20.agent-crm-page .crm-tabs [hidden]{display:none!important}
 .crm-sidebar-brand{padding:4px 16px 20px;color:white!important;text-decoration:none;font-size:24px;font-weight:750;letter-spacing:-.5px}
 .crm-sidebar-caption{padding:15px 16px 5px;color:#8f8780;font-size:11px;letter-spacing:1px;text-transform:uppercase}
 .crm-sidebar-footer{margin-top:auto;padding:18px 13px 0;border-top:1px solid #3c3530;display:grid;gap:12px}
+/* Меню агента: «Ещё» и его ссылки — одна группа сразу после «Основное», а не прижатая к низу. */
+#crmCompactNavigation[data-agent-nav="1"] .crm-sidebar-footer{margin-top:0;padding:0;border-top:0;gap:3px}
 .crm-sidebar-footer a{color:#d4c4c9;text-decoration:none;font-size:14px}
 body.v20.agent-crm-page .crm-workflow-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 16px;padding:0}
 body.v20.agent-crm-page .crm-workflow-status{font-size:14px;color:#77706a;margin:0}
