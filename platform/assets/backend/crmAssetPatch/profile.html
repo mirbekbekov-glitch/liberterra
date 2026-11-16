@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <script src="/telegram-membership.js?v=20260915-1"></script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Мой профиль — Liberterra</title>
+  <link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=Manrope:wght@700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/style.css?v=20261005-login-eye-2">
+  <script src="/catalog-translations.js?v=20260820-1" defer></script>
+  <script src="/i18n.js?v=20260929-theme-2" defer></script>
+  <link rel="stylesheet" href="/agent-photo.css?v=20260915-1">
+  <script src="/agent-photo.js?v=20260915-1"></script>
+  <script src="/agent-registry.js?v=20260928-1" defer></script>
+  <link rel="stylesheet" href="/agent-registry.css?v=20260928-1">
+<link rel="stylesheet" href="/site-theme.css?v=20261001-profile-header-1">
+<script src="/site-theme.js?v=20260930-nav-3" defer></script>
+<link rel="stylesheet" href="/v20-global.css?v=20261024-profile-v2-1">
+<link rel="stylesheet" href="/profile-v2.css?v=20261024-profile-v2-1">
+<link rel="stylesheet" href="/api/crm-workflow/auth-entry.css?v=20261027-1"></head>
+<body class="v20 profile-page" data-require-registration="true">
+  <div class="pv2-mobile-header">
+    <a href="/" class="pv2-mobile-brand">Liberterra <span class="dot"></span></a>
+    <a href="#profileCard" class="pv2-mobile-user-btn" aria-label="К профилю">Л</a>
+  </div>
+  <div class="profile-v2-layout">
+    <aside class="profile-v2-sidebar" aria-label="Личный кабинет">
+      <a href="/" class="pv2-sidebar-brand">Liberterra <span class="dot"></span></a>
+      <div class="pv2-sidebar-section">Основное</div>
+      <ul class="pv2-sidebar-nav">
+        <li><a href="/profile" class="active" aria-current="page"><span class="pv2-nav-icon" aria-hidden="true"><svg width="18" height="18" fill="none" viewBox="0 0 18 18"><rect x="2" y="2" width="5.5" height="5.5" rx="1" stroke="currentColor" stroke-width="1.5"/><rect x="10.5" y="2" width="5.5" height="5.5" rx="1" stroke="currentColor" stroke-width="1.5"/><rect x="2" y="10.5" width="5.5" height="5.5" rx="1" stroke="currentColor" stroke-width="1.5"/><rect x="10.5" y="10.5" width="5.5" height="5.5" rx="1" stroke="currentColor" stroke-width="1.5"/></svg></span>Обзор</a></li>
+        <li><a href="/my-listings.html"><span class="pv2-nav-icon" aria-hidden="true"><svg width="18" height="18" fill="none" viewBox="0 0 18 18"><path d="M3 7.5L9 3l6 4.5V15a1 1 0 01-1 1H4a1 1 0 01-1-1V7.5z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M7 16V11h4v5" stroke="currentColor" stroke-width="1.5"/></svg></span>Мои объекты<span class="badge" data-count="objects">0</span></a></li>
+        <li><a href="/my-requests.html"><span class="pv2-nav-icon" aria-hidden="true"><svg width="18" height="18" fill="none" viewBox="0 0 18 18"><circle cx="8" cy="8" r="5" stroke="currentColor" stroke-width="1.5"/><path d="M12 12l4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span>Мои заявки<span class="badge" data-count="requests">0</span></a></li>
+        <li><a href="#profileFavorites"><span class="pv2-nav-icon" aria-hidden="true"><svg width="18" height="18" fill="none" viewBox="0 0 18 18"><path d="M9 15C5 11.5 2 9 2 6.5A3.5 3.5 0 015.5 3c1.3 0 2.6.8 3.5 2 .9-1.2 2.2-2 3.5-2A3.5 3.5 0 0116 6.5C16 9 13 11.5 9 15z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg></span>Избранное<span class="badge" data-count="favorites">0</span></a></li>
+        <li><a href="/agent-cabinet.html"><span class="pv2-nav-icon" aria-hidden="true"><svg width="18" height="18" fill="none" viewBox="0 0 18 18"><rect x="2" y="6" width="14" height="9" rx="1.5" stroke="currentColor" stroke-width="1.5"/><path d="M6 6V4a2 2 0 012-2h2a2 2 0 012 2v2" stroke="currentColor" stroke-width="1.5"/></svg></span>Рабочая база CRM</a></li>
+      </ul>
+      <div class="pv2-sidebar-section">Инструменты</div>
+      <ul class="pv2-sidebar-nav">
+        <li><a href="/viewing-history.html"><span class="pv2-nav-icon" aria-hidden="true"><svg width="18" height="18" fill="none" viewBox="0 0 18 18"><circle cx="9" cy="9" r="7" stroke="currentColor" stroke-width="1.5"/><path d="M9 5v4l2.5 1.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span>История просмотров<span class="pv2-soon-badge">скоро</span></a></li>
+        <li><a href="https://t.me/Liberterra_kg_bot?start=support" target="_blank" rel="noopener"><span class="pv2-nav-icon" aria-hidden="true"><svg width="18" height="18" fill="none" viewBox="0 0 18 18"><circle cx="9" cy="9" r="7" stroke="currentColor" stroke-width="1.5"/><path d="M7 7a2 2 0 013.9.7c0 1.3-2 2-2 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="9" cy="13.5" r=".75" fill="currentColor"/></svg></span>Поддержка</a></li>
+      </ul>
+      <div class="pv2-sidebar-bottom"><div class="pv2-sidebar-user"><div class="pv2-sidebar-avatar" aria-hidden="true">Л</div><div><div class="pv2-sidebar-user-name">Пользователь</div><div class="pv2-sidebar-user-role">Клиент</div></div></div></div>
+    </aside>
+    <div class="profile-v2-main" role="main">
+      <nav class="pv2-workspace-toolbar" aria-label="Панель профиля">
+        <a href="/" class="pv2-toolbar-back">← На витрину</a>
+        <div class="pv2-toolbar-controls">
+          <a href="/agent-cabinet.html" class="pv2-toolbar-link">Рабочая база</a>
+          <select class="pv2-toolbar-lang language-switcher" id="profileLanguage" aria-label="Выбор языка">
+            <option value="ru">RU</option>
+            <option value="ky">KG</option>
+            <option value="en">EN</option>
+            <option value="zh">中文</option>
+          </select>
+        </div>
+      </nav>
+      <section class="pv2-section"><h1 class="pv2-section-title">Мой профиль</h1></section>
+      <section id="profileCard" aria-live="polite"><div class="profile-loading">Загружаем профиль…</div></section>
+      <section class="pv2-section profile-favorites" id="profileFavorites"><div class="pv2-section-header"><h2 class="pv2-section-title">Избранное</h2><a class="pv2-section-link" href="/object-map.html">На карте</a></div><div class="profile-favorite-grid" id="profileFavoritesGrid"></div></section>
+    </div>
+  </div>
+  <nav class="pv2-mobile-nav" aria-label="Разделы кабинета">
+    <a href="/profile" class="active" aria-current="page"><svg width="22" height="22" fill="none" viewBox="0 0 18 18"><rect x="2" y="2" width="5.5" height="5.5" rx="1" stroke="currentColor" stroke-width="1.5"/><rect x="10.5" y="2" width="5.5" height="5.5" rx="1" stroke="currentColor" stroke-width="1.5"/><rect x="2" y="10.5" width="5.5" height="5.5" rx="1" stroke="currentColor" stroke-width="1.5"/><rect x="10.5" y="10.5" width="5.5" height="5.5" rx="1" stroke="currentColor" stroke-width="1.5"/></svg>Обзор</a>
+    <a href="/my-listings.html"><svg width="22" height="22" fill="none" viewBox="0 0 18 18"><path d="M3 7.5L9 3l6 4.5V15a1 1 0 01-1 1H4a1 1 0 01-1-1V7.5z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M7 16V11h4v5" stroke="currentColor" stroke-width="1.5"/></svg>Объекты</a>
+    <a href="/my-requests.html"><svg width="22" height="22" fill="none" viewBox="0 0 18 18"><circle cx="8" cy="8" r="5" stroke="currentColor" stroke-width="1.5"/><path d="M12 12l4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>Заявки</a>
+    <a href="/agent-cabinet.html"><svg width="22" height="22" fill="none" viewBox="0 0 18 18"><rect x="2" y="6" width="14" height="9" rx="1.5" stroke="currentColor" stroke-width="1.5"/><path d="M6 6V4a2 2 0 012-2h2a2 2 0 012 2v2" stroke="currentColor" stroke-width="1.5"/></svg>CRM</a>
+  </nav>
+  <script src="/catalog-data.js?v=20260814-2"></script>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <script src="/analytics.js?v=20260826-user-tracking-1" defer></script>
+  <script src="/user-registration.js?v=20261005-login-eye-2"></script>
+  <script src="/agent-access.js?v=20260928-public-cache-1"></script>
+  <script src="/back-navigation.js?v=20260814-1"></script>
+  <script src="/bottom-navigation.js?v=20260829-bottom-nav-fixed-3"></script>
+  <script src="/profile.js?v=20261024-profile-v2-1"></script>
+  
+<script src="/api/crm-workflow/auth-entry.js?v=20261027-1"></script></body>
+</html>
