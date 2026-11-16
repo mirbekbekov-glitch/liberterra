@@ -1009,3 +1009,8 @@ html[data-theme=dark] body.v20.profile-page .pv2-edit-soon[disabled]:not(#lt0){c
 html[data-theme=dark] body.v20.profile-page :is(.pv2-section-link,[data-registry-editor] a,.profile-v2-main > p > a,.profile-empty a):not(#lt0){color:#F08A82!important}
 html[data-theme=dark] body.v20.profile-page .profile-empty strong:not(#lt0){color:#F2F4F6!important}
 html[data-theme=dark] body.v20.profile-page .profile-empty span:not(#lt0){color:#B9C0CA!important}
+
+/* Light theme fixes 20261116-7: onboarding submit button was white on white. */
+body.v20.profile-page .lt-onboarding-primary:not(#lt0){background:#BE2C28!important;border:0!important;color:#fff!important}
+body.v20.profile-page .lt-onboarding-primary:not(#lt0):hover{background:#A42220!important}
+body.v20.profile-page .lt-onboarding-primary:not(#lt0):disabled{opacity:.55}
