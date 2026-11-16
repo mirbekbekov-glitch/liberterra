@@ -75,14 +75,23 @@ const state = {
   objects: [],
   requests: [],
   favoritesOnly: false,
+  source: [],
+  sourceStaff: "all",
 };
 
 const CATALOG_FILTERS_KEY = "liberterra_catalog_filters_v1";
 const CATALOG_FILTER_KEYS = [
   "city", "deal", "rentTerm", "segment", "propertyType", "occupancy", "rooms", "district",
   "priceCurrency", "query", "priceMin", "priceMax", "areaMin", "areaMax", "floorMin",
-  "floorMax", "requestDeal",
+  "floorMax", "requestDeal", "sourceStaff",
 ];
+
+const SOURCE_GROUPS = ["mine", "agency", "other"];
+const SOURCE_LABELS = { mine: "Мои", agency: "Моей организации", other: "Других организаций" };
+const VIEWER_SESSION_KEY = "liberterra-verified-web-user";
+const AGENT_ACCOUNT_TYPES = ["agent", "Агент", "admin", "Администратор"];
+let viewer = null;
+let viewerRequested = false;
 
 function restoreCatalogFilters() {
   let saved = {};
@@ -94,6 +103,9 @@ function restoreCatalogFilters() {
     const value = params.has(key) ? params.get(key) : saved[key];
     if (value !== null && value !== undefined && value !== "") state[key] = String(value);
   });
+  const savedSource = Array.isArray(saved.source) ? saved.source.join(",") : saved.source;
+  const sourceValue = params.has("source") ? params.get("source") : savedSource;
+  state.source = String(sourceValue || "").split(",").map((part) => part.trim()).filter((part) => SOURCE_GROUPS.includes(part));
   const favoriteValue = params.has("favoritesOnly") ? params.get("favoritesOnly") : saved.favoritesOnly;
   state.favoritesOnly = favoriteValue === true || favoriteValue === "1" || favoriteValue === "true";
   if (!['аренда', 'продажа'].includes(state.deal)) state.deal = "аренда";
@@ -104,6 +116,7 @@ function restoreCatalogFilters() {
 function catalogFilterParams() {
   const params = new URLSearchParams();
   CATALOG_FILTER_KEYS.forEach((key) => params.set(key, String(state[key] ?? "")));
+  if (state.source.length) params.set("source", state.source.join(","));
   if (state.favoritesOnly) params.set("favoritesOnly", "1");
   return params;
 }
@@ -161,6 +174,79 @@ async function syncAccountFavorites() {
   } catch (_) {
     favoritesSyncStarted = false;
   }
+}
+
+function applyViewerProfile(profile) {
+  const user = profile?.user || {};
+  const isAgent = AGENT_ACCOUNT_TYPES.includes(normalize(user.account_type));
+  const name = normalizeSearch(user.name);
+  const agency = normalizeSearch(user.agency);
+  viewer = isAgent && (name || agency) ? { name, agency } : null;
+  if (!viewer && (state.source.length || state.sourceStaff !== "all")) {
+    state.source = [];
+    state.sourceStaff = "all";
+  }
+  render();
+}
+
+function hasWebSessionHint() {
+  try {
+    const raw = localStorage.getItem(VIEWER_SESSION_KEY) || sessionStorage.getItem(VIEWER_SESSION_KEY);
+    const cached = JSON.parse(raw || "null");
+    return Boolean(cached?.verified_at && Date.now() - Number(cached.verified_at) < 24 * 60 * 60 * 1000);
+  } catch (_) { return false; }
+}
+
+// The source filter needs the signed-in agent. Guests make no extra request.
+async function resolveViewer() {
+  if (viewerRequested) return;
+  const telegramSession = window.LiberterraAgentAccess?.hasUserSession?.() === true;
+  if (!telegramSession && !hasWebSessionHint()) return;
+  viewerRequested = true;
+  try {
+    if (telegramSession) {
+      applyViewerProfile(await window.LiberterraAgentAccess.request("get_user_profile", {}));
+      return;
+    }
+    const response = await fetch("/api/user-access", {
+      method: "POST",
+      credentials: "same-origin",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify({ action: "web_profile" }),
+    });
+    const body = await response.json().catch(() => ({}));
+    if (response.ok && body.ok) applyViewerProfile(body);
+  } catch (_) {
+    viewerRequested = false;
+  }
+}
+
+function sourceGroupOf(item) {
+  if (!viewer) return "other";
+  const name = normalizeSearch(item.listingAgentName);
+  const agency = normalizeSearch(item.listingAgentAgency);
+  if (viewer.name && name && name === viewer.name) return "mine";
+  if (viewer.agency && agency && agency === viewer.agency) return "agency";
+  return "other";
+}
+
+function sourceMatches(item) {
+  if (!viewer) return true;
+  if (state.source.length && !state.source.includes(sourceGroupOf(item))) return false;
+  if (state.sourceStaff !== "all" && normalizeSearch(item.listingAgentName) !== state.sourceStaff) return false;
+  return true;
+}
+
+function sourceFilterActive() {
+  return Boolean(viewer) && (state.source.length > 0 || state.sourceStaff !== "all");
+}
+
+function sourceFilterSummary() {
+  if (state.sourceStaff !== "all") {
+    const match = state.objects.find((item) => normalizeSearch(item.listingAgentName) === state.sourceStaff);
+    return normalize(match?.listingAgentName) || "выбранный сотрудник";
+  }
+  return state.source.map((group) => SOURCE_LABELS[group]).join(", ");
 }
 
 const grid = document.querySelector("#catalogGrid");
@@ -875,6 +961,7 @@ function filteredObjects() {
       }
     }
 
+    if (!sourceMatches(item)) return false;
     if (!priceMatches(item)) return false;
     if (!withinRange(item.areaNumber, state.areaMin, state.areaMax)) return false;
     if (!withinRange(item.floorNumber, state.floorMin, state.floorMax)) return false;
@@ -892,6 +979,7 @@ function filteredObjects() {
 
 function hasActiveFilters() {
   return state.city !== "all" || state.favoritesOnly
+    || sourceFilterActive()
     || state.rentTerm !== "monthly"
     || state.segment !== "all"
     || state.propertyType !== "all"
@@ -1236,7 +1324,10 @@ function render() {
         <div class="state">
           <div>
             <strong>Ничего не нашлось</strong>
-            <span>Сбросьте часть фильтров или оставьте запрос — подберём.</span>
+            <span>${sourceFilterActive()
+              ? `По источнику «${escapeHtml(sourceFilterSummary())}» объектов нет. Снимите фильтр по источнику или измените остальные.`
+              : "Сбросьте часть фильтров или оставьте запрос — подберём."}</span>
+            ${sourceFilterActive() ? '<button class="state-action" type="button" data-source-reset>Показать все объекты</button>' : ""}
             <a class="state-action" href="https://t.me/Liberterra_kg_bot" target="_blank" rel="noopener">Ищу квартиру</a>
           </div>
         </div>
@@ -1327,6 +1418,7 @@ function updateFilterUi() {
   }
   const heroCity = document.querySelector('#heroCity');
   if (heroCity) heroCity.value = state.city;
+  updateSourceUi();
   if (favoritesFilter) {
     favoritesFilter.classList.toggle('is-active', state.favoritesOnly);
     favoritesFilter.setAttribute('aria-pressed', String(state.favoritesOnly));
@@ -1453,6 +1545,59 @@ document.addEventListener("keydown", (event) => {
     closeDetails();
   }
 });
+
+function updateSourceUi() {
+  const box = document.querySelector("#heroSource");
+  if (!box) return;
+  box.hidden = !viewer;
+  if (!viewer) return;
+  box.querySelectorAll("[data-source]").forEach((input) => {
+    input.checked = state.source.includes(input.dataset.source);
+  });
+  const staff = box.querySelector("#heroSourceStaff");
+  if (!staff) return;
+  const names = new Map();
+  state.objects.forEach((item) => {
+    if (normalize(item.deal).toLowerCase() !== state.deal) return;
+    const name = normalize(item.listingAgentName);
+    if (name) names.set(normalizeSearch(name), name);
+  });
+  const options = [...names.entries()].sort((a, b) => a[1].localeCompare(b[1], "ru"));
+  const signature = options.map(([key]) => key).join("|");
+  if (staff.dataset.signature !== signature) {
+    staff.dataset.signature = signature;
+    staff.innerHTML = `<option value="all">Любой сотрудник</option>${options
+      .map(([key, name]) => `<option value="${escapeHtml(key)}">${escapeHtml(name)}</option>`).join("")}`;
+  }
+  if (state.sourceStaff !== "all" && !names.has(state.sourceStaff)) state.sourceStaff = "all";
+  if (staff.value !== state.sourceStaff) staff.value = state.sourceStaff;
+}
+
+function initSourceFilter() {
+  const box = document.querySelector("#heroSource");
+  if (!box) return;
+  box.addEventListener("change", (event) => {
+    const checkbox = event.target.closest("[data-source]");
+    if (checkbox) {
+      const group = checkbox.dataset.source;
+      state.source = checkbox.checked
+        ? [...new Set([...state.source, group])]
+        : state.source.filter((value) => value !== group);
+      render();
+      return;
+    }
+    if (event.target.id === "heroSourceStaff") {
+      state.sourceStaff = event.target.value || "all";
+      render();
+    }
+  });
+  document.addEventListener("click", (event) => {
+    if (!event.target.closest("[data-source-reset]")) return;
+    state.source = [];
+    state.sourceStaff = "all";
+    render();
+  });
+}
 
 function initFilters() {
   filterGroups.forEach((group) => {
@@ -1676,6 +1821,8 @@ function initFieldFilters() {
     state.areaMax = "";
     state.floorMin = "";
     state.floorMax = "";
+    state.source = [];
+    state.sourceStaff = "all";
 
     if (catalogSearch) catalogSearch.value = "";
     if (districtFilter) districtFilter.value = "all";
@@ -1838,6 +1985,8 @@ if (!document.body.classList.contains("submission-page")) {
   initSearch();
   initFieldFilters();
   initCatalogFilterDisclosure();
+  initSourceFilter();
+  resolveViewer();
   renderSpecialists();
   loadObjects();
   window.addEventListener("focus", revalidateVisibleCatalog);
@@ -1848,10 +1997,15 @@ if (!document.body.classList.contains("submission-page")) {
 }
 
 window.addEventListener("liberterra:agent-role", () => {
+  resolveViewer();
   render();
   syncAccountFavorites();
 });
-window.addEventListener("liberterra:user-registered", syncAccountFavorites);
+window.addEventListener("liberterra:user-registered", () => {
+  viewerRequested = false;
+  resolveViewer();
+  syncAccountFavorites();
+});
 window.setTimeout(syncAccountFavorites, 1200);
 
 document.querySelector("#heroCity")?.addEventListener("change",e=>{state.city=e.target.value;render()});
