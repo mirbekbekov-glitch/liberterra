@@ -554,7 +554,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
     var f = p.querySelector('.lt-frame');
     var spin = p.querySelector('.lt-frame-spin');
     p.querySelector('.lt-frame-title').textContent = title || '';
-    p.querySelector('.lt-frame-ext').setAttribute('href', url);
+    p.querySelector('.lt-frame-ext').setAttribute('href', kind === 'profile' ? '/agent-cabinet.html#profile' : url);
     var els = c.querySelectorAll('[data-crm-panel]');
     for (var i = 0; i < els.length; i++) if (els[i] !== p) els[i].setAttribute('hidden', '');
     var tabs = document.querySelectorAll('.crm-tab');
@@ -639,13 +639,13 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
     try { return localStorage.getItem('lt-agent-menu') === '1'; } catch (e) { return false; }
   }
   if ((location.pathname || '').indexOf('/profile.html') === 0 && agent()) {
-    location.replace('/agent-cabinet.html#profile');
+    location.replace(location.hash ? '/agent-cabinet.html#profile' : '/agent-cabinet.html');
     return;
   }
   function rewrite(){
     if (!agent()) return;
     var links = document.querySelectorAll('a[href="/profile.html"]');
-    for (var i = 0; i < links.length; i++) links[i].setAttribute('href', '/agent-cabinet.html#profile');
+    for (var i = 0; i < links.length; i++) links[i].setAttribute('href', links[i].closest('#crmCompactNavigation,.pv2-sidebar-nav,.pv2-mobile-nav,.owner-object-shell,.owner-object-mobile-nav') ? '/agent-cabinet.html#profile' : '/agent-cabinet.html');
   }
   rewrite();
   document.addEventListener('DOMContentLoaded', rewrite);
