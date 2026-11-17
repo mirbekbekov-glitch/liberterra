@@ -24,3 +24,27 @@ Vanilla JS, string-template rendering, no framework:
 - Keep it a single self-contained file; don't introduce external JS dependencies or a build.
 - Everything is fictional demo data and forms send nothing — keep "(демо)" wording on actions that don't really do anything.
 - Role-dependent UI (agent commission badges, cabinet, "my listings" filter) branches on `isAgent()`.
+
+## Production site (liberterra.kg)
+
+The live platform is not built from this repo; its files live inline in Cloudflare Workers.
+
+- `liberterra.kg/*` is routed to the Worker **`liberterra-listing-ui`**: pages and assets are string values of its `const files={...}` literal (`/agent-cabinet.html`, `/site-theme.js`, `/profile.html`, …). UI fixes go here.
+- Some keys are reassigned after that literal (`files["/profile.js"]="…"`, also `/profile.html`, `/index.html`, `/login.html`, …); the last assignment is what is served. Compare a file's hash with the live URL before patching it.
+- **`hidden-pine-cbff`** is only its backend (service binding `BACKEND`): `/api/*`, `/api/crm/*`, `/api/crm-workflow/*`, `/web-registration.js`. It carries a stale embedded copy of the UI that is never served on the domain — patching that copy changes nothing on the site.
+- Response headers show the source: `x-liberterra-release` = listing-ui, `x-liberterra-crm-release` / `x-liberterra-crm-workflow` = backend.
+- Deploy code-only changes with `PUT /workers/scripts/<name>/content` (keeps bindings), then purge the zone cache. Verify against the live URL, not the bundle.
+- A page's inline scripts can have a **third copy** of the same code baked into the worker's own source, outside `const files={…}` and outside the `files["…"]=` overrides. That copy is what gets inlined into the served HTML, so patching the matching `/*.js` entry alone changes nothing. Search the whole worker body for the snippet and count every hit before editing.
+- The deal board's renderer lives in the backend worker as `crmWorkflowAssets["crm-workflow.js"]` (served at `/api/crm-workflow/crm-workflow.js`), not in `const files={…}`; patch that string the same way (verify its SHA against the live URL first).
+## Apps Script backend (data storage)
+
+`/api/crm-action` in `hidden-pine-cbff` only proxies a whitelisted set of fields to `ACCOUNT_WEBHOOK_URL` — a Google Apps Script web app. Everything is stored in Google Sheets, not in Cloudflare.
+
+- The live project is **«Проект без названия»**, bound to the **Liberterra Objects** spreadsheet (Extensions → Apps Script; the chooser also lists a stale copy, «Copy of Проект без названия», which has only 3 files and is not deployed).
+- Code is split across files; `Код.gs` holds the `doPost` dispatcher, CRM and task handlers live in `crm-workflow-server.gs` (`agentTasksAction_`, `crmWorkflowAction_`, `crmWorkflowContext_`, `crmClientOwned_`).
+- Bound projects are not reachable through the Drive API, so their source cannot be read from here; only standalone projects export via `files.export` with `application/vnd.google-apps.script+json`.
+- Data lives in the **Liberterra Private CRM** spreadsheet: sheets `CRM Workflow` (clients/deals/selections as `record_json`), `Agent Tasks`, `Agent Private Objects`, `Agent Private Access`. `ensureHeaders_` appends missing columns, so adding a field to a `*_HEADERS` array is enough to create its column.
+- `get_agent_dashboard` goes through `/api/account-action` → `handleWebAccountAction` in `hidden-pine-cbff`, and its answer is cached there for 20 s in `caches.default` under a key built from the verified `session.sub`; any other action in that handler deletes the key first, so a write invalidates the agent's own entry. Removing that block restores the old behaviour — the upstream call is the only thing it skips.
+- `/exec` serves the **deployed** version: after editing, update the existing «Воронка сделок» deployment (Deploy → Manage deployments → edit → New version). A new deployment would get a different URL the Worker does not know.
+
+- `platform/assets/site/files/` holds copies of listing-ui files changed from here (and, under `api/`, backend-served assets); `platform/public/` is older and does not match production.
