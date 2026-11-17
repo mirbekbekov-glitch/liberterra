@@ -6,10 +6,10 @@ html { zoom: 1; }
   --red-line: #e7c6ce; --line: #e8e8e5; --line-strong: #dcd8d5;
   --radius: 14px; --shadow: 0 4px 20px rgb(0 0 0 / 6%);
 }
-body { background: var(--bg); color: var(--ink); font-family: "Geologica", system-ui, sans-serif; line-height: 1.5; }
+body { background: var(--bg); color: var(--ink); font-family: "Onest", system-ui, sans-serif; line-height: 1.5; }
 body :is(button, input, select, textarea) { font-family: inherit; }
 body .wrap { width: min(1280px, calc(100% - 64px)); }
-body :is(h1,h2,h3) { font-family: "Geologica", system-ui, sans-serif; line-height: 1.25; }
+body :is(h1,h2,h3) { font-family: "Onest", system-ui, sans-serif; line-height: 1.25; }
 body main h1 { font-size: clamp(28px, 3.1vw, 43px); letter-spacing: -.8px; }
 body main h2 { font-size: clamp(23px, 2.3vw, 28px); letter-spacing: -.4px; }
 body :is(.site-header,.crm-header,.nb-header) {
@@ -102,7 +102,7 @@ body .lt-header-row > .brand { order: 1; flex: 0 0 auto; }
 body .lt-header-row .brand-logo { width: 190px; height: auto; max-height: 52px; }
 body .lt-navigation { display: flex; order: 2; flex: 0 1 auto; gap: 18px; align-items: center; margin-right: auto; min-width: 0; }
 body .lt-navigation a {
-  color: #4d4b4b; font-family: "Geologica", "Geologica", system-ui, sans-serif;
+  color: #4d4b4b; font-family: "Onest", "Onest", system-ui, sans-serif;
   font-size: 13px; font-weight: 700; letter-spacing: -.15px; text-decoration: none;
   white-space: nowrap; transition: color .16s ease;
 }
@@ -171,13 +171,13 @@ body.profile-page #profileCard .profile-loading::after{content:"";display:block;
 
 /* Legacy CRM address: show the new shell while its JS redirects. */
 /* Render the loading and access-error states in the same shell as the CRM. */
-html:has(head script[src^="/site-theme.js"]) body.agent-crm-page:has([data-crm-content][hidden]){background:#F5F7FA!important;color:#1c1917!important;font:400 14px/1.5 Geologica,'Segoe UI',sans-serif!important;padding-left:240px!important;min-height:100vh}
+html:has(head script[src^="/site-theme.js"]) body.agent-crm-page:has([data-crm-content][hidden]){background:#F5F7FA!important;color:#1c1917!important;font:400 14px/1.5 Onest,'Segoe UI',sans-serif!important;padding-left:240px!important;min-height:100vh}
 html:has(head script[src^="/site-theme.js"]) body.agent-crm-page:has([data-crm-content][hidden])>.crm-header{display:none!important}
-html:has(head script[src^="/site-theme.js"]) body.agent-crm-page:has([data-crm-content][hidden])::before{content:"Liberterra";position:fixed;inset:0 auto 0 0;width:240px;box-sizing:border-box;padding:24px 20px;background:#1c1917;color:#fff;font:700 22px/1.2 Geologica,'Segoe UI',sans-serif;z-index:2}
+html:has(head script[src^="/site-theme.js"]) body.agent-crm-page:has([data-crm-content][hidden])::before{content:"Liberterra";position:fixed;inset:0 auto 0 0;width:240px;box-sizing:border-box;padding:24px 20px;background:#1c1917;color:#fff;font:700 22px/1.2 Onest,'Segoe UI',sans-serif;z-index:2}
 html:has(head script[src^="/site-theme.js"]) body.agent-crm-page:has([data-crm-content][hidden]) .crm-main{width:auto!important;max-width:none!important;margin:0!important;padding:72px 24px 40px!important}
 html:has(head script[src^="/site-theme.js"]) body.agent-crm-page:has([data-crm-content][hidden]) .crm-page-heading{padding:0!important;margin:0 0 24px!important}
 html:has(head script[src^="/site-theme.js"]) body.agent-crm-page:has([data-crm-content][hidden]) .crm-eyebrow{font-size:10px!important;letter-spacing:1.5px!important;color:#6b6560!important;text-transform:uppercase}
-html:has(head script[src^="/site-theme.js"]) body.agent-crm-page:has([data-crm-content][hidden]) .crm-page-heading h1{font:700 24px/1.2 Geologica,'Segoe UI',sans-serif!important;margin:8px 0!important;color:#1c1917!important}
+html:has(head script[src^="/site-theme.js"]) body.agent-crm-page:has([data-crm-content][hidden]) .crm-page-heading h1{font:700 24px/1.2 Onest,'Segoe UI',sans-serif!important;margin:8px 0!important;color:#1c1917!important}
 html:has(head script[src^="/site-theme.js"]) body.agent-crm-page:has([data-crm-content][hidden]) [data-crm-agent-summary]{font-size:12px!important;color:#6b6560!important}
 html:has(head script[src^="/site-theme.js"]) body.agent-crm-page:has([data-crm-content][hidden]) .crm-access-state{box-sizing:border-box;min-height:160px!important;display:grid!important;place-content:center!important;gap:10px!important;text-align:center;background:#fff!important;border:1px solid #e4dfd8!important;border-radius:12px!important;color:#6b6560!important;box-shadow:none!important}
 html:has(head script[src^="/site-theme.js"]) body.agent-crm-page:has([data-crm-content][hidden]) .crm-access-state[hidden]{display:none!important}

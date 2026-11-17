@@ -8,7 +8,7 @@
   const MAX_DOCUMENT_PHOTO_SIZE = 3 * 1024 * 1024;
   const ASSET_VERSION = "20260908-agents-mobile-entry-1";
   const MAIN_STYLESHEET_URL = `${SITE_ORIGIN}/style.css?v=${ASSET_VERSION}`;
-  const FONT_STYLESHEET_URL = "https://fonts.googleapis.com/css2?family=Geologica:wght@300..800&display=swap";
+  const FONT_STYLESHEET_URL = "https://fonts.googleapis.com/css2?family=Onest:wght@300..800&display=swap";
 
   const telegram = window.Telegram?.WebApp || null;
   const TELEGRAM_SESSION_KEY = "liberterra-telegram-session-v1";
@@ -88,8 +88,8 @@
     }
 
     const hasBrandFonts = stylesheetLinks.some((link) => link.href.includes("fonts.googleapis.com")
-      && link.href.includes("Geologica")
-      && link.href.includes("Geologica"));
+      && link.href.includes("Onest")
+      && link.href.includes("Onest"));
     if (!hasBrandFonts) {
       const fonts = document.createElement("link");
       fonts.rel = "stylesheet";

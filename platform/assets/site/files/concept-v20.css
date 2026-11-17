@@ -1,7 +1,7 @@
 /* Approved v20 presentation, scoped to existing homepage and agent workspace. */
 body.concept-v20 { --red:#7b233f; --red-hover:#601a31; --ink:#242321; --muted:#69645e; --line:#e4dfd8; background:#F5F7FA; }
 .concept-v20 .brand-wordmark { color:#7b233f; font:850 28px/1.1 'Segoe UI',sans-serif; letter-spacing:-1.4px; }
-body.concept-v20 main :is(h1,h2,h3) { font-family:Geologica,'Segoe UI',sans-serif; font-weight:750; }
+body.concept-v20 main :is(h1,h2,h3) { font-family:Onest,'Segoe UI',sans-serif; font-weight:750; }
 body.concept-v20 .home-hero { background:#F5F7FA; text-align:left; }
 body.concept-v20 .home-hero-inner { padding:40px 0 28px; }
 body.concept-v20 .home-hero-inner::after { display:none; content:none; }
