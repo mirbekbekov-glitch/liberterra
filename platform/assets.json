@@ -678,7 +678,7 @@
     },
     {
       "name": "site",
-      "sha256": "cfb75ca7a7e5bbe67c9f2841c52e212f52312d35352bc9032c722629ca2c4fba",
+      "sha256": "41035c16344b94c176a880562fe654076b9e9bbdffbd0b84c570660886698ad7",
       "maps": [
         {
           "name": "files",
@@ -1130,7 +1130,7 @@
             {
               "key": "/owners.html",
               "file": "assets/site/files/owners.html",
-              "sha256": "326f7f97aac2aa1c7559f23e4162ec1a10c4834caf8f63b04839cc5f9f51d8db",
+              "sha256": "2e771779a9520099dafc2aa9c156f024b49178719684e9f162adccab6f8629ea",
               "append": []
             },
             {
@@ -1178,7 +1178,7 @@
             {
               "key": "/partners.html",
               "file": "assets/site/files/partners.html",
-              "sha256": "f25466d2f1bfff937600cf3ef84c90d88073dcd8acdb44ff3f1e3652f3bc4c64",
+              "sha256": "9b3e5fbb0ffa2c050b1d6e0219d57848b6bb9ea75efe25abf1465f78b8ace624",
               "append": []
             }
           ]
