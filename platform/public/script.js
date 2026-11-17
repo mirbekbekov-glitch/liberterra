@@ -294,6 +294,7 @@ const CATALOG_FILTER_KEYS = [
 const DEALS = ["продажа", "аренда"];
 const dealSelected = name => state.deals.includes(name);
 const dealMatches = item => state.deals.includes(normalize(item?.deal).toLowerCase());
+const digitsOnly = value => normalize(value).replace(/\D+/g, "");
 const SOURCE_GROUPS = ["mine", "agency", "other"];
 const SOURCE_LABELS = { mine: "Мои", agency: "Моей организации", other: "Других организаций" };
 const VIEWER_SESSION_KEY = "liberterra-verified-web-user";
@@ -394,7 +395,9 @@ function applyViewerProfile(profile) {
   const isAgent = AGENT_ACCOUNT_TYPES.includes(normalize(user.account_type));
   const name = normalizeSearch(user.name);
   const agency = normalizeSearch(user.agency);
-  viewer = isAgent && (name || agency) ? { name, agency } : null;
+  const phone = digitsOnly(user.phone).slice(-9);
+  viewer = isAgent && (name || agency || phone) ? { name, agency, phone } : null;
+  if (viewer) loadAgencyRegistry();
   if (!viewer && (state.source.length || state.sourceStaff !== "all")) {
     state.source = [];
     state.sourceStaff = "all";
@@ -434,19 +437,49 @@ async function resolveViewer() {
   }
 }
 
+// Реестр агентов: имя → агентство. Нужен, пока фид не отдаёт агентство строкой.
+let agencyByAgent = new Map();
+let agencyRegistryRequested = false;
+async function loadAgencyRegistry() {
+  if (agencyRegistryRequested) return;
+  agencyRegistryRequested = true;
+  try {
+    const response = await fetch("/api/public-agents", { cache: "no-store" });
+    const body = await response.json();
+    if (!response.ok || !body?.ok || !Array.isArray(body.agents)) throw Error("agents_unavailable");
+    agencyByAgent = new Map(body.agents
+      .filter(agent => normalize(agent?.name) && normalize(agent?.agency))
+      .map(agent => [normalizeSearch(agent.name), normalize(agent.agency)]));
+    render();
+  } catch (_) {
+    agencyRegistryRequested = false;
+  }
+}
+
+function agentAgencyOf(item) {
+  return normalize(item?.listingAgentAgency) || agencyByAgent.get(normalizeSearch(item?.sourceAgentName)) || "";
+}
+
 function sourceGroupOf(item) {
   if (!viewer) return "other";
-  const name = normalizeSearch(item.listingAgentName);
-  const agency = normalizeSearch(item.listingAgentAgency);
+  const phone = digitsOnly(item.listingAgentPhone);
+  const name = normalizeSearch(item.sourceAgentName);
+  if (viewer.phone && phone && phone.endsWith(viewer.phone)) return "mine";
   if (viewer.name && name && name === viewer.name) return "mine";
+  const agency = normalizeSearch(agentAgencyOf(item));
   if (viewer.agency && agency && agency === viewer.agency) return "agency";
   return "other";
 }
 
 function sourceMatches(item) {
   if (!viewer) return true;
-  if (state.source.length && !state.source.includes(sourceGroupOf(item))) return false;
-  if (state.sourceStaff !== "all" && normalizeSearch(item.listingAgentName) !== state.sourceStaff) return false;
+  if (state.source.length) {
+    // «Моей организации» — вся компания, включая собственные объявления агента.
+    const groups = new Set(state.source);
+    if (groups.has("agency")) groups.add("mine");
+    if (!groups.has(sourceGroupOf(item))) return false;
+  }
+  if (state.sourceStaff !== "all" && normalizeSearch(item.sourceAgentName) !== state.sourceStaff) return false;
   return true;
 }
 
@@ -456,8 +489,8 @@ function sourceFilterActive() {
 
 function sourceFilterSummary() {
   if (state.sourceStaff !== "all") {
-    const match = state.objects.find((item) => normalizeSearch(item.listingAgentName) === state.sourceStaff);
-    return normalize(match?.listingAgentName) || "выбранный сотрудник";
+    const match = state.objects.find((item) => normalizeSearch(item.sourceAgentName) === state.sourceStaff);
+    return normalize(match?.sourceAgentName) || "выбранный сотрудник";
   }
   return state.source.map((group) => SOURCE_LABELS[group]).join(", ");
 }
@@ -798,6 +831,12 @@ function normalizeRow(row) {
     listingAgentName: normalize(row.listing_agent_name),
     listingAgentAgency: normalize(row.listing_agent_agency),
     listingAgentPublicRef: normalize(row.listing_agent_public_ref),
+    listingAgentPhone: digitsOnly(row.listing_agent_phone),
+    // Фид пока не отдаёт имя и агентство агента: для объявлений, размещённых
+    // агентом, его имя лежит в contact_name, агентство берётся из реестра.
+    sourceAgentName: normalize(row.listing_agent_name)
+      || (digitsOnly(row.listing_agent_phone) || normalize(row.contact_privacy_mode).startsWith("agent")
+        ? normalize(row.contact_name) : ""),
     isRequest,
     requestDeal,
     segment,
@@ -1776,7 +1815,7 @@ function updateSourceUi() {
   const names = new Map();
   state.objects.forEach((item) => {
     if (!dealMatches(item)) return;
-    const name = normalize(item.listingAgentName);
+    const name = normalize(item.sourceAgentName);
     if (name) names.set(normalizeSearch(name), name);
   });
   const options = [...names.entries()].sort((a, b) => a[1].localeCompare(b[1], "ru"));

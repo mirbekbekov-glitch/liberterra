@@ -678,7 +678,7 @@
     },
     {
       "name": "site",
-      "sha256": "52d1e7fded3efdc221cdfd790b87ef35e3d1b49ebfc3a689919ca720b91fe83e",
+      "sha256": "27c907958e71f927cabe84186c2d609f688c1b48ecd2d5d8925e5eb4065bbbc7",
       "maps": [
         {
           "name": "files",
@@ -704,7 +704,7 @@
             {
               "key": "/script.js",
               "file": "assets/site/files/script.js",
-              "sha256": "9bc230757e43f78f37ee88c60cab4be58f4bf5a62dd997ab30ef17489890db59",
+              "sha256": "669fb02ed46935415b817672f17ecd5724e4d0ea75943b6a61ced88d717c28be",
               "append": []
             },
             {
