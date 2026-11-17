@@ -137,6 +137,7 @@ const OBJECT_HEADERS = [
   "created_at",
   "updated_at",
   "listing_agent_phone", "contact_privacy_mode",
+  "listing_agent_name", "listing_agent_agency",
 ];
 
 const PRIVATE_CONTRACT_HEADERS = [
@@ -560,6 +561,8 @@ function appendObject_(row) {
     safeRow.phone = "";
     safeRow.public_contact_phone = agentPhone;
     safeRow.listing_agent_phone = agentPhone;
+    safeRow.listing_agent_name = agent && agent.role === "approved" ? cleanText_(agent.name) : "";
+    safeRow.listing_agent_agency = agent && agent.role === "approved" ? cleanText_(agent.agency) : "";
     safeRow.contact_name = "";
     safeRow.owner_name = "";
     safeRow.owner_contact_phone = "";
@@ -596,6 +599,57 @@ function backfillRequestContactNames() {
 
   SpreadsheetApp.flush();
   const result = { ok: true, updated: updated, unresolved: unresolved };
+  console.log(JSON.stringify(result));
+  return result;
+}
+
+/**
+ * One-time repair for listings published before listing_agent_name and
+ * listing_agent_agency existed. Fills both columns (and listing_agent_phone
+ * when it is empty) from the agent linked to the object.
+ * Run this function manually in Apps Script after deploying this version.
+ */
+function backfillListingAgentColumns() {
+  const objectsSheet = getObjectsSheet_();
+  const objectHeaderMap = ensureHeaders_(objectsSheet, OBJECT_HEADERS);
+  const objectRows = sheetRowsAsObjects_(objectsSheet, OBJECT_HEADERS);
+  const links = objectAgentLinks_();
+  const agentCache = {};
+
+  let updated = 0;
+  let unlinked = 0;
+  objectRows.forEach((record) => {
+    const agentId = listingAgentIdForObject_(record.id, links);
+    if (!agentId) {
+      unlinked += 1;
+      return;
+    }
+    if (!Object.prototype.hasOwnProperty.call(agentCache, agentId)) {
+      agentCache[agentId] = agentRecordById_(agentId);
+    }
+    const agent = agentCache[agentId];
+    if (!agent || agent.role !== "approved") {
+      unlinked += 1;
+      return;
+    }
+    let touched = false;
+    if (objectHeaderMap.listing_agent_name && cleanText_(record.listing_agent_name) !== cleanText_(agent.name)) {
+      objectsSheet.getRange(record._row, objectHeaderMap.listing_agent_name).setValue(safeSheetValue_(agent.name));
+      touched = true;
+    }
+    if (objectHeaderMap.listing_agent_agency && cleanText_(record.listing_agent_agency) !== cleanText_(agent.agency)) {
+      objectsSheet.getRange(record._row, objectHeaderMap.listing_agent_agency).setValue(safeSheetValue_(agent.agency));
+      touched = true;
+    }
+    if (objectHeaderMap.listing_agent_phone && !cleanText_(record.listing_agent_phone) && isValidWorkPhone_(agent.phone)) {
+      objectsSheet.getRange(record._row, objectHeaderMap.listing_agent_phone).setValue(safeSheetValue_(agent.phone));
+      touched = true;
+    }
+    if (touched) updated += 1;
+  });
+
+  SpreadsheetApp.flush();
+  const result = { ok: true, updated: updated, unlinked: unlinked };
   console.log(JSON.stringify(result));
   return result;
 }
@@ -2874,6 +2928,7 @@ function agentRecordById_(agentId) {
     avatar_url: agentAvatarUrl_(values[headerMap["Публичное фото ID"] - 1]),
     name: cleanText_(values[headerMap["Имя"] - 1]) || "Агент Liberterra",
     agency: cleanText_(values[headerMap["Агентство"] - 1]),
+    phone: cleanText_(values[headerMap["Телефон"] - 1]),
     specialization: normalizeAgentSpecialization_(values[headerMap["Направление"] - 1]),
     role: roleFromStatus_(values[headerMap["Статус"] - 1]),
     rating: normalizeAgentRating_(values[headerMap["Рейтинг"] - 1]),
@@ -5567,6 +5622,7 @@ function persistWebListing_(payload, actor, id, input, decoded) {
       return {ok:true,id:id};
     }
     const urls = storeWebListingPhotos_(id,decoded);
+    const actorAgent = agentRecordById_(actor.telegramId);
     const row = {id:id, city:"Бишкек", deal:input.deal, segment:input.object_type === "Коммерческая недвижимость" ? "Коммерция" : "Жильё",
       title:cleanText_(input.object_type).slice(0,80), district:cleanText_(input.district).slice(0,160),
       description:cleanText_(input.address).slice(0,160) + "\n" + cleanText_(input.description).slice(0,700),
@@ -5576,7 +5632,9 @@ function persistWebListing_(payload, actor, id, input, decoded) {
       photo_url:urls.join("|"),status:"на модерации",verified:false,
       created_at:new Date().toISOString(),updated_at:new Date().toISOString(),
       listing_agent_id:actor.telegramId,poster_type:input.poster_type,
-      contact_name:actor.name,public_contact_phone:actor.phone,listing_agent_phone:actor.phone,phone:""};
+      contact_name:actor.name,public_contact_phone:actor.phone,listing_agent_phone:actor.phone,phone:"",
+      listing_agent_name:actorAgent && actorAgent.role === "approved" ? cleanText_(actorAgent.name) : "",
+      listing_agent_agency:actorAgent && actorAgent.role === "approved" ? cleanText_(actorAgent.agency) : ""};
     upsertObjectAgentLink_(row);
     saveAgentPrivateListingSnapshot_(id,actor.telegramId, {owner_contact_name:input.owner_name,owner_contact_phone:input.phone});
     row.contact_privacy_mode = "agent_private_v1";
