@@ -260,7 +260,7 @@ const SPECIALISTS = [
 
 const state = {
   catalogStatus: "loading",
-  deal: "продажа",
+  deals: ["продажа"],
   rentTerm: "monthly",
   segment: "all",
   propertyType: "all",
@@ -286,11 +286,14 @@ const state = {
 
 const CATALOG_FILTERS_KEY = "liberterra_catalog_filters_v1";
 const CATALOG_FILTER_KEYS = [
-  "city", "deal", "rentTerm", "segment", "propertyType", "occupancy", "rooms", "district",
+  "city", "rentTerm", "segment", "propertyType", "occupancy", "rooms", "district",
   "priceCurrency", "query", "priceMin", "priceMax", "areaMin", "areaMax", "floorMin",
   "floorMax", "requestDeal", "sourceStaff",
 ];
 
+const DEALS = ["продажа", "аренда"];
+const dealSelected = name => state.deals.includes(name);
+const dealMatches = item => state.deals.includes(normalize(item?.deal).toLowerCase());
 const SOURCE_GROUPS = ["mine", "agency", "other"];
 const SOURCE_LABELS = { mine: "Мои", agency: "Моей организации", other: "Других организаций" };
 const VIEWER_SESSION_KEY = "liberterra-verified-web-user";
@@ -308,19 +311,24 @@ function restoreCatalogFilters() {
     const value = params.has(key) ? params.get(key) : saved[key];
     if (value !== null && value !== undefined && value !== "") state[key] = String(value);
   });
+  const savedDeals = Array.isArray(saved.deals) ? saved.deals.join(",") : saved.deals ?? saved.deal;
+  const dealValue = params.has("deal") ? params.get("deal") : savedDeals;
+  const deals = String(dealValue || "").split(",").map(part => part.trim().toLowerCase()).filter(part => DEALS.includes(part));
+  if (deals.length) state.deals = DEALS.filter(deal => deals.includes(deal));
   const savedSource = Array.isArray(saved.source) ? saved.source.join(",") : saved.source;
   const sourceValue = params.has("source") ? params.get("source") : savedSource;
   state.source = String(sourceValue || "").split(",").map((part) => part.trim()).filter((part) => SOURCE_GROUPS.includes(part));
   const favoriteValue = params.has("favoritesOnly") ? params.get("favoritesOnly") : saved.favoritesOnly;
   state.favoritesOnly = favoriteValue === true || favoriteValue === "1" || favoriteValue === "true";
-  if (!['аренда', 'продажа'].includes(state.deal)) state.deal = "аренда";
-  if (state.deal === "продажа") state.occupancy = "all";
+  if (!state.deals.length) state.deals = ["продажа"];
+  if (!dealSelected("аренда")) state.occupancy = "all";
   if (!['usd','kgs'].includes(state.priceCurrency)) state.priceCurrency = 'usd';
 }
 
 function catalogFilterParams() {
   const params = new URLSearchParams();
   CATALOG_FILTER_KEYS.forEach((key) => params.set(key, String(state[key] ?? "")));
+  params.set("deal", state.deals.join(","));
   if (state.source.length) params.set("source", state.source.join(","));
   if (state.favoritesOnly) params.set("favoritesOnly", "1");
   return params;
@@ -759,7 +767,7 @@ function typeMatches(item) {
 }
 
 function rentTermMatches(item) {
-  if (state.deal !== "аренда") return true;
+  if (normalize(item?.deal).toLowerCase() !== "аренда") return true;
   const period = normalize(item?.per).toLowerCase();
   const isDaily = /сут|посуточ|день|daily|day/.test(period);
   return state.rentTerm === "daily" ? isDaily : !isDaily;
@@ -1110,7 +1118,7 @@ function collectionFilters(collection) {
 }
 
 function collectionMatches(item, collection) {
-  return normalize(item.deal).toLowerCase() === state.deal
+  return dealMatches(item)
     && rentTermMatches(item)
     && item.segment === collectionFilters(collection).segment
     && item.propertyType === collection.propertyType
@@ -1144,9 +1152,7 @@ function filteredObjects() {
     if(!globalThis.LiberterraGeo.matches(item,state.city))return false;
     if (collection && !collectionMatches(item, collection)) return false;
     if (state.favoritesOnly && !isFavorite(item)) return false;
-    const byDeal =
-      normalize(item.deal).toLowerCase() === state.deal;
-    if (!byDeal) return false;
+    if (!dealMatches(item)) return false;
 
     const bySegment =
       state.segment === "all"
@@ -1640,13 +1646,17 @@ function updateFilterUi() {
 
   syncHeroButtons("[data-hero-type]", "heroType", state.propertyType);
   syncHeroButtons("[data-hero-rooms]", "heroRooms", state.rooms);
-  syncHeroButtons("[data-hero-deal]", "heroDeal", state.deal);
+  document.querySelectorAll("[data-hero-deal]").forEach((button) => {
+    const active = dealSelected(button.dataset.heroDeal);
+    button.classList.toggle("is-active", active);
+    button.setAttribute("aria-pressed", active ? "true" : "false");
+  });
   syncHeroButtons("[data-rent-term]", "rentTerm", state.rentTerm);
   syncHeroButtons("[data-hero-occupancy]", "heroOccupancy", state.occupancy);
   syncHeroButtons("[data-request-deal]", "requestDeal", state.requestDeal);
-  if (rentTermGroup) rentTermGroup.hidden = state.deal !== "аренда";
+  if (rentTermGroup) rentTermGroup.hidden = !dealSelected("аренда");
   document.querySelectorAll(".catalog-occupancy-group").forEach((group) => {
-    group.hidden = state.deal !== "аренда";
+    group.hidden = !dealSelected("аренда");
   });
   updateHeroSummary("heroTypeMenu", typeLabel(state.propertyType));
   updateHeroSummary("heroRoomsMenu", roomLabel(state.rooms));
@@ -1765,7 +1775,7 @@ function updateSourceUi() {
   if (!staff) return;
   const names = new Map();
   state.objects.forEach((item) => {
-    if (normalize(item.deal).toLowerCase() !== state.deal) return;
+    if (!dealMatches(item)) return;
     const name = normalize(item.listingAgentName);
     if (name) names.set(normalizeSearch(name), name);
   });
@@ -1936,8 +1946,10 @@ function initFieldFilters() {
 
   document.querySelectorAll("[data-hero-deal]").forEach((button) => {
     button.addEventListener("click", () => {
-      state.deal = button.dataset.heroDeal || "аренда";
-      if (state.deal === "продажа") state.occupancy = "all";
+      const value = button.dataset.heroDeal || "аренда";
+      const next = dealSelected(value) ? state.deals.filter(deal => deal !== value) : [...state.deals, value];
+      state.deals = next.length ? DEALS.filter(deal => next.includes(deal)) : [value];
+      if (!dealSelected("аренда")) state.occupancy = "all";
       render();
     });
   });
@@ -1945,7 +1957,7 @@ function initFieldFilters() {
   document.querySelectorAll("[data-rent-term]").forEach((button) => {
     button.addEventListener("click", () => {
       state.rentTerm = button.dataset.rentTerm || "monthly";
-      state.deal = "аренда";
+      if (!dealSelected("аренда")) state.deals = DEALS.filter(deal => state.deals.includes(deal) || deal === "аренда");
       render();
     });
   });
@@ -1953,7 +1965,7 @@ function initFieldFilters() {
   document.querySelectorAll("[data-hero-occupancy]").forEach((button) => {
     button.addEventListener("click", () => {
       state.occupancy = button.dataset.heroOccupancy || "all";
-      if (state.occupancy === "sharing") state.deal = "аренда";
+      if (state.occupancy === "sharing" && !dealSelected("аренда")) state.deals = ["аренда"];
       render();
     });
   });
