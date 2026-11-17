@@ -1014,3 +1014,23 @@ html[data-theme=dark] body.v20.profile-page .profile-empty span:not(#lt0){color:
 body.v20.profile-page .lt-onboarding-primary:not(#lt0){background:#BE2C28!important;border:0!important;color:#fff!important}
 body.v20.profile-page .lt-onboarding-primary:not(#lt0):hover{background:#A42220!important}
 body.v20.profile-page .lt-onboarding-primary:not(#lt0):disabled{opacity:.55}
+
+/* Профиль 20261117: форма редактирования личных данных. */
+body.v20.profile-page .pv2-edit-form{margin-top:14px;background:var(--v20-paper);border:1px solid var(--v20-line);border-radius:10px;padding:18px 20px}
+body.v20.profile-page .pv2-edit-form[hidden]{display:none}
+body.v20.profile-page .pv2-edit-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px 32px}
+body.v20.profile-page .pv2-edit-field{display:flex;flex-direction:column;gap:6px;min-width:0}
+body.v20.profile-page .pv2-edit-field > span{font-size:13px;font-weight:500;color:var(--v20-muted)}
+body.v20.profile-page .pv2-edit-field input,body.v20.profile-page .pv2-edit-field select{width:100%;box-sizing:border-box;min-height:44px;padding:10px 12px;border:1px solid var(--v20-field-line);border-radius:8px;background:var(--v20-paper);color:var(--v20-ink);font:inherit;font-size:15px}
+body.v20.profile-page .pv2-edit-field input:focus-visible,body.v20.profile-page .pv2-edit-field select:focus-visible{outline:2px solid var(--v20-accent);outline-offset:1px}
+body.v20.profile-page .pv2-edit-note{margin:14px 0 0;font-size:13px;color:var(--v20-muted)}
+body.v20.profile-page .pv2-edit-note.error{color:#B42318}
+body.v20.profile-page .pv2-edit-note[hidden]{display:none}
+body.v20.profile-page .pv2-edit-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
+body.v20.profile-page .pv2-edit-actions .pv2-btn{min-height:44px}
+@media (max-width:760px){
+body.v20.profile-page .pv2-edit-grid{grid-template-columns:1fr;gap:14px}
+body.v20.profile-page .pv2-edit-actions .pv2-btn{flex:1 1 140px;justify-content:center}
+}
+html[data-theme=dark] body.v20.profile-page .pv2-edit-field > span:not(#lt0){color:#B9C0CA}
+html[data-theme=dark] body.v20.profile-page .pv2-edit-note.error:not(#lt0){color:#F0A09A}

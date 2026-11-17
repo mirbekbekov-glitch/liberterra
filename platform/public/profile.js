@@ -47,7 +47,7 @@
   };
   const objectById = new Map(rows.map((row) => [clean(row.id), row]));
   const profileCacheKey = "liberterra-profile-v2-view";
-  const profileCacheVersion = 2;
+  const profileCacheVersion = 3;
   const formatPhone = (raw) => {
     const text = String(raw || "").trim();
     const digits = text.replace(/\D/g, "");
@@ -208,7 +208,7 @@
           <a class="pv2-action-btn" href="/agent-cabinet.html"><span class="pv2-action-icon" aria-hidden="true">▣</span><span class="pv2-action-text"><strong>Открыть кабинет</strong><span>Рабочая база</span></span></a>
           ${emailLink}
         </div>
-        <section class="pv2-section"><div class="pv2-section-header"><h3 class="pv2-section-title">Личные данные</h3><button class="pv2-btn pv2-btn-secondary pv2-edit-soon" type="button" disabled title="Редактирование личных данных появится позже"><svg class="pv2-btn-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4.2L19.4 8.8a2 2 0 0 0 0-2.8l-1.4-1.4a2 2 0 0 0-2.8 0L4 15.8z"/><path d="m13.6 6.2 4.2 4.2"/></svg>Редактировать<span class="pv2-soon-badge">скоро</span></button></div>
+        <section class="pv2-section"><div class="pv2-section-header"><h3 class="pv2-section-title">Личные данные</h3><button class="pv2-btn pv2-btn-secondary" type="button" data-pv2-profile-edit aria-expanded="false" aria-controls="pv2ProfileEdit" title="Изменить имя и телефон"><svg class="pv2-btn-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4.2L19.4 8.8a2 2 0 0 0 0-2.8l-1.4-1.4a2 2 0 0 0-2.8 0L4 15.8z"/><path d="m13.6 6.2 4.2 4.2"/></svg>Редактировать</button></div>
           <div class="pv2-data-grid">
             <div><div class="pv2-data-label">${fieldIcon("user")}Имя</div><div class="pv2-data-value">${escapeHtml(user.name || "Не указано")}</div></div>
             <div class="pv2-data-email"><div class="pv2-data-label">${fieldIcon("mail")}Email</div><div class="pv2-data-value">${email ? escapeHtml(email).replace("@", "@<wbr>") : "Не указан"}</div></div>
@@ -219,6 +219,15 @@
             ${registrationLabel === "—" ? "" : `<div><div class="pv2-data-label">${fieldIcon("calendar")}Дата регистрации</div><div class="pv2-data-value">${escapeHtml(registrationLabel)}</div></div>`}
             ${certificate ? `<div class="pv2-data-full"><div class="pv2-data-label">${fieldIcon("award")}Сертификат аттестации риэлтора</div><div class="pv2-data-value linked">№ ${escapeHtml(certificate)}${certificateChip(certificateState)}</div></div>` : ""}
           </div>
+          <form class="pv2-edit-form" id="pv2ProfileEdit" hidden>
+            <div class="pv2-edit-grid">
+              <label class="pv2-edit-field"><span>Имя</span><input name="full_name" type="text" autocomplete="name" maxlength="80" value="${escapeHtml(user.name || "")}" required></label>
+              <label class="pv2-edit-field"><span>Телефон</span><input name="phone" type="tel" inputmode="tel" autocomplete="tel" maxlength="24" value="${escapeHtml(formatPhone(phone) || "")}" required></label>
+              ${isAgent ? `<label class="pv2-edit-field"><span>Агентство</span><input name="agency" type="text" maxlength="80" value="${escapeHtml(agency || "")}"></label><label class="pv2-edit-field"><span>Специализация</span><select name="specialization"><option value=""${specialization ? "" : " selected"}>Не выбрана</option><option value="sale"${specialization === "sale" ? " selected" : ""}>Продажа</option><option value="rent"${specialization === "rent" ? " selected" : ""}>Аренда</option></select></label>` : ""}
+            </div>
+            <p class="pv2-edit-note" data-pv2-edit-note role="status" hidden></p>
+            <div class="pv2-edit-actions"><button class="pv2-btn" type="submit" data-pv2-edit-save>Сохранить</button><button class="pv2-btn pv2-btn-secondary" type="button" data-pv2-edit-cancel>Отмена</button></div>
+          </form>
         </section>
         <button class="profile-logout pv2-btn pv2-btn-secondary" type="button" data-profile-logout>Выйти из аккаунта</button>
         ${avatarEditorEnabled ? '<div class="pv2-modal-overlay" id="pv2AvatarModal" role="dialog" aria-modal="true" aria-label="Фото профиля" aria-hidden="true"><div class="pv2-modal"><div class="pv2-modal-header"><h3>Фото профиля</h3><button class="pv2-modal-close" type="button" data-pv2-avatar-close aria-label="Закрыть">×</button></div><div class="pv2-modal-body"><p class="pv2-avatar-hint">Загрузите портретное фото: клиенты больше доверяют агенту, когда видят лицо. Документы и скриншоты для аватара не подходят.</p><div data-pv2-avatar-editor-slot></div></div></div></div>' : ""}`;
@@ -281,6 +290,31 @@
       window.LiberterraUserAccess?.linkTelegramAccount?.();
       return;
     }
+    const editToggle = event.target.closest("[data-pv2-profile-edit]");
+    if (editToggle) {
+      const form = profileNode.querySelector("#pv2ProfileEdit");
+      if (!form) return;
+      const opening = form.hidden;
+      form.hidden = !opening;
+      profileNode.querySelectorAll("[data-pv2-profile-edit][aria-expanded]").forEach((item) => item.setAttribute("aria-expanded", String(opening)));
+      if (opening) {
+        form.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        form.querySelector("input, select")?.focus();
+      }
+      return;
+    }
+    if (event.target.closest("[data-pv2-edit-cancel]")) {
+      const form = profileNode.querySelector("#pv2ProfileEdit");
+      if (form) {
+        form.reset();
+        form.hidden = true;
+        const note = form.querySelector("[data-pv2-edit-note]");
+        if (note) { note.textContent = ""; note.hidden = true; }
+        profileNode.querySelectorAll("[data-pv2-profile-edit][aria-expanded]").forEach((item) => item.setAttribute("aria-expanded", "false"));
+        profileNode.querySelector("[data-pv2-profile-edit]")?.focus();
+      }
+      return;
+    }
     const button = event.target.closest("[data-profile-logout]");
     if (!button) return;
     button.disabled = true;
@@ -291,6 +325,40 @@
       sessionStorage.removeItem(profileCacheKey);
       try { localStorage.removeItem(profileCacheKey); } catch (_) {}
       location.assign("/");
+    }
+  });
+  profileNode.addEventListener("submit", async (event) => {
+    const form = event.target.closest("#pv2ProfileEdit");
+    if (!form) return;
+    event.preventDefault();
+    const note = form.querySelector("[data-pv2-edit-note]");
+    const save = form.querySelector("[data-pv2-edit-save]");
+    const show = (text, kind) => {
+      if (!note) return;
+      note.textContent = text;
+      note.className = "pv2-edit-note" + (kind ? " " + kind : "");
+      note.hidden = !text;
+    };
+    const data = new FormData(form);
+    const name = String(data.get("full_name") || "").trim();
+    const digits = String(data.get("phone") || "").replace(/\D/g, "");
+    if (name.length < 2) { show("Укажите имя — не меньше двух символов.", "error"); form.elements.full_name?.focus(); return; }
+    if (!/^996\d{9}$/.test(digits)) { show("Телефон в формате +996 (XXX) XXX-XXX.", "error"); form.elements.phone?.focus(); return; }
+    const payload = { full_name: name, phone: "+" + digits };
+    if (form.elements.agency) payload.agency = String(data.get("agency") || "").trim();
+    if (form.elements.specialization) payload.specialization = String(data.get("specialization") || "").trim();
+    const label = save ? save.textContent : "";
+    if (save) { save.disabled = true; save.textContent = "Сохраняем…"; }
+    show("", "");
+    try {
+      if (!window.LiberterraAgentAccess?.request) throw new Error("Профиль недоступен. Обновите страницу.");
+      await window.LiberterraAgentAccess.request("update_user_profile", payload);
+      try { sessionStorage.removeItem(profileCacheKey); localStorage.removeItem(profileCacheKey); } catch (_) {}
+      loaded = false;
+      await loadProfile({ force: true });
+    } catch (error) {
+      show(error?.message || "Не удалось сохранить. Попробуйте ещё раз.", "error");
+      if (save) { save.disabled = false; save.textContent = label; }
     }
   });
   document.addEventListener("keydown", (event) => {
