@@ -37,7 +37,73 @@ node platform/dev/server.cjs
 
 ## Выпуск и откат
 
-Развёртывания в этом изменении нет. До будущего выпуска нужна проверка в отдельном облачном окружении с тестовой приватной книгой, реальной авторизацией двух агентов и Cloudflare-привязками. Локальный стенд этого не заменяет. Для выпуска потребуется отдельное разрешение пользователя.
+Сайт — это Worker `liberterra-listing-ui`: публичные HTML, CSS и JS встроены в него. Правка файла в `assets/site/files/` попадает на сайт только после пересборки и заливки этого Worker. Backend `hidden-pine-cbff` выкладывается отдельно и сейчас выкладке не подлежит (см. «Чего не делать»).
+
+Нужны: Node.js 24, доступ к ветке `crm/production-baseline-20261027`, токен Cloudflare с правом **Workers Scripts: Edit** на аккаунт `c94bdedbc72dfa6205338f6b0c47f22c` (создаётся в Cloudflare → My Profile → API Tokens → Create Token → шаблон «Edit Cloudflare Workers»; значение показывается один раз).
+
+### 1. Собрать из ветки
+
+```
+git checkout crm/production-baseline-20261027 && git pull
+node platform/scripts/build.cjs
+node platform/scripts/verify-source.cjs
+node --test platform/tests/*.test.cjs
+```
+
+`build.cjs` печатает `baselineEqual` по каждому Worker. Для `site` он показывает, равна ли сборка захваченному шаблону: `true` — вы собрали ровно то, что уже выложено, выкладывать нечего; `false` — в `assets/site/files/` есть правки, их и выкладываем. Тесты должны пройти все.
+
+### 2. Сверить с тем, что крутится сейчас
+
+Выкладка затирает Worker целиком, поэтому до неё убеждаемся, что никто не менял его мимо репозитория:
+
+```
+ACC=c94bdedbc72dfa6205338f6b0c47f22c
+curl -sS "https://api.cloudflare.com/client/v4/accounts/$ACC/workers/scripts/liberterra-listing-ui" \
+  -o /tmp/live.multipart
+```
+
+Из ответа (multipart) берём часть `worker.mjs` и считаем её SHA-256:
+
+```
+python3 -c "import hashlib;raw=open('/tmp/live.multipart','rb').read();b=raw.split(b'\r\n',1)[0];print(hashlib.sha256(raw[raw.index(b'\r\n\r\n')+4:raw.rindex(b'\r\n'+b+b'--')]).hexdigest())"
+```
+ Он обязан совпасть с полем `sha256` для `liberterra-listing-ui` в `provenance.json`. Не совпал — **не выкладывайте**: продакшен ушёл вперёд, сначала выровняйте репозиторий (захватить активные версии в `workers/`, переизвлечь ресурсы, пересчитать `provenance.json`), иначе заливка откатит чужую работу.
+
+### 3. Залить site Worker
+
+```
+ACC=c94bdedbc72dfa6205338f6b0c47f22c
+cat > /tmp/meta.json <<'JSON'
+{"main_module":"worker.mjs","compatibility_date":"2026-07-03","compatibility_flags":[],
+ "bindings":[{"type":"service","name":"BACKEND","service":"hidden-pine-cbff","environment":"production"},
+             {"type":"version_metadata","name":"LT_ASSET_RELEASE"}]}
+JSON
+curl -sS -X PUT "https://api.cloudflare.com/client/v4/accounts/$ACC/workers/scripts/liberterra-listing-ui" \
+  -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
+  -F "metadata=@/tmp/meta.json;type=application/json" \
+  -F "worker.mjs=@platform/dist/workers/site.mjs;filename=worker.mjs;type=application/javascript+module"
+```
+
+Три места, где легко ошибиться: `filename=worker.mjs` обязателен — иначе Cloudflare отвечает `No such module: worker.mjs`; `bindings` надо передать целиком, пропущенная привязка отключит CRM и каталог; `compatibility_date` менять не надо.
+
+### 4. Проверить и записать
+
+```
+curl -s "https://liberterra.kg/?cb=$RANDOM" | grep -c <признак правки>
+curl -s "https://liberterra.kg/catalog.html" | grep -c <признак правки>
+```
+
+Затем в том же коммите или следующем обновить `provenance.json`: новые `version`, `sha256`, `capturedAt` у `liberterra-listing-ui` (id версии — `.../versions?per_page=1`). Без этого шаг 2 в следующий раз даст ложную тревогу.
+
+### 5. Откат
+
+Cloudflare хранит версии: панель → Workers & Pages → `liberterra-listing-ui` → Deployments → Rollback на предыдущую версию. Это быстрее и надёжнее повторной сборки. После отката верните `provenance.json` к той же версии.
+
+### Чего не делать
+
+- **Не править Worker в панели Cloudflare и не заливать его мимо ветки.** Любая такая правка делает следующую сборку из репозитория откатом сайта.
+- **Не выкладывать backend**, пока `features.json` добавляет невыложенную воронку сделок: его сборка намеренно не равна активной версии. Выпуск сделок — отдельная задача с проверкой Apps Script и листа CRM.
+- Не заливать `dist/` руками и не класть в него свои файлы: повторная сборка остановится на неизвестном файле.
 
 Изменение хранения добавочное: новый тип в существующем листе CRM Workflow, без удаления или преобразования записей клиентов. Сначала обновляется Apps Script с поддержкой `deal_stages` и `deal`, затем собранный backend Worker. Старый сервер не должен получать новую форму: UI без метаданных этапов блокирует создание сделки. При откате сохраняются все строки сделок; нельзя очищать лист. Старый интерфейс не показывает новый тип, поэтому перед откатом нужен экспорт и план сохранения доступа к этим данным.
 
