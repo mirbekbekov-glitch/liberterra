@@ -48,7 +48,7 @@
   window.addEventListener('liberterra:crm-task',event=>{taskClient.value=event.detail.client_id||'';taskDeal.value=event.detail.deal_id||'';tasksForm.elements.object_id.value=event.detail.object_id||'';tasksForm.elements.title.value=event.detail.title||'';taskRequestId='';tasksForm.hidden=false;nav.querySelector('[data-crm-tab="tasks"]').click();tasksForm.elements.title.focus();});
   const tasksList=document.createElement('div');tasksList.className='crm-task-list';panels.tasks.append(tasksList);
   const taskSummary=document.createElement('p');taskSummary.className='crm-task-summary';tasksList.before(taskSummary);
-  let tasks=[],tasksReady=false,taskRequestId='',tasksLoad=0;
+  let tasks=[],tasksReady=false,taskRequestId='',tasksLoad=0,tasksInflight=null,tasksLoadedAt=0;
   const taskText=value=>String(value??'');
   function renderTasks(){
     window.dispatchEvent(new CustomEvent('liberterra:tasks-data',{detail:{tasks,ready:tasksReady}}));
@@ -122,7 +122,10 @@
     analysis.textContent=`Источник: существующий кабинет. Объектов: ${objects.length}; закреплений: ${clients.length}. Данные о доходах, звонках и конверсии отсутствуют.`;
     const select=tasksForm.elements.object_id;select.replaceChildren(new Option('Без объекта',''));
     objects.forEach(item=>select.add(new Option(item.title||item.district||`Объект ${item.id}`,item.id)));
-    queueMicrotask(loadTasks);
+    queueMicrotask(function(){
+      if(tasksInflight||(tasksReady&&Date.now()-tasksLoadedAt<60000))return;
+      tasksInflight=loadTasks().then(function(){tasksLoadedAt=Date.now();}).finally(function(){tasksInflight=null;});
+    });
   }};
   new MutationObserver(()=>{if(content.hidden){tasksLoad++;tasks=[];tasksList.replaceChildren();taskRequestId='';dialog.close();session.clear();content.querySelectorAll('.crm-local-form').forEach(f=>{f.reset();f.querySelector('[role="status"]').textContent='';});}}).observe(content,{attributes:true,attributeFilter:['hidden']});
 })();

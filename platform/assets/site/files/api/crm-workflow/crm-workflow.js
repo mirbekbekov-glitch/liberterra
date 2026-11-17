@@ -313,7 +313,11 @@
     finally{if(epoch===state.epoch)elements.forEach(form=>form.querySelectorAll('input,select,textarea,button').forEach(el=>el.disabled=!state.ready));}
   }
   new MutationObserver(()=>{if(content.hidden){state.epoch++;state.ready=false;state.records=[];state.objects=[];state.requests=[];seenRequestIds=null;newlyArrived=0;elements.forEach(resetForm);selectedObjects.clear();render();}}).observe(content,{attributes:true,attributeFilter:['hidden']});
-  window.LiberterraCrmWorkflow={update(){queueMicrotask(load);},reload:load};
+  let crmInflight=null,crmLoadedAt=0;
+  window.LiberterraCrmWorkflow={update(){queueMicrotask(function(){
+    if(crmInflight||(state.ready&&Date.now()-crmLoadedAt<60000))return;
+    crmInflight=load().then(function(){crmLoadedAt=Date.now();}).finally(function(){crmInflight=null;});
+  });},reload:load};
   // Refresh shared intake only while it is being viewed; do not poll hidden tabs.
   setInterval(()=>{if(state.ready&&!document.hidden&&!content.hidden&&!document.querySelector('.crm-action-dialog[open],[data-first-contact-form]')&&(!root.querySelector('[data-crm-panel="overview"]').hidden||!panels.requests.hidden))load();},60000);
   root.addEventListener('click',event=>{
