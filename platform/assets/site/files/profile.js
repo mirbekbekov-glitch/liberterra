@@ -13,7 +13,7 @@
     const sidebar = document.createElement("aside");
     sidebar.className = "profile-v2-sidebar";
     sidebar.setAttribute("aria-label", "Личный кабинет");
-    sidebar.innerHTML = '<a href="/" class="pv2-sidebar-brand">Liberterra <span class="dot"></span></a><div class="pv2-sidebar-section">Основное</div><ul class="pv2-sidebar-nav"><li><a href="/profile" class="active" aria-current="page"><span class="pv2-nav-icon" aria-hidden="true">▦</span>Обзор</a></li><li><a href="/my-listings.html"><span class="pv2-nav-icon" aria-hidden="true">⌂</span>Мои объекты<span class="badge" data-count="objects">0</span></a></li><li><a href="/my-requests.html"><span class="pv2-nav-icon" aria-hidden="true">⌕</span>Мои заявки<span class="badge" data-count="requests">0</span></a></li><li><a href="#profileFavorites"><span class="pv2-nav-icon" aria-hidden="true">♡</span>Избранное<span class="badge" data-count="favorites">0</span></a></li><li><a href="/agent-cabinet.html"><span class="pv2-nav-icon" aria-hidden="true">▣</span>Рабочая база CRM</a></li></ul><div class="pv2-sidebar-section">Инструменты</div><ul class="pv2-sidebar-nav"><li><a href="/viewing-history.html"><span class="pv2-nav-icon" aria-hidden="true">◷</span>История просмотров</a></li><li><a href="https://t.me/Liberterra_kg_bot?start=support" target="_blank" rel="noopener"><span class="pv2-nav-icon" aria-hidden="true">?</span>Поддержка</a></li></ul><div class="pv2-sidebar-bottom"><div class="pv2-sidebar-user"><div class="pv2-sidebar-avatar" aria-hidden="true">Л</div><div><div class="pv2-sidebar-user-name">Пользователь</div><div class="pv2-sidebar-user-role">Клиент</div></div></div></div>';
+    sidebar.innerHTML = '<a href="/" class="pv2-sidebar-brand">Liberterra <span class="dot"></span></a><div class="pv2-sidebar-section">Основное</div><ul class="pv2-sidebar-nav"><li><a href="/profile" class="active" aria-current="page"><span class="pv2-nav-icon" aria-hidden="true">▦</span>Обзор</a></li><li><a href="/my-listings.html"><span class="pv2-nav-icon" aria-hidden="true">⌂</span>Мои объекты<span class="badge" data-count="objects">0</span></a></li><li><a href="/my-requests.html"><span class="pv2-nav-icon" aria-hidden="true">⌕</span>Мои заявки<span class="badge" data-count="requests">0</span></a></li><li><a href="#profileFavorites"><span class="pv2-nav-icon" aria-hidden="true">♡</span>Избранное<span class="badge" data-count="favorites">0</span></a></li><li><a href="/agent-cabinet.html"><span class="pv2-nav-icon" aria-hidden="true">▣</span>Кабинет агента</a></li></ul><div class="pv2-sidebar-section">Инструменты</div><ul class="pv2-sidebar-nav"><li><a href="/viewing-history.html"><span class="pv2-nav-icon" aria-hidden="true">◷</span>История просмотров</a></li><li><a href="https://t.me/Liberterra_kg_bot?start=support" target="_blank" rel="noopener"><span class="pv2-nav-icon" aria-hidden="true">?</span>Поддержка</a></li></ul><div class="pv2-sidebar-bottom"><div class="pv2-sidebar-user"><div class="pv2-sidebar-avatar" aria-hidden="true">Л</div><div><div class="pv2-sidebar-user-name">Пользователь</div><div class="pv2-sidebar-user-role">Клиент</div></div></div></div>';
     main.before(mobileHeader, layout);
     layout.append(sidebar, main);
     main.className = "profile-v2-main";
@@ -28,7 +28,7 @@
     const mobileNav = document.createElement("nav");
     mobileNav.className = "pv2-mobile-nav";
     mobileNav.setAttribute("aria-label", "Разделы кабинета");
-    mobileNav.innerHTML = '<a href="/profile" class="active" aria-current="page"><span aria-hidden="true">▦</span>Обзор</a><a href="/my-listings.html"><span aria-hidden="true">⌂</span>Объекты</a><a href="/my-requests.html"><span aria-hidden="true">⌕</span>Заявки</a><a href="/agent-cabinet.html"><span aria-hidden="true">▣</span>CRM</a>';
+    mobileNav.innerHTML = '<a href="/profile" class="active" aria-current="page"><span aria-hidden="true">▦</span>Обзор</a><a href="/my-listings.html"><span aria-hidden="true">⌂</span>Объекты</a><a href="/my-requests.html"><span aria-hidden="true">⌕</span>Заявки</a><a href="/agent-cabinet.html"><span aria-hidden="true">▣</span>Кабинет</a>';
     layout.after(mobileNav);
   }
   ensureV2Layout();
@@ -170,7 +170,7 @@
         <div class="pv2-quick-actions">
           <a class="pv2-action-btn primary" href="/add-object.html"><span class="pv2-action-icon" aria-hidden="true">＋</span><span class="pv2-action-text"><strong>Разместить объект</strong><span>Добавить в каталог</span></span></a>
           <a class="pv2-action-btn" href="/add-request.html"><span class="pv2-action-icon" aria-hidden="true">⌕</span><span class="pv2-action-text"><strong>Оставить заявку</strong><span>Запрос на подбор</span></span></a>
-          <a class="pv2-action-btn" href="/agent-cabinet.html"><span class="pv2-action-icon" aria-hidden="true">▣</span><span class="pv2-action-text"><strong>Открыть CRM</strong><span>Рабочая база</span></span></a>
+          <a class="pv2-action-btn" href="/agent-cabinet.html"><span class="pv2-action-icon" aria-hidden="true">▣</span><span class="pv2-action-text"><strong>Открыть кабинет</strong><span>Рабочая база</span></span></a>
           ${emailLink}
         </div>
         <section class="pv2-section"><div class="pv2-section-header"><h3 class="pv2-section-title">Личные данные</h3><span class="pv2-data-edit-note" title="Пока нет подтверждённого API сохранения профиля">Редактирование появится позже</span></div>
@@ -187,6 +187,7 @@
         </section>
         <button class="profile-logout pv2-btn pv2-btn-secondary" type="button" data-profile-logout>Выйти из аккаунта</button>
         ${avatarEditorEnabled ? '<div class="pv2-modal-overlay" id="pv2AvatarModal" role="dialog" aria-modal="true" aria-label="Фото профиля" aria-hidden="true"><div class="pv2-modal"><div class="pv2-modal-header"><h3>Фото профиля</h3><button class="pv2-modal-close" type="button" data-pv2-avatar-close aria-label="Закрыть">×</button></div><div class="pv2-modal-body" data-pv2-avatar-editor-slot></div></div></div>' : ""}`;
+      window.dispatchEvent(new CustomEvent('liberterra:profile-data', { detail: { user, response, hasTelegramSession, isAgent } }));
       renderFavorites(favorites);
       const avatar = profileNode.querySelector(".pv2-avatar");
       window.LiberterraAgentPhoto?.show(avatar, user.avatar_url, user.name);
@@ -285,4 +286,196 @@
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', bindProfileLanguage, { once: true });
   else bindProfileLanguage();
+})();
+
+(function (root, factory) {
+  const api = factory();
+  if (typeof module === 'object' && module.exports) module.exports = api;
+  else root.LiberterraProfileWorkspaceModel = api;
+})(typeof globalThis !== 'undefined' ? globalThis : this, function () {
+  'use strict';
+
+  const value = input => String(input == null ? '' : input).trim();
+
+  function profileReadiness(user, options) {
+    const source = user || {};
+    const config = options || {};
+    const accessReady = Boolean(value(source.email) || value(source.telegram_id) || config.hasTelegramSession);
+    const checks = [
+      { id: 'name', label: 'Указать имя', complete: Boolean(value(source.name)), action: 'profile' },
+      { id: 'phone', label: 'Добавить телефон', complete: Boolean(value(source.phone)), action: 'profile' },
+      { id: 'access', label: 'Настроить способ входа', complete: accessReady, action: 'access' },
+    ];
+    if (config.isAgent) {
+      checks.push(
+        { id: 'agency', label: 'Указать агентство или частную практику', complete: Boolean(value(source.agency)), action: 'profile' },
+        { id: 'specialization', label: 'Выбрать направление работы', complete: ['sale', 'rent'].includes(value(source.specialization)), action: 'profile' },
+        { id: 'certificate', label: 'Подтвердить сертификат', complete: Boolean(value(source.certificate_number)), action: 'support' }
+      );
+    }
+    const completed = checks.filter(item => item.complete).length;
+    return {
+      completed,
+      total: checks.length,
+      percent: Math.round((completed / checks.length) * 100),
+      missing: checks.filter(item => !item.complete),
+    };
+  }
+
+  return { profileReadiness };
+});
+
+(() => {
+  'use strict';
+  const model = window.LiberterraProfileWorkspaceModel;
+  if (!model) return;
+
+  const node = (tag, text, className) => {
+    const element = document.createElement(tag);
+    if (text !== undefined) element.textContent = text;
+    if (className) element.className = className;
+    return element;
+  };
+
+  function heading() {
+    const title = document.querySelector('.profile-v2-main h1');
+    if (!title) return;
+    title.classList.add('pv2-page-title');
+    if (!title.nextElementSibling?.classList.contains('pv2-page-summary')) {
+      title.after(node('p', 'Личные данные, профессиональный профиль и доступ к рабочим инструментам.', 'pv2-page-summary'));
+    }
+  }
+
+  function findField(grid, label) {
+    return Array.from(grid?.children || []).find(item => item.querySelector('.pv2-data-label')?.textContent.trim() === label);
+  }
+
+  function section(title, description) {
+    const element = node('section', undefined, 'pv2-section pv2-workspace-section');
+    const header = node('div', undefined, 'pv2-section-header');
+    const copy = node('div');
+    copy.append(node('h3', title, 'pv2-section-title'), node('p', description, 'pv2-section-description'));
+    header.append(copy);
+    element.append(header);
+    return { element, header };
+  }
+
+  function moveProfileSections(profile, isAgent) {
+    const personal = Array.from(profile.querySelectorAll('.pv2-section')).find(item => item.querySelector('.pv2-data-grid'));
+    const grid = personal?.querySelector('.pv2-data-grid');
+    if (!personal || !grid) return;
+    const editForm = personal.querySelector('#pv2ProfileEdit');
+    const personalHeader = personal.querySelector('.pv2-section-header');
+    const personalTitle = personal.querySelector('.pv2-section-title');
+    personalTitle.textContent = 'Личные данные';
+    if (!personal.querySelector('.pv2-section-description')) {
+      let copy = personalTitle.parentElement;
+      if (copy === personalHeader) {
+        copy = node('div');
+        personalHeader.insertBefore(copy, personalTitle);
+        copy.append(personalTitle);
+      }
+      copy.append(node('p', 'Имя и телефон используются в ваших объектах, заявках и кабинете.', 'pv2-section-description'));
+    }
+
+    const professionalFields = ['Агентство', 'Направление', 'Специализация', 'Сертификат аттестации риэлтора'].map(label => findField(grid, label)).filter(Boolean);
+    if (isAgent && professionalFields.length) {
+      const professional = section('Профессиональный профиль', 'Данные, которые помогают клиентам и партнёрам понимать вашу специализацию.');
+      if (editForm) {
+        const edit = node('button', 'Редактировать', 'pv2-btn pv2-btn-secondary');
+        edit.type = 'button';
+        edit.setAttribute('data-pv2-profile-edit', '');
+        edit.setAttribute('aria-expanded', 'false');
+        edit.setAttribute('aria-controls', 'pv2ProfileEdit');
+        professional.header.append(edit);
+      }
+      const professionalGrid = node('div', undefined, 'pv2-data-grid');
+      professionalFields.forEach(field => professionalGrid.append(field));
+      professional.element.append(professionalGrid);
+      personal.after(professional.element);
+    }
+
+    const securityFields = ['Email', 'Telegram'].map(label => findField(grid, label)).filter(Boolean);
+    if (securityFields.length) {
+      const security = section('Безопасность и вход', 'Email меняется только после подтверждения кода; привязка Telegram сохраняет прежнее владение объектами.');
+      const securityGrid = node('div', undefined, 'pv2-data-grid');
+      securityFields.forEach(field => securityGrid.append(field));
+      security.element.append(securityGrid);
+      const emailForm = personal.querySelector('#pv2EmailEdit');
+      if (emailForm) security.element.append(emailForm);
+      (profile.querySelector('.pv2-workspace-section:last-of-type') || personal).after(security.element);
+    }
+  }
+
+  function readinessAction(item, hasTelegramSession, canEditProfile) {
+    if (item.action === 'support' || (item.action === 'profile' && !canEditProfile)) {
+      const link = node('a', item.label);
+      link.href = 'https://t.me/Liberterra_kg_bot?start=support';
+      link.target = '_blank';
+      link.rel = 'noopener';
+      return link;
+    }
+    const button = node('button', item.label);
+    button.type = 'button';
+    if (item.action === 'access' && hasTelegramSession) button.setAttribute('data-link-telegram-account', '');
+    else if (item.action === 'access' && !canEditProfile) {
+      const link = node('a', item.label);
+      link.href = 'https://t.me/Liberterra_kg_bot?start=support';
+      link.target = '_blank';
+      link.rel = 'noopener';
+      return link;
+    }
+    else button.setAttribute('data-pv2-profile-edit', '');
+    return button;
+  }
+
+  function renderReadiness(profile, detail) {
+    profile.querySelector('.pv2-readiness')?.remove();
+    const result = model.profileReadiness(detail.user, detail);
+    const canEditProfile = Boolean(profile.querySelector('#pv2ProfileEdit'));
+    const block = node('section', undefined, 'pv2-readiness');
+    block.setAttribute('aria-labelledby', 'pv2ReadinessTitle');
+    const top = node('div', undefined, 'pv2-readiness-top');
+    const copy = node('div');
+    const title = node('h3', result.percent === 100 ? 'Профиль готов к работе' : 'Готовность профиля', 'pv2-section-title');
+    title.id = 'pv2ReadinessTitle';
+    copy.append(title, node('p', `${result.completed} из ${result.total} обязательных пунктов заполнено`, 'pv2-section-description'));
+    top.append(copy, node('strong', `${result.percent}%`, 'pv2-readiness-value'));
+    const progress = node('progress');
+    progress.max = 100;
+    progress.value = result.percent;
+    progress.setAttribute('aria-label', `Профиль заполнен на ${result.percent}%`);
+    block.append(top, progress);
+    if (result.missing.length) {
+      const actions = node('div', undefined, 'pv2-readiness-actions');
+      result.missing.slice(0, 3).forEach(item => actions.append(readinessAction(item, detail.hasTelegramSession, canEditProfile)));
+      block.append(actions);
+    } else {
+      block.append(node('p', 'Контактные и профессиональные данные заполнены.', 'pv2-readiness-complete'));
+    }
+    profile.querySelector('.pv2-profile-header')?.after(block);
+  }
+
+  function prioritizeActions(profile, isAgent) {
+    if (!isAgent) return;
+    const actions = profile.querySelector('.pv2-quick-actions');
+    const crm = actions?.querySelector('a[href="/agent-cabinet.html"]');
+    if (!actions || !crm) return;
+    actions.querySelector('.primary')?.classList.remove('primary');
+    crm.classList.add('primary');
+    actions.prepend(crm);
+  }
+
+  function render(event) {
+    const detail = event.detail || {};
+    const profile = document.querySelector('#profileCard');
+    if (!profile || !detail.user) return;
+    heading();
+    renderReadiness(profile, detail);
+    prioritizeActions(profile, detail.isAgent);
+    moveProfileSections(profile, detail.isAgent);
+  }
+
+  heading();
+  window.addEventListener('liberterra:profile-data', render);
 })();

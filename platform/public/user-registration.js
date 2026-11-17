@@ -14,10 +14,14 @@
     return next.startsWith("/") && !next.startsWith("//") ? next : "";
   };
 
-  const finishWebLogin = (user) => {
+  const finishWebLogin = (user, newAccount = false) => {
     registered = true;
     currentUser = user || null;
     rememberVerifiedUser(currentUser);
+    if (newAccount) {
+      window.location.assign("/profile.html?onboarding=1");
+      return;
+    }
     const next = safeNextUrl();
     if (next) {
       window.location.assign(next);
@@ -60,7 +64,7 @@
       throw error;
     }
     const controller = new AbortController();
-    const timeoutId = window.setTimeout(() => controller.abort(), 15000);
+    const timeoutId = window.setTimeout(() => controller.abort(), action.endsWith("_start") ? 30000 : 15000);
     let response;
     try {
       response = await fetch(API_URL, {
@@ -99,6 +103,7 @@
       <h2 id="registrationTitle">${registration ? "Создать аккаунт" : setPassword ? "Задать пароль" : claim ? "Перенести профиль агента на сайт" : "Войти в Liberterra"}</h2>
       <p>${escapeHtml(claim ? "Введите телефон из вашей анкеты агента, новый email и пароль. Telegram открывать не нужно." : message)}</p>
       <form data-email-auth-form data-email-mode="${mode}">
+        ${registration ? '<label><span>Кем вы будете пользоваться Liberterra? *</span><select name="registration_role" required><option value="">Выберите роль</option><option value="client">Ищу недвижимость</option><option value="owner">Я собственник</option><option value="agent">Я агент по недвижимости</option></select></label><p class="registration-role-hint">Для агента после подтверждения почты откроется анкета. Доступ к CRM появится после проверки заявки.</p>' : ""}
         ${registration ? '<label><span>Имя и фамилия *</span><input name="full_name" required maxlength="120" autocomplete="name"></label>' : ""}
         ${registration || claim ? '<label><span>Телефон *</span><input name="phone" required maxlength="40" autocomplete="tel" inputmode="tel" placeholder="+996 555 000 000"></label>' : ""}
         <label><span>Email *</span><input name="email" required maxlength="160" autocomplete="email" inputmode="email" placeholder="you@example.com" value="${escapeHtml(emailValue)}"></label>
@@ -117,11 +122,11 @@
       <button class="registration-primary" type="button" data-email-tab="login">Перейти ко входу</button>`;
   }
 
-  function emailCodeFormHtml(email, flow) {
+  function emailCodeFormHtml(email, flow, alreadyRequested = false) {
     return `
       <img class="registration-logo" src="/assets/liberterra-logo-white.png" alt="Liberterra">
       <h2 id="registrationTitle">Введите код</h2>
-      <p>Мы отправили шестизначный код на <strong>${escapeHtml(email)}</strong>. Он действует 10 минут.</p>
+      <p>${alreadyRequested ? `Код уже запрошен для <strong>${escapeHtml(email)}</strong>. Проверьте письмо от первой попытки и введите код ниже. Подтвердится пароль из первой попытки. Если письма нет, запросите новый код через 10 минут.` : `Мы отправили шестизначный код на <strong>${escapeHtml(email)}</strong>. Он действует 10 минут.`}</p>
       <form data-email-code-form data-email="${escapeHtml(email)}" data-email-flow="${escapeHtml(flow)}">
         <label><span>Код из письма *</span><input name="code" required pattern="[0-9]{6}" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="123456"></label>
         <p class="registration-error" data-registration-error role="alert" hidden></p>
@@ -274,14 +279,40 @@
           return;
         }
         const action = mode === "register" ? "password_register_start" : mode === "telegram-link" ? "telegram_password_link_start" : mode === "claim" ? "password_claim_start" : "password_set_start";
-        await request(action, { email, password, full_name: data.get("full_name"), phone: data.get("phone") });
+        await request(action, { email, password, full_name: data.get("full_name"), phone: data.get("phone"), registration_role: data.get("registration_role") });
         emailForm.closest(".registration-card").innerHTML = emailCodeFormHtml(email, mode);
       } catch (error) {
+        if (error.code === "retry_later" && ["register", "set-password", "claim", "telegram-link"].includes(emailForm.dataset.emailMode)) {
+          const email = String(data.get("email") || "").trim().toLowerCase();
+          emailForm.closest(".registration-card").innerHTML = emailCodeFormHtml(email, emailForm.dataset.emailMode, true);
+          return;
+        }
         if (["telegram-link", "claim"].includes(emailForm.dataset.emailMode) && error.code === "email_in_use") {
           emailForm.closest(".registration-card").innerHTML = emailFormHtml("Этот email уже привязан к аккаунту Liberterra. Введите пароль, чтобы войти.", "login", String(data.get("email") || "").trim().toLowerCase());
           return;
         }
-        errorBox.textContent = error.code === "account_exists" ? "Такой аккаунт уже есть. Войдите по email и паролю." : error.code === "email_in_use" ? "Этот email уже привязан к другому аккаунту." : error.code === "agent_not_found" ? "Одобренный профиль с таким телефоном не найден. Проверьте номер или обратитесь к администратору." : error.code === "invalid_credentials" ? "Неверный email или пароль." : error.code === "password_mismatch" ? "Пароли не совпадают." : error.code === "weak_password" ? "Пароль должен содержать минимум 12 символов." : error.code === "retry_later" ? "Попробуйте снова через несколько минут." : "Не удалось выполнить действие. Проверьте данные и попробуйте ещё раз.";
+        const messages = {
+          account_exists: "Такой аккаунт уже есть. Войдите по email и паролю.",
+          email_in_use: "Этот email уже привязан к другому аккаунту.",
+          agent_not_found: "Одобренный профиль с таким телефоном не найден. Проверьте номер или обратитесь к администратору.",
+          invalid_credentials: "Неверный email или пароль.",
+          password_mismatch: "Пароли не совпадают.",
+          weak_password: "Пароль должен содержать минимум 12 символов.",
+          invalid_registration: "Проверьте имя, телефон и email.",
+          invalid_registration_role: "Выберите, как будете пользоваться Liberterra.",
+          email_delivery_failed: "Не удалось отправить письмо с кодом. Попробуйте позже или обратитесь в поддержку.",
+          code_delivery_failed: "Не удалось отправить код в Telegram. Откройте бота Liberterra, нажмите Start и повторите регистрацию.",
+          account_not_found: "Профиль не найден. Обратитесь к администратору.",
+          email_auth_unavailable: "Сервис регистрации временно недоступен. Попробуйте позже.",
+          server_error: "Сервис регистрации временно недоступен. Попробуйте позже.",
+          unauthorized: "Сервис регистрации временно недоступен. Попробуйте позже.",
+          request_timeout: "Сервер не ответил вовремя. Проверьте почту перед повторной попыткой.",
+          request_failed: "Не удалось связаться с сервером. Проверьте соединение и попробуйте снова."
+        };
+        const safeCode = /^[a-z0-9_]{1,40}$/.test(error.code || "") ? error.code : "unknown";
+        errorBox.textContent = messages[error.code]
+          ? `${messages[error.code]}${["email_delivery_failed", "email_auth_unavailable", "server_error", "unauthorized"].includes(safeCode) ? ` Код: ${safeCode}.` : ""}`
+          : `Не удалось создать аккаунт. Код ошибки: ${safeCode}.`;
         errorBox.hidden = false;
       } finally { button.disabled = false; }
       return;
@@ -299,7 +330,7 @@
           codeForm.closest(".registration-card").innerHTML = claimPendingHtml();
           return;
         }
-        finishWebLogin(result.user);
+        finishWebLogin(result.user, codeForm.dataset.emailFlow === "register");
         window.dispatchEvent(new CustomEvent("liberterra:user-registered"));
       } catch (error) {
         errorBox.textContent = error.code === "code_expired" ? "Срок кода истёк. Запросите новый." : "Неверный код. Проверьте письмо и попробуйте ещё раз.";

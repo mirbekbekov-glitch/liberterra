@@ -4,8 +4,8 @@
   const root = document.querySelector("#agentCabinet");
   if (!root) return;
 
-  const toolbarControls = document.querySelector(".crm-toolbar-controls") || document.querySelector(".crm-header-inner");
-  if (toolbarControls && !toolbarControls.querySelector(".crm-theme-toggle")) {
+  const headerRow = document.querySelector(".crm-header-inner");
+  if (headerRow && !headerRow.querySelector(".crm-theme-toggle")) {
     const themeButton = document.createElement("button");
     themeButton.type = "button";
     themeButton.className = "v20-theme-toggle crm-theme-toggle";
@@ -15,15 +15,15 @@
       ? savedTheme : (window.matchMedia?.("(prefers-color-scheme: dark)").matches ? "dark" : "light");
     const applyTheme = () => {
       document.body.dataset.publicTheme = theme;
-      themeButton.textContent = theme === "dark" ? "☀ Светлая" : "☾ Тёмная";
-      themeButton.setAttribute("aria-label", theme === "dark" ? "Переключить на светлую тему" : "Переключить на тёмную тему");
+      themeButton.textContent = theme === "dark" ? "Светлая тема" : "Тёмная тема";
+      themeButton.setAttribute("aria-label", themeButton.textContent);
     };
     themeButton.addEventListener("click", () => {
       theme = theme === "dark" ? "light" : "dark";
       try { localStorage.setItem("v20-public-theme", theme); } catch (_) {}
       applyTheme();
     });
-    toolbarControls.append(themeButton);
+    headerRow.querySelector(".crm-catalog-link")?.before(themeButton);
     applyTheme();
   }
 
@@ -120,7 +120,7 @@
     const currentStatus = statusKey(item.status);
     const actualAt = item.actuality_at || item.updated_at;
     const photos = photoCandidates(item.photo_url);
-    const facts = [text(item.deal), text(item.area) && `Площадь: ${text(item.area)}${/[ммm]/i.test(text(item.area)) ? "" : " м²"}`, text(item.rooms) && `Комнат: ${text(item.rooms)}`, text(item.floor) && `Этаж: ${text(item.floor)}`].filter(Boolean);
+    const facts = [text(item.deal), text(item.area) && `Площадь: ${text(item.area)}${/[мm]/i.test(text(item.area)) ? "" : " м²"}`, text(item.rooms) && `Комнат: ${text(item.rooms)}`, text(item.floor) && `Этаж: ${String(text(item.floor)).replace(/ этаж$/i, "")}`].filter(Boolean);
     return `
       <article class="crm-object-card" data-crm-object-id="${escapeHtml(item.id)}">
         <a class="crm-object-photo-link" href="/object.html?id=${encodeURIComponent(item.id)}" aria-label="Открыть ${escapeHtml(objectLabel(item))}">
@@ -129,7 +129,7 @@
         <div class="crm-object-copy">
           <div class="crm-object-topline">
             <span class="crm-status crm-status-${currentStatus}">${escapeHtml(statusLabel(item.status))}</span>
-            <span class="crm-review-badge">${isTrue(item.verified) ? "Проверен" : "На модерации"}</span>
+            ${isTrue(item.verified) ? "<span class='crm-review-badge'>Проверен</span>" : ""}
           </div>
           <h3><a href="/object.html?id=${encodeURIComponent(item.id)}">${escapeHtml(objectLabel(item))}</a></h3>
           <p class="crm-object-location">${escapeHtml(item.district || "Район не указан")}</p>
@@ -139,7 +139,6 @@
           <p class="crm-actuality">Актуально на ${escapeHtml(formatDate(actualAt))}</p>
           <div class="crm-object-actions">
             <button class="crm-text-button" type="button" data-crm-workflow-action="selection" data-object-id="${escapeHtml(item.id)}">В подборку</button>
-            <button class="crm-text-button" type="button" data-crm-workflow-action="task" data-object-id="${escapeHtml(item.id)}">Создать задачу</button>
             <button class="crm-text-button" type="button" data-crm-action="price" data-object-id="${escapeHtml(item.id)}">Изменить цену</button>
             <button class="crm-text-button" type="button" data-crm-action="edit" data-object-id="${escapeHtml(item.id)}">Редактировать</button>
             <label class="crm-status-control">
@@ -219,17 +218,8 @@
   function render() {
     const dashboard = state.dashboard;
     if (!dashboard) return;
-    const heading = root.querySelector(".crm-page-heading");
-    heading.querySelector("h1").textContent = dashboard.agent.name;
     root.querySelector("[data-crm-agent-summary]").textContent =
-      `Агент · ${specializationLabel(dashboard.agent.specialization)}`;
-    if (!heading.querySelector(".crm-edit-profile-link")) {
-      const editLink = document.createElement("a");
-      editLink.className = "crm-edit-profile-link";
-      editLink.href = "/profile.html";
-      editLink.innerHTML = '<svg width="16" height="16" fill="none" viewBox="0 0 18 18"><path d="M13.5 2.5l2 2L6 14H4v-2l9.5-9.5z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg> Редактировать профиль';
-      heading.querySelector("div").append(editLink);
-    }
+      `${dashboard.agent.name} · ${specializationLabel(dashboard.agent.specialization)}`;
     const publicLink = root.querySelector("[data-crm-public-link]");
     if (dashboard.agent.public_ref) {
       publicLink.href = `/agent-public.html?agent=${encodeURIComponent(dashboard.agent.public_ref)}`;
@@ -258,13 +248,19 @@
     loading.hidden = false;
     loading.classList.remove("is-error");
     loading.textContent = "Проверяем доступ агента...";
+    var cacheKey = "lt-dashboard-cache-v1";
+    var cached = null;
+    try { var rawCache = JSON.parse(localStorage.getItem(cacheKey) || "null"); if (rawCache && Date.now() - rawCache.t < 86400000) cached = rawCache.v; } catch (e) {}
+    if (cached) { state.dashboard = cached; render(); loading.hidden = true; content.hidden = false; }
     try {
       state.dashboard = await window.LiberterraAgentAccess.request("get_agent_dashboard");
+      try { localStorage.setItem(cacheKey, JSON.stringify({ t: Date.now(), v: state.dashboard })); } catch (e) {}
       render();
       loading.hidden = true;
       content.hidden = false;
       loadPrivateAccess();
     } catch (error) {
+      if (cached) return;
       content.hidden = true;
       loading.hidden = false;
       loading.classList.add("is-error");

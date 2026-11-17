@@ -8,7 +8,7 @@
   const MAX_DOCUMENT_PHOTO_SIZE = 3 * 1024 * 1024;
   const ASSET_VERSION = "20260908-agents-mobile-entry-1";
   const MAIN_STYLESHEET_URL = `${SITE_ORIGIN}/style.css?v=${ASSET_VERSION}`;
-  const FONT_STYLESHEET_URL = "https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600&family=Manrope:wght@700;800&display=swap";
+  const FONT_STYLESHEET_URL = "https://fonts.googleapis.com/css2?family=Geologica:wght@300..800&display=swap";
 
   const telegram = window.Telegram?.WebApp || null;
   const TELEGRAM_SESSION_KEY = "liberterra-telegram-session-v1";
@@ -89,8 +89,8 @@
     }
 
     const hasBrandFonts = stylesheetLinks.some((link) => link.href.includes("fonts.googleapis.com")
-      && link.href.includes("Golos")
-      && link.href.includes("Manrope"));
+      && link.href.includes("Geologica")
+      && link.href.includes("Geologica"));
     if (!hasBrandFonts) {
       const fonts = document.createElement("link");
       fonts.rel = "stylesheet";
@@ -1300,6 +1300,7 @@
         });
         const result = await response.json().catch(() => ({}));
         state.isWebSession = Boolean(response.ok && result?.registered);
+        state.webViewer = String(result?.user?.email || "").trim().toLowerCase();
         if (state.isWebSession) {
           webSessionRetryCount = 0;
           window.dispatchEvent(new CustomEvent("liberterra:user-registered", { detail: result }));
@@ -1409,4 +1410,18 @@
   } else {
     init();
   }
+})();
+
+
+(function () {
+  "use strict";
+  function hideExtraTabs() {
+    if (document.getElementById("crm-short-tabs")) return;
+    var style = document.createElement("style");
+    style.id = "crm-short-tabs";
+    style.textContent = "body.agent-crm-page .crm-tabs [data-crm-tab=owners],body.agent-crm-page .crm-tabs [data-crm-tab=clients],body.agent-crm-page .crm-tabs [data-crm-tab=deals],body.agent-crm-page .crm-tabs [data-crm-tab=selections],body.agent-crm-page .crm-tabs [data-crm-tab=calendar],body.agent-crm-page .crm-tabs [data-crm-tab=tasks],body.agent-crm-page .crm-tabs [data-crm-tab=messages],body.agent-crm-page .crm-tabs [data-crm-tab=notes],body.agent-crm-page .crm-tabs [data-crm-tab=private-access]{display:none!important}body.agent-crm-page :is(button,input,select,textarea){font-family:inherit!important}";
+    (document.head || document.documentElement).append(style);
+  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", hideExtraTabs, { once: true });
+  else hideExtraTabs();
 })();

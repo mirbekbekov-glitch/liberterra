@@ -1,4 +1,4 @@
-document.addEventListener('click',event=>{if(event.target.closest('#placementManualChoice,#lalafoImportButton')){const form=document.getElementById('objectSubmissionForm');if(form)form.hidden=false}},true);
+document.addEventListener('click',event=>{if(event.target.closest('#placementManualChoice,#lalafoImportButton')){const form=document.getElementById('objectSubmissionForm');if(form){form.hidden=false;requestAnimationFrame(()=>window.dispatchEvent(new Event('resize')))}}},true);
 
 /* Carry an explicit owner intent into the existing form once, without submitting it. */
 (()=>{const intent=new URLSearchParams(location.search).get('intent');

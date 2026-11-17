@@ -94,3 +94,50 @@
 @media (prefers-reduced-motion: reduce) {
   .agent-directory-page .agent-directory-card { transition: none; }
 }
+
+/* Bring visible legacy accents into the current Liberterra palette. */
+body.public-v20 {
+  --lt-brand-blue: #1466ff;
+  --lt-brand-blue-dark: #0952cf;
+  --lt-brand-blue-soft: #eef5ff;
+  --lt-brand-blue-line: #dbe7f5;
+  --lt-brand-ink: #0b2d5c;
+  --lt-brand-muted: #526985;
+}
+
+body.agent-directory-page .agent-directory-avatar {
+  background: var(--lt-brand-blue-soft);
+  color: var(--lt-brand-ink);
+}
+body.agent-directory-page .agent-directory-badge {
+  color: var(--lt-brand-muted);
+}
+body.agent-directory-page .agent-directory-card:hover,
+body.agent-directory-page .agent-directory-card:focus-within {
+  border-color: var(--lt-brand-blue-line);
+  box-shadow: 0 6px 24px rgba(11, 45, 92, .08);
+}
+body.agent-directory-page .agent-directory-contact {
+  background: #dff3fc;
+  color: #065c83;
+}
+body.agent-directory-page :is(a, button, input, select):focus-visible {
+  outline: 3px solid var(--lt-brand-blue);
+  outline-offset: 3px;
+}
+
+body.object-map-page .object-map-title span,
+body.object-map-page .object-map-card strong,
+body.object-map-page .object-map-empty a,
+body.object-map-page .object-map-popup .leaflet-popup-content a {
+  color: var(--lt-brand-blue);
+}
+body.object-map-page .object-price-marker span {
+  background: var(--lt-brand-blue);
+  box-shadow: 0 6px 16px rgba(11, 45, 92, .24);
+}
+
+body.submission-page .submission-eyebrow {
+  background: var(--lt-brand-blue-soft);
+  color: var(--lt-brand-ink);
+}

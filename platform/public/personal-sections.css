@@ -1,8 +1,8 @@
 /* Shared profile-V2 treatment for the owner's requests and local viewing history. */
-body.v20.personal-section-page { background: var(--v20-paper, #f8f5ef); }
+body.v20.personal-section-page { background: var(--v20-paper, #F5F7FA); }
 .personal-section-page [hidden] { display: none !important; }
 .personal-section-page .profile-v2-layout { max-width: none; }
-.personal-section-page .profile-v2-sidebar { background: var(--v20-paper, #f8f5ef); }
+.personal-section-page .profile-v2-sidebar { background: var(--v20-paper, #F5F7FA); }
 body.v20.profile-page.personal-section-page main.profile-v2-main {
   box-sizing: border-box; flex: 1; width: auto; max-width: none; margin: 0;
   padding: 28px clamp(20px, 3vw, 48px) 72px;
@@ -12,14 +12,14 @@ body.v20.profile-page.personal-section-page main.profile-v2-main {
 .personal-section-page .personal-section-heading { display: flex; align-items: end; justify-content: space-between; gap: 20px; margin: 20px 0 28px; }
 .personal-section-page .personal-section-eyebrow { margin: 18px 0 10px; color: var(--v20-muted, #817976); font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
 .personal-section-page .personal-section-heading h1,
-.personal-section-page .personal-viewing-history h1 { margin: 0; color: var(--v20-text, #272326); font: 700 clamp(30px, 3vw, 42px)/1.2 Manrope, Arial, sans-serif; }
+.personal-section-page .personal-viewing-history h1 { margin: 0; color: var(--v20-text, #272326); font: 700 clamp(30px, 3vw, 42px)/1.2 Onest, Arial, sans-serif; }
 .personal-section-page .personal-section-heading p:last-child { max-width: 780px; margin: 10px 0 0; color: var(--v20-muted, #817976); font-size: 14px; line-height: 1.55; }
 .personal-section-page .personal-section-add { display: inline-flex; align-items: center; justify-content: center; flex: 0 0 auto; min-height: 44px; padding: 10px 18px; border-radius: 10px; background: var(--v20-accent, #7b233f); color: #fff; font-size: 13px; font-weight: 700; text-decoration: none; }
 .personal-section-page .personal-section-add:hover { color: #fff; background: #61182f; }
 .personal-section-page #myRequests.grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; gap: 16px; margin: 0; }
 .personal-section-page #myRequests .card { min-width: 0; margin: 0; border: 1px solid var(--v20-line, #e9e1da); border-radius: 14px; background: var(--v20-surface, #fff); box-shadow: none; }
 .personal-section-page #myRequests .card-body { display: grid; gap: 12px; padding: 22px; }
-.personal-section-page #myRequests .card h2 { margin: 0; color: var(--v20-text, #272326); font: 700 20px/1.3 Manrope, Arial, sans-serif; }
+.personal-section-page #myRequests .card h2 { margin: 0; color: var(--v20-text, #272326); font: 700 20px/1.3 Onest, Arial, sans-serif; }
 .personal-section-page #myRequests .card p { margin: 0; color: var(--v20-muted, #817976); font-size: 14px; }
 .personal-section-page #myRequests .request-owner-meta { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; color: var(--v20-muted, #817976); font-size: 12px; }
 .personal-section-page #myRequests .card-status { padding: 5px 9px; border-radius: 6px; background: #f6e9ee; color: var(--v20-accent, #7b233f); font-weight: 700; }

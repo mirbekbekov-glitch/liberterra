@@ -8,7 +8,7 @@
   const MAX_DOCUMENT_PHOTO_SIZE = 3 * 1024 * 1024;
   const ASSET_VERSION = "20260908-agents-mobile-entry-1";
   const MAIN_STYLESHEET_URL = `${SITE_ORIGIN}/style.css?v=${ASSET_VERSION}`;
-  const FONT_STYLESHEET_URL = "https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600&family=Manrope:wght@700;800&display=swap";
+  const FONT_STYLESHEET_URL = "https://fonts.googleapis.com/css2?family=Geologica:wght@300..800&display=swap";
 
   const telegram = window.Telegram?.WebApp || null;
   const TELEGRAM_SESSION_KEY = "liberterra-telegram-session-v1";
@@ -88,8 +88,8 @@
     }
 
     const hasBrandFonts = stylesheetLinks.some((link) => link.href.includes("fonts.googleapis.com")
-      && link.href.includes("Golos")
-      && link.href.includes("Manrope"));
+      && link.href.includes("Geologica")
+      && link.href.includes("Geologica"));
     if (!hasBrandFonts) {
       const fonts = document.createElement("link");
       fonts.rel = "stylesheet";
@@ -189,6 +189,14 @@
       otherAgentObjectIds: Array.isArray(value?.other_agent_object_ids)
         ? value.other_agent_object_ids.map(normalize).filter(Boolean)
         : [],
+      coopOffers: Array.isArray(value?.coop_offers)
+        ? value.coop_offers.reduce((map, item) => {
+            const offerId = normalize(item?.id);
+            const share = coopPercent(item?.share);
+            if (offerId && share) map[offerId] = { id: offerId, share, total: coopPercent(item?.total) };
+            return map;
+          }, {})
+        : {},
       verifiedContractObjectIds: Array.isArray(value?.verified_contract_object_ids)
         ? value.verified_contract_object_ids.map(normalize).filter(Boolean)
         : [],
@@ -313,6 +321,11 @@
       listingAgentAmount,
       totalCommission,
     };
+  }
+
+  function coopPercent(value) {
+    const amount = Number(String(value == null ? "" : value).trim().replace(",", "."));
+    return Number.isFinite(amount) && amount > 0 && amount <= 100 ? amount : 0;
   }
 
   function isOtherAgentObject(item) {
@@ -1299,9 +1312,36 @@
         });
         const result = await response.json().catch(() => ({}));
         state.isWebSession = Boolean(response.ok && result?.registered);
+        state.webViewer = String(result?.user?.email || "").trim().toLowerCase();
         if (state.isWebSession) window.dispatchEvent(new CustomEvent("liberterra:user-registered", { detail: result }));
       } catch (_error) {
         state.isWebSession = false;
+      }
+      if (state.isWebSession) {
+        const roleKey = "lt-agent-role-v1";
+        const applyAgent = (payload) => {
+          if (!payload || payload.ok === false || !payload.role) return false;
+          setRole(payload.role, payload.agent_access, { specializationRequired: payload.specialization_required === true });
+          return true;
+        };
+        try {
+          const saved = JSON.parse(window.sessionStorage.getItem(roleKey) || "null");
+          if (saved && state.webViewer && saved.viewer === state.webViewer && Date.now() - Number(saved.savedAt) < 300000) applyAgent(saved.payload);
+        } catch (_error) {
+          // A missing or unreadable store simply means no remembered role.
+        }
+        try {
+          const agent = await authenticatedRequest("check_agent_web");
+          if (applyAgent(agent)) {
+            try {
+              if (state.webViewer) window.sessionStorage.setItem(roleKey, JSON.stringify({ savedAt: Date.now(), viewer: state.webViewer, payload: agent }));
+            } catch (_error) {
+              // Storage may be full or blocked; the role still applies for this page.
+            }
+          }
+        } catch (_error) {
+          // The browser session keeps whatever role it already has.
+        }
       }
       return;
     }
@@ -1384,6 +1424,7 @@
     isApproved: () => state.role === "approved",
     hasAgentAccess: () => state.role === "approved" && Boolean(state.access) && agentTermsAccepted(),
     commissionFor: (item) => state.role === "approved" && state.access && agentTermsAccepted() ? calculateCommission(item) : null,
+    coopOffers: () => (state.access && state.access.coopOffers) || null,
     commissionBadgeHtml,
     hasVerifiedContract,
     contractVerifiedBadgeHtml,
@@ -1398,4 +1439,66 @@
   } else {
     init();
   }
+})();
+
+
+(function () {
+  "use strict";
+  var pending = false;
+  function offers() {
+    var api = window.LiberterraAgentAccess;
+    if (!api || typeof api.coopOffers !== "function") return null;
+    return api.coopOffers();
+  }
+  function percent(value) {
+    return String(Math.round(value * 10) / 10).replace(".", ",");
+  }
+  function objectId(card) {
+    var match = /[?&]id=([^&]+)/.exec(card.getAttribute("data-object-url") || "");
+    if (!match) return "";
+    try { return decodeURIComponent(match[1]); } catch (error) { return match[1]; }
+  }
+  function ensureStyle() {
+    if (document.getElementById("coop-share-style")) return;
+    var style = document.createElement("style");
+    style.id = "coop-share-style";
+    style.textContent = ".v20-tags .coop-share-tag{display:inline-flex;align-items:center;padding:2px 10px;border-radius:999px;font-weight:700;background:rgba(190,44,40,0.12);color:#BE2C28}";
+    (document.head || document.documentElement).append(style);
+  }
+  function chip(offer) {
+    var node = document.createElement("span");
+    node.className = "coop-share-tag";
+    node.textContent = "Агенту " + percent(offer.share) + "%";
+    node.title = "Доля комиссии за приведённого клиента. Видно только агентам.";
+    return node;
+  }
+  function decorate() {
+    var map = offers();
+    if (!map) return;
+    document.querySelectorAll("article.v20-card[data-object-url]").forEach(function (card) {
+      var tags = card.querySelector(".v20-tags");
+      if (!tags || tags.querySelector(".coop-share-tag")) return;
+      var offer = map[objectId(card)];
+      if (offer) tags.append(chip(offer));
+    });
+  }
+  function schedule() {
+    if (pending) return;
+    pending = true;
+    window.setTimeout(function () { pending = false; decorate(); }, 120);
+  }
+  function start() {
+    ensureStyle();
+    schedule();
+    window.addEventListener("liberterra:agent-role", schedule);
+    if (document.body) new MutationObserver(schedule).observe(document.body, { childList: true, subtree: true });
+    var tries = 0;
+    var timer = window.setInterval(function () {
+      tries += 1;
+      if (offers() || tries > 20) window.clearInterval(timer);
+      schedule();
+    }, 1000);
+  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", start, { once: true });
+  else start();
 })();

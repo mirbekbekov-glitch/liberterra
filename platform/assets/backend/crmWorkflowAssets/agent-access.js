@@ -8,7 +8,7 @@
   const MAX_DOCUMENT_PHOTO_SIZE = 3 * 1024 * 1024;
   const ASSET_VERSION = "20260908-agents-mobile-entry-1";
   const MAIN_STYLESHEET_URL = `${SITE_ORIGIN}/style.css?v=${ASSET_VERSION}`;
-  const FONT_STYLESHEET_URL = "https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600&family=Manrope:wght@700;800&display=swap";
+  const FONT_STYLESHEET_URL = "https://fonts.googleapis.com/css2?family=Geologica:wght@300..800&display=swap";
 
   const telegram = window.Telegram?.WebApp || null;
   const TELEGRAM_SESSION_KEY = "liberterra-telegram-session-v1";
@@ -88,8 +88,8 @@
     }
 
     const hasBrandFonts = stylesheetLinks.some((link) => link.href.includes("fonts.googleapis.com")
-      && link.href.includes("Golos")
-      && link.href.includes("Manrope"));
+      && link.href.includes("Geologica")
+      && link.href.includes("Geologica"));
     if (!hasBrandFonts) {
       const fonts = document.createElement("link");
       fonts.rel = "stylesheet";
@@ -574,7 +574,7 @@
   }
 
   async function authenticatedRequest(action, data = {}) {
-    if (["list_crm_workflow", "save_crm_record", "list_agent_tasks", "save_agent_task"].includes(action)) {
+    if (["list_crm_workflow", "save_crm_record", "list_agent_tasks", "save_agent_task", "get_team_first_response"].includes(action)) {
       const response = await fetch("/api/crm-action", {
         method: "POST", credentials: "same-origin", headers: { "Content-Type": "application/json" }, cache: "no-store",
         body: JSON.stringify({ ...data, action, ...(isTelegramSession ? { init_data: initData } : {}) }),
@@ -1314,9 +1314,36 @@
         });
         const result = await response.json().catch(() => ({}));
         state.isWebSession = Boolean(response.ok && result?.registered);
+        state.webViewer = String(result?.user?.email || "").trim().toLowerCase();
         if (state.isWebSession) window.dispatchEvent(new CustomEvent("liberterra:user-registered", { detail: result }));
       } catch (_error) {
         state.isWebSession = false;
+      }
+      if (state.isWebSession) {
+        const roleKey = "lt-agent-role-v1";
+        const applyAgent = (payload) => {
+          if (!payload || payload.ok === false || !payload.role) return false;
+          setRole(payload.role, payload.agent_access, { specializationRequired: payload.specialization_required === true });
+          return true;
+        };
+        try {
+          const saved = JSON.parse(window.sessionStorage.getItem(roleKey) || "null");
+          if (saved && state.webViewer && saved.viewer === state.webViewer && Date.now() - Number(saved.savedAt) < 300000) applyAgent(saved.payload);
+        } catch (_error) {
+          // A missing or unreadable store simply means no remembered role.
+        }
+        try {
+          const agent = await authenticatedRequest("check_agent_web");
+          if (applyAgent(agent)) {
+            try {
+              if (state.webViewer) window.sessionStorage.setItem(roleKey, JSON.stringify({ savedAt: Date.now(), viewer: state.webViewer, payload: agent }));
+            } catch (_error) {
+              // Storage may be full or blocked; the role still applies for this page.
+            }
+          }
+        } catch (_error) {
+          // The browser session keeps whatever role it already has.
+        }
       }
       return;
     }
@@ -1413,4 +1440,18 @@
   } else {
     init();
   }
+})();
+
+
+(function () {
+  "use strict";
+  function hideExtraTabs() {
+    if (document.getElementById("crm-short-tabs")) return;
+    var style = document.createElement("style");
+    style.id = "crm-short-tabs";
+    style.textContent = "body.agent-crm-page .crm-tabs [data-crm-tab=owners],body.agent-crm-page .crm-tabs [data-crm-tab=clients],body.agent-crm-page .crm-tabs [data-crm-tab=deals],body.agent-crm-page .crm-tabs [data-crm-tab=selections],body.agent-crm-page .crm-tabs [data-crm-tab=calendar],body.agent-crm-page .crm-tabs [data-crm-tab=tasks],body.agent-crm-page .crm-tabs [data-crm-tab=messages],body.agent-crm-page .crm-tabs [data-crm-tab=notes],body.agent-crm-page .crm-tabs [data-crm-tab=private-access]{display:none!important}body.agent-crm-page :is(button,input,select,textarea){font-family:inherit!important}";
+    (document.head || document.documentElement).append(style);
+  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", hideExtraTabs, { once: true });
+  else hideExtraTabs();
 })();

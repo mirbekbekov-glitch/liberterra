@@ -885,7 +885,9 @@ function setObjects(rows, showMissing = true) {
   const item = items.find((entry) => entry.id === id);
   if (!item) {
     if (showMissing) {
-      objectPage.innerHTML = stateHtml("Объект не найден", "Он мог быть снят с публикации или ссылка устарела.");
+      objectPage.innerHTML = new URLSearchParams(location.search).get("source") === "my-listings"
+        ? stateHtml("Объявление ещё не опубликовано", "Оно на проверке у модератора или снято с публикации. Вам как владельцу оно доступно в рабочей зоне ниже.")
+        : stateHtml("Объект не найден", "Он мог быть снят с публикации или ссылка устарела.");
     }
     return false;
   }
@@ -1080,3 +1082,34 @@ window.addEventListener("focus", revalidateVisibleObject);
 document.addEventListener("visibilitychange", () => {
   if (!document.hidden) revalidateVisibleObject();
 });
+
+/* Consented private object inquiry. */
+(() => {
+  'use strict';
+  const page=document.querySelector('#objectPage');if(!page)return;
+  const el=(tag,text)=>{const node=document.createElement(tag);if(text!==undefined)node.textContent=text;return node;};
+  function mount(objectId){
+    page.querySelector('[data-object-inquiry]')?.remove();
+    const section=el('section');section.className='viewing-panel';section.dataset.objectInquiry='';
+    section.append(el('h2','Оставить обращение по этому объекту'),el('p','Заявка попадёт профильным агентам Liberterra. Для отправки нужен зарегистрированный аккаунт.'));
+    const form=el('form'),name=el('input'),phone=el('input'),note=el('textarea'),consent=el('input'),status=el('p');
+    name.name='name';name.required=true;name.maxLength=120;name.autocomplete='name';
+    phone.name='phone';phone.type='tel';phone.required=true;phone.maxLength=40;phone.autocomplete='tel';
+    note.name='note';note.maxLength=1000;note.rows=3;
+    const label=(title,field)=>{const node=el('label');node.append(el('span',title),field);return node;};
+    form.append(label('Ваше имя',name),label('Телефон',phone),label('Сообщение агенту',note));
+    consent.type='checkbox';consent.required=true;const consentLabel=el('label');consentLabel.className='viewing-consent';consentLabel.append(consent,el('span','Согласен передать имя, телефон и сообщение профильным агентам Liberterra для связи по этому объекту. Контакт не публикуется в каталоге.'));form.append(consentLabel);
+    const submit=el('button','Отправить обращение');submit.type='submit';status.setAttribute('role','status');form.append(submit,status);section.append(form);page.append(section);
+    const id=crypto.randomUUID();form.addEventListener('submit',async event=>{
+      event.preventDefault();if(!form.reportValidity())return;submit.disabled=true;status.textContent='Отправляем…';
+      const payload={action:'create_service_request',id,data:{kind:'object_inquiry',object_id:String(objectId),name:name.value.trim(),phone:phone.value.trim(),note:note.value.trim(),consent:consent.checked}};
+      const initData=window.Telegram?.WebApp?.initData;if(initData)payload.init_data=initData;
+      try{const response=await fetch('/api/service-requests',{method:'POST',credentials:'same-origin',headers:{'content-type':'application/json'},body:JSON.stringify(payload)});const result=await response.json();
+        if(!response.ok||result.ok!==true){if(result.error==='registration_required'){status.replaceChildren(el('span','Для отправки войдите в аккаунт. '));const link=el('a','Войти');link.href='/login.html';status.append(link);}else status.textContent='Не удалось отправить обращение. Проверьте данные и повторите попытку.';return;}
+        form.replaceChildren(el('p','Обращение отправлено профильным агентам. Они свяжутся с вами по указанному номеру.'));
+      }catch(_){status.textContent='Связь прервалась. Повторите отправку: повтор не создаст вторую заявку.';}
+      finally{submit.disabled=false;}
+    });
+  }
+  window.addEventListener('liberterra:object-rendered',event=>{if(event.detail?.objectId&&!event.detail.isRequest)mount(event.detail.objectId);});
+})();

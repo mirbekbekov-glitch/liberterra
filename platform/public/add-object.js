@@ -3,6 +3,7 @@ let submissionAttemptId = crypto.randomUUID();
 const submissionPhotos = document.querySelector("#submissionPhotos");
 const submissionPhotoPreview = document.querySelector("#submissionPhotoPreview");
 const submissionPhotoLabel = document.querySelector("#submissionPhotoLabel");
+const submissionPhotoStatus = document.querySelector("#submissionPhotoStatus");
 const submissionResult = document.querySelector("#submissionResult");
 const submissionPosterType = document.querySelector("#submissionPosterType");
 const submissionContractField = document.querySelector("#submissionContractField");
@@ -71,6 +72,58 @@ function updateContractQuestion() {
 submissionPosterType.addEventListener("change", updateContractQuestion);
 updateContractQuestion();
 
+const coopBlock = document.querySelector("#coopBlock");
+const coopEnabled = document.querySelector("#coopEnabled");
+const coopFields = document.querySelector("#coopFields");
+const coopTotalInput = document.querySelector("#coopTotal");
+const coopShareInput = document.querySelector("#coopShare");
+const coopHint = document.querySelector("#coopHint");
+const coopForm = document.querySelector("#objectSubmissionForm");
+function coopNumber(value) {
+  const text = String(value || "").trim().replace(",", ".");
+  if (!text) return NaN;
+  const amount = Number(text);
+  return Number.isFinite(amount) ? amount : NaN;
+}
+function coopProblem() {
+  if (coopBlock.hidden || !coopEnabled.checked) return "";
+  const total = coopNumber(coopTotalInput.value);
+  const share = coopNumber(coopShareInput.value);
+  if (coopTotalInput.value.trim() && !(total > 0 && total <= 100)) return "Комиссия должна быть от 0 до 100%";
+  if (coopShareInput.value.trim() && !(share > 0 && share <= 100)) return "Доля партнёра должна быть от 0 до 100%";
+  if (total > 0 && share > 0 && share > total) return "Доля партнёра не может быть больше вашей комиссии";
+  if (!coopTotalInput.value.trim() || !coopShareInput.value.trim()) return "Укажите свою комиссию и долю партнёра";
+  return "";
+}
+function updateCoop() {
+  const isAgent = submissionPosterType.value === "Агент";
+  coopBlock.hidden = !isAgent;
+  if (!isAgent) coopEnabled.checked = false;
+  const active = coopEnabled.checked;
+  coopFields.hidden = !active;
+  if (!active) {
+    coopTotalInput.value = "";
+    coopShareInput.value = "";
+  }
+  const problem = coopProblem();
+  coopHint.textContent = problem;
+  coopHint.hidden = !problem;
+}
+coopEnabled.addEventListener("change", updateCoop);
+coopTotalInput.addEventListener("input", updateCoop);
+coopShareInput.addEventListener("input", updateCoop);
+submissionPosterType.addEventListener("change", updateCoop);
+document.addEventListener("submit", function (event) {
+  if (event.target !== coopForm) return;
+  updateCoop();
+  if (!coopProblem()) return;
+  event.preventDefault();
+  event.stopPropagation();
+  coopHint.hidden = false;
+  coopShareInput.focus();
+}, true);
+updateCoop();
+
 async function loadAdminAgentOptions() {
   const telegram = window.Telegram?.WebApp;
   if (!telegram?.initData || !adminAttributionField || !adminListingAgent) return;
@@ -128,6 +181,7 @@ function renderPhotos() {
   submissionPhotoPreview.replaceChildren();
   const total = totalPhotoCount();
   submissionPhotoLabel.textContent = total ? `${total} из 5 выбрано` : "Файлы не выбраны";
+  if (submissionPhotoStatus) submissionPhotoStatus.hidden = total > 0;
   if (total > 5) {
     submissionResult.textContent = "Можно загрузить не больше 5 фотографий.";
     submissionResult.hidden = false;
@@ -280,21 +334,27 @@ submissionForm.addEventListener("submit", async (event) => {
     return;
   }
   const files = selectedPhotos();
-  if (!totalPhotoCount() || totalPhotoCount() > 5 || files.some((file) => file.size > 8 * 1024 * 1024)) {
-    submissionResult.textContent = "Проверьте фотографии: нужно 1–5 файлов, каждый не более 8 МБ.";
+  if (!totalPhotoCount() || totalPhotoCount() > 5 || files.some((file) => file.size > 24 * 1024 * 1024)) {
+    submissionResult.textContent = "Проверьте фотографии: нужно 1–5 файлов, исходный файл не более 24 МБ.";
     submissionResult.hidden = false;
     return;
   }
   const button = submissionForm.querySelector('[type="submit"]');
   button.disabled = true;
-  button.textContent = "Отправляем…";
+  button.textContent = "Подготавливаем фото…";
   submissionResult.hidden = true;
   try {
+    const { prepareListingPhoto } = await import("/listing-photo-resize.js");
+    const preparedPhotos = [];
+    for (const file of files) preparedPhotos.push(await prepareListingPhoto(file));
     const formData = new FormData(submissionForm);
+    formData.delete("photos");
+    preparedPhotos.forEach((file) => formData.append("photos", file, file.name));
     formData.set("submission_id", submissionAttemptId);
     importedPhotos.forEach((url) => formData.append("import_photo_url", url));
     const telegram = window.Telegram?.WebApp;
     if (telegram?.initData) formData.set("telegram_init_data", telegram.initData);
+    button.textContent = "Отправляем…";
     const response = await fetch("/api/submissions", {
       method: "POST",
       credentials: "same-origin",
@@ -321,6 +381,9 @@ submissionForm.addEventListener("submit", async (event) => {
   } catch (error) {
     submissionResult.classList.remove("is-success");
     const messages = {
+      invalid_photo: "Выберите фото в формате JPEG, PNG или WebP.",
+      photo_too_large: "Не удалось уменьшить фото до 8 МБ. Выберите другой файл.",
+      photo_processing_failed: "Не удалось подготовить фото. Выберите другой файл.",
       registration_required: "Войдите в аккаунт Liberterra и повторите отправку. Данные формы не удалены.",
       web_agent_attribution_unavailable: "Для этой отправки выберите размещение от своего имени. Передача объявления другому агенту пока недоступна.",
       submission_busy: "Другая отправка ещё обрабатывается. Подождите немного и повторите попытку — повторная заявка не будет создана.",

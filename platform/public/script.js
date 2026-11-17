@@ -1,3 +1,208 @@
+if(!window.LiberterraListingFormat){
+(() => {
+  "use strict";
+  const text = value => String(value ?? "").trim();
+
+  // Presentation only. Never infer a different currency, amount or price period.
+  function price(value) {
+    return text(value).replace(/(^|\s)(сом|USD|KGS)(?:\s+\2)+(?=\s|$)/gi, "$1$2").replace(/\$(\d{4,9})(?![\d.,])/g, (_, digits) => `$${digits.replace(/\B(?=(\d{3})+(?!\d))/g, " ")}`);
+  }
+
+  function floor(value) {
+    if (/^24\s*\/\s*7\s*этаж$/i.test(text(value))) return "";
+    // Only collapse an identical repeated total, e.g. 13/14 этаж/14 этаж.
+    return text(value).replace(/^(\d+)\s*\/\s*(\d+)\s*этаж(?:\s*\/\s*\2\s*этаж)+$/i, "$1/$2 этаж");
+  }
+
+  function period(value) {
+    return text(value)
+      .replace(/^(?:\s*\/\s*){2,}/, "/ ")
+      .replace(/\/\s*м[²2]\s*\/\s*мес(?:\s*\/\s*мес)+$/i, "/ м²/мес")
+      .replace(/\/\s*мес(?:\s*\/\s*мес)+$/i, "/ мес");
+  }
+
+  function title(value) {
+    const source = text(value);
+    if (/^0-комн\.,\s*участок$/i.test(source)) return "Участок";
+    if (/^офис\s*:\s*(?:любая|офис)$/i.test(source)) return "Офис";
+    const parts = source.split(/\s*[:·|]\s*/).filter(Boolean);
+    return parts.length === 2 && parts[0].toLowerCase() === parts[1].toLowerCase() ? parts[0] : source;
+  }
+
+  // Website submissions historically stored raw form values in the public
+  // catalog. Format only those records; legacy listings keep their wording.
+  function websiteFields(row) {
+    const original = {
+      title: title(row.title),
+      area: text(row.area),
+      floor: floor(row.floor),
+      per: period(row.per),
+    };
+    if (!/^site-[0-9a-f-]+$/i.test(text(row.id))) return original;
+
+    const rooms = text(row.rooms);
+    if (/^\d{1,2}$/.test(rooms) && Number(rooms) > 0 && /^(?:Квартира|Дом|Комната)$/i.test(original.title)) {
+      original.title = `${rooms}-комн., ${original.title.toLowerCase()}`;
+    }
+    if (/^\d+(?:[.,]\d+)?$/.test(original.area)) original.area += " м²";
+
+    const total = text(row.total_floors);
+    if (/^\d{1,3}$/.test(original.floor)) {
+      original.floor += /^\d{1,3}$/.test(total) ? `/${total} этаж` : " этаж";
+    } else if (/^\d{1,3}\s*\/\s*\d{1,3}$/.test(original.floor)) {
+      original.floor += " этаж";
+    }
+
+    const rent = text(row.deal).toLowerCase() === "аренда";
+    if (!original.per && rent) original.per = "/ мес";
+    else if (/^\/?\s*м[²2]$/i.test(original.per)) original.per = rent ? "/ м²/мес" : "/ м²";
+    return original;
+  }
+
+  function priceParts(amount, currency, basis, period) {
+    const cleanAmount = text(amount).replace(/\s+/g, "").replace(",", ".");
+    if (!/^\d+(?:\.\d{1,2})?$/.test(cleanAmount) || Number(cleanAmount) <= 0) return null;
+    if (!["сом", "$"].includes(text(currency))) return null;
+    if (!["object", "m2"].includes(text(basis))) return null;
+    if (!["none", "month"].includes(text(period))) return null;
+    return { amount: cleanAmount, currency: text(currency), basis: text(basis), period: text(period) };
+  }
+
+  function hasConflictingCurrency(value) {
+    const source = text(value);
+    return /\$|\bUSD\b/i.test(source) && /сом|\bKGS\b/i.test(source);
+  }
+
+  window.LiberterraListingFormat = Object.freeze({ hasConflictingCurrency, price, period, floor, title, websiteFields, priceParts });
+})();
+
+}
+if(!window.LiberterraV20 && document.querySelector("#heroCity")){
+/* New homepage composition; the existing catalogue controller owns publication filters and access. */
+(()=>{
+const ru={title:'Купить, продать, снять или сдать',intro:'Недвижимость в Кыргызстане. Смотрите объекты и заявки: найдите жильё или узнайте, что ищут покупатели и арендаторы.',browse:'Найти недвижимость ↗',post:'Разместить объект',request:'Оставить заявку',buy:'Купить',rent:'Арендовать',city:'Город',type:'Тип недвижимости',budget:'Бюджет до',find:'Найти объекты →',extra:'Дополнительные фильтры',district:'Район',keyword:'Поиск по описанию',reset:'Сбросить фильтры',current:'Актуальные объявления',all:'Все объекты →',first:'Первые 3 ↑',supply:'ПРЕДЛОЖЕНИЕ / ОБЪЕКТЫ',selling:'Что продают и сдают',sellingText:'Сравните цену и расположение. Выберите список или карту.',seeObjects:'Смотреть объекты →',demand:'СПРОС / ЗАЯВКИ',looking:'Что хотят купить или снять',lookingText:'Читайте запросы по району и бюджету. Предложите подходящий объект.',seeRequests:'Смотреть заявки →',loading:'Загружаем…',unavailable:'Каталог недоступен',details:'Подробнее ↗'};
+const en={title:'Buy, sell, rent or let',intro:'Property in Kyrgyzstan. Explore listings and requests to find a home or see what buyers and tenants need.',browse:'Find property ↗',post:'List a property',request:'Post a request',buy:'Buy',rent:'Rent',city:'City',type:'Property type',budget:'Budget up to',find:'Find properties →',extra:'More filters',district:'District',keyword:'Search description',reset:'Reset filters',current:'Current listings',all:'All properties →',first:'First 3 ↑',supply:'SUPPLY / PROPERTIES',selling:'Properties for sale and rent',sellingText:'Compare price and location. Choose the list or map.',seeObjects:'View properties →',demand:'DEMAND / REQUESTS',looking:'What buyers and tenants need',lookingText:'Explore requests by district and budget. Suggest a suitable property.',seeRequests:'View requests →',loading:'Loading…',unavailable:'Catalogue unavailable',details:'Details ↗'};
+const ky={title:'Сатып алуу, сатуу же ижара',intro:'Кыргызстандагы кыймылсыз мүлк. Үй табуу же сатып алуучулар менен ижарачылардын суроо-талаптарын көрүү үчүн жарыяларды караңыз.',browse:'Кыймылсыз мүлк табуу ↗',post:'Объект жарыялоо',request:'Өтүнмө калтыруу',buy:'Сатып алуу',rent:'Ижарага алуу',city:'Шаар',type:'Мүлктүн түрү',budget:'Бюджет чеги',find:'Объекттерди табуу →',extra:'Кошумча чыпкалар',district:'Район',keyword:'Сүрөттөмө боюнча издөө',reset:'Чыпкаларды тазалоо',current:'Актуалдуу жарыялар',all:'Бардык объекттер →',first:'Алгачкы 3 ↑',supply:'СУНУШ / ОБЪЕКТТЕР',selling:'Сатуу жана ижара сунуштары',sellingText:'Баасын жана жайгашкан жерин салыштырыңыз. Тизмени же картаны тандаңыз.',seeObjects:'Объекттерди көрүү →',demand:'СУРОО-ТАЛАП / ӨТҮНМӨЛӨР',looking:'Сатып алуучулар жана ижарачылар эмне издешет',lookingText:'Район жана бюджет боюнча өтүнмөлөрдү окуңуз. Ылайыктуу объект сунуштаңыз.',seeRequests:'Өтүнмөлөрдү көрүү →',loading:'Жүктөлүүдө…',unavailable:'Каталог жеткиликсиз',details:'Кененирээк ↗'};
+const zh={title:'购买、出售或租赁房产',intro:'吉尔吉斯斯坦房地产。浏览房源和需求，寻找住所或了解买家与租客的需要。',browse:'寻找房产 ↗',post:'发布房源',request:'发布需求',buy:'购买',rent:'租赁',city:'城市',type:'房产类型',budget:'预算上限',find:'查找房源 →',extra:'更多筛选',district:'地区',keyword:'搜索描述',reset:'重置筛选',current:'当前房源',all:'全部房源 →',first:'前3条 ↑',supply:'供应 / 房源',selling:'出售和出租的房产',sellingText:'比较价格和位置。选择列表或地图。',seeObjects:'查看房源 →',demand:'需求 / 申请',looking:'买家和租客的需求',lookingText:'按地区和预算查看需求，推荐合适的房产。',seeRequests:'查看需求 →',loading:'加载中…',unavailable:'房源目录暂不可用',details:'详情 ↗'};
+Object.assign(ru,{retry:"Повторить загрузку",allCities:"Все города"});Object.assign(en,{retry:"Retry loading",allCities:"All cities"});Object.assign(ky,{retry:"Кайра жүктөө",allCities:"Бардык шаарлар"});Object.assign(zh,{retry:"重新加载",allCities:"所有城市"});const dictionaries={ru,en,ky,zh};function text(key){return(dictionaries[window.LiberterraI18n?.language]||ru)[key]||ru[key]||key;}
+Object.assign(ru,{title:'Найди своё пространство для комфортной работы и жилья',intro:'Проверенная недвижимость в Кыргызстане: реальные фотографии, актуальные предложения и надёжные специалисты.',proofPhoto:'Реальные фото и цены',proofOffers:'Актуальные предложения',proofAgents:'Надёжные специалисты'});
+Object.assign(en,{title:'Find your space for comfortable living and work',intro:'Verified property in Kyrgyzstan with real photos, current listings and trusted specialists.',proofPhoto:'Real photos and prices',proofOffers:'Current listings',proofAgents:'Trusted specialists'});
+Object.assign(ky,{title:'Жашоо жана иштөө үчүн ыңгайлуу мейкиндикти табыңыз',intro:'Кыргызстандагы текшерилген кыймылсыз мүлк: чыныгы сүрөттөр, актуалдуу сунуштар жана ишенимдүү адистер.',proofPhoto:'Чыныгы сүрөттөр жана баалар',proofOffers:'Актуалдуу сунуштар',proofAgents:'Ишенимдүү адистер'});
+Object.assign(zh,{title:'寻找舒适生活与工作的理想空间',intro:'吉尔吉斯斯坦可靠房产：真实照片、最新房源和可信赖的专业人士。',proofPhoto:'真实照片和价格',proofOffers:'最新房源',proofAgents:'可靠专业人士'});
+function titleMarkup(){const lang=window.LiberterraI18n?.language||'ru';const parts={ru:['Найди своё пространство для комфортной','работы и жилья'],en:['Find your space for comfortable','living and work'],ky:['Жашоо жана иштөө үчүн','ыңгайлуу мейкиндикти табыңыз'],zh:['寻找舒适生活与工作的','理想空间']}[lang]||['Найди своё пространство для комфортной','работы и жилья'];return `${parts[0]} <span>${parts[1]}</span>`;}
+window.LiberterraV20={text,card(item,index,h){const e=h.escapeHtml;return `<article class="v20-card" data-card-index="${index}" data-list-source="objects" data-object-url="${e(h.objectUrl(item))}" role="link" tabindex="0" aria-label="${e(item.title)}"><div class="v20-photo">${h.cardPhoto(item,index)}</div><div class="v20-card-pad"><div class="v20-price price">${h.priceHtml(item)}</div>${(/м²/.test(String(item.per||''))&&item.priceNumber>0&&item.areaNumber>0)?'<div class="v20-total">'+({ru:'Итого',en:'Total',ky:'Жалпы',zh:'合计'}[window.LiberterraI18n?.language||'ru']||'Итого')+' ≈ '+(item.priceCurrency==='kgs'?'':'$')+Math.round(item.priceNumber*item.areaNumber).toLocaleString('ru-RU')+(item.priceCurrency==='kgs'?' сом':'')+' '+String(item.per).replace('м²/','')+'</div>':''}<div class="v20-tags"><span class="v20-pill">${e(item.dealLabel)}</span>${item.verified?'<span class="v20-verified">✓ '+({ru:'Проверено',en:'Verified',ky:'Текшерилген',zh:'已核验'}[window.LiberterraI18n?.language||'ru']||'Проверено')+'</span>':''}</div><h3>${e(item.title)}</h3><p class="v20-specs">${[item.roomsText,item.area,item.city,item.district].filter(Boolean).map(e).join(' · ')}</p><div class="v20-card-actions"><a class="v20-button" data-v20="details" href="https://liberterra.kg${e(h.objectUrl(item))}">${e(text('details'))}</a><button class="v20-button" type="button" data-favorite-card="${index}" aria-label="Избранное" aria-pressed="${h.isFavorite(item)}">${h.isFavorite(item)?'♥':'♡'}</button></div></div></article>`}};
+function update(){document.querySelector("#heroPriceMax")?.setAttribute("aria-label",text("budget"));const allCities=document.querySelector("#heroCity option[value=all]");if(allCities)allCities.textContent=text("allCities");const brand=document.querySelector(".brand");if(brand&&!brand.querySelector('.brand-logo'))brand.innerHTML='<img class="brand-logo" src="/assets/liberterra-logo-adapted.png" alt="Liberterra">';const heroTitle=document.querySelector('#homeHeroTitle');document.querySelectorAll('[data-v20]').forEach(e=>{e.setAttribute('translate','no');if(e!==heroTitle)e.textContent=text(e.dataset.v20)});if(heroTitle)heroTitle.innerHTML=titleMarkup();const more=document.querySelector('#v20All');if(more&&!document.body.classList.contains('v20-catalog'))more.textContent=text(document.querySelector('#catalogGrid').classList.contains('expanded')?'first':'all');}
+document.addEventListener('DOMContentLoaded',()=>{const grid=document.querySelector('#catalogGrid'),more=document.querySelector('#v20All');grid?.classList.add('expanded');if(more){more.hidden=true;more.setAttribute('aria-expanded','true')}const controls=document.querySelector('.header-controls');const theme=document.createElement('button');theme.className='v20-theme';theme.type='button';theme.textContent='◐';theme.setAttribute('aria-label','Сменить тему');theme.addEventListener('click',()=>{const dark=document.body.dataset.v20Theme?document.body.dataset.v20Theme==='dark':matchMedia('(prefers-color-scheme:dark)').matches;document.body.dataset.v20Theme=dark?'light':'dark'});controls?.prepend(theme);update();});window.addEventListener('liberterra:languagechange',update);
+})();
+
+/* Public catalogue comparison. Only selected IDs are stored in this tab. */
+(()=>{'use strict';
+const words={
+ru:{compare:'Сравнить',chosen:'В сравнении',title:'Сравнение объектов',hint:'Выберите 2–3 объекта. Сравнение хранится только в этой вкладке.',close:'Закрыть',clear:'Очистить',remove:'Убрать',limit:'Можно сравнить до 3 объектов. Уберите один, чтобы добавить другой.',price:'Цена',deal:'Сделка',place:'Адрес / район',rooms:'Комнаты',area:'Площадь',floor:'Этаж',open:'Открыть объект',missing:'Не указано',note:'Цены указаны в валюте объявления. Покупка и аренда имеют разные условия; уточните их в карточке.',count:'Выбрано',map:'На карте',owner:'Разместить объект',menu:'Меню',skip:'Перейти к содержимому'},
+en:{compare:'Compare',chosen:'Selected',title:'Compare properties',hint:'Choose 2–3 properties. Your comparison is kept in this tab only.',close:'Close',clear:'Clear',remove:'Remove',limit:'Compare up to 3 properties. Remove one to add another.',price:'Listing price',deal:'Transaction',place:'Location',rooms:'Rooms',area:'Area',floor:'Floor',open:'View property',missing:'Not provided',note:'Prices use the listing currency. Sale and rental terms differ; check each property for details.',count:'Selected',map:'View map',owner:'List a property',menu:'Menu',skip:'Skip to content'},
+ky:{compare:'Салыштыруу',chosen:'Тандалды',title:'Объекттерди салыштыруу',hint:'2–3 объект тандаңыз. Салыштыруу ушул өтмөктө гана сакталат.',close:'Жабуу',clear:'Тазалоо',remove:'Алып салуу',limit:'3 объектке чейин салыштыра аласыз. Жаңысын кошуу үчүн бирин алып салыңыз.',price:'Жарыядагы баа',deal:'Бүтүм',place:'Жайгашкан жер',rooms:'Бөлмөлөр',area:'Аянты',floor:'Кабат',open:'Объектти ачуу',missing:'Көрсөтүлгөн эмес',note:'Баалар жарыянын валютасында. Сатуу жана ижара шарттарын объекттин барагынан тактаңыз.',count:'Тандалды',map:'Картадан көрүү',owner:'Объект жарыялоо',menu:'Меню',skip:'Мазмунга өтүү'},
+zh:{compare:'比较',chosen:'已选择',title:'房源比较',hint:'选择2–3个房源。比较仅保存在此标签页中。',close:'关闭',clear:'清空',remove:'移除',limit:'最多比较3个房源。请先移除一个。',price:'挂牌价格',deal:'交易类型',place:'位置',rooms:'房间',area:'面积',floor:'楼层',open:'查看房源',missing:'未提供',note:'价格使用挂牌货币。买卖和租赁条件不同，请查看房源详情。',count:'已选择',map:'地图',owner:'发布房源',menu:'菜单',skip:'跳转到内容'}
+};
+const t=k=>(words[window.LiberterraI18n?.language]||words.ru)[k];
+const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const key='liberterra-compare-ids-v1';let ids=[];try{const saved=JSON.parse(sessionStorage.getItem(key)||'[]');if(Array.isArray(saved))ids=[...new Set(saved.filter(x=>typeof x==='string'))].slice(0,3);}catch(_){}
+let catalog=new Map(),bar,dialog,returnFocus;
+function persist(){try{sessionStorage.setItem(key,JSON.stringify(ids));}catch(_){}}
+function price(item){return window.LiberterraListingFormat?.hasConflictingCurrency(item.price)?({en:'Price to be confirmed',ky:'Баасы такталат',zh:'价格待确认'}[window.LiberterraI18n?.language]||'Цена уточняется'):item.price;}
+function renderDialog(){
+ const items=ids.map(id=>catalog.get(id)).filter(Boolean);
+ dialog.dataset.compareColumns=String(items.length);
+ const rows=[['price',x=>[price(x),x.per].filter(Boolean).join(' ')],['deal',x=>x.dealLabel],['place',x=>[x.city,x.district].filter(Boolean).join(', ')],['rooms',x=>x.roomsText],['area',x=>x.area],['floor',x=>x.floor]];
+ dialog.innerHTML=`<div class="compare-heading"><h2 id="compareTitle">${t('title')}</h2><button type="button" data-compare-close autofocus>${t('close')}</button></div><p>${t('note')}</p><div class="compare-scroll" tabindex="0" role="region" aria-label="${t('title')}"><table><caption class="sr-only">${t('title')}</caption><thead><tr><th scope="col">${t('title')}</th>${items.map(x=>`<th scope="col"><a href="/object.html?id=${encodeURIComponent(x.id)}">${esc(x.title)}</a><button type="button" data-compare-remove="${esc(x.id)}" aria-label="${t('remove')}: ${esc(x.title)}">${t('remove')}</button></th>`).join('')}</tr></thead><tbody>${rows.map(([label,value])=>`<tr><th scope="row">${t(label)}</th>${items.map(x=>`<td>${esc(value(x)||t('missing'))}</td>`).join('')}</tr>`).join('')}<tr><th scope="row">${t('open')}</th>${items.map(x=>`<td><a href="/object.html?id=${encodeURIComponent(x.id)}">${t('open')}</a></td>`).join('')}</tr></tbody></table></div>`;
+}
+function update(){
+ if(!bar)return;
+ bar.hidden=ids.length===0;document.body.classList.toggle('has-comparison',ids.length>0);
+ bar.querySelector('[data-compare-count]').textContent=`${t('count')}: ${ids.length} / 3`;
+ const open=bar.querySelector('[data-compare-open]');open.textContent=t('compare');open.disabled=ids.length<2;
+ bar.querySelector('[data-compare-clear]').textContent=t('clear');
+ document.querySelectorAll('[data-compare-id]').forEach(button=>{const selected=ids.includes(button.dataset.compareId);button.setAttribute('aria-pressed',String(selected));button.textContent=t(selected?'chosen':'compare');button.setAttribute('aria-label',`${t(selected?'chosen':'compare')}: ${catalog.get(button.dataset.compareId)?.title||''}`);});
+ document.querySelector('[data-compare-hint]')?.replaceChildren(document.createTextNode(t('hint')));
+ if(dialog.open)renderDialog();
+}
+window.LiberterraCompare={has:id=>ids.includes(String(id)),label:()=>t('compare'),setCatalog(items){catalog=new Map(items.filter(x=>x.id&&!x.isRequest).map(x=>[String(x.id),x]));ids=ids.filter(id=>catalog.has(id));persist();requestAnimationFrame(update);}};
+document.addEventListener('DOMContentLoaded',()=>{
+ if(!document.querySelector('#catalogGrid'))return;
+ const head=document.querySelector('.v20-section-head');
+ const actions=document.createElement('div');actions.className='catalog-actions';actions.innerHTML=`<a class="v20-button" href="/object-map.html" data-award-map>${t('map')}</a><a class="v20-button" href="/add-object.html" data-award-owner>${t('owner')}</a>`;head?.append(actions);
+ 
+ bar=document.createElement('aside');bar.className='compare-bar';bar.hidden=true;bar.setAttribute('aria-label',t('title'));bar.innerHTML=`<span data-compare-count role="status"></span><span data-compare-message class="sr-only" role="status"></span><button type="button" data-compare-open></button><button type="button" data-compare-clear></button>`;document.body.append(bar);
+ dialog=document.createElement('dialog');dialog.className='compare-dialog';dialog.setAttribute('aria-labelledby','compareTitle');document.body.append(dialog);
+ dialog.addEventListener('close',()=>{returnFocus?.isConnected&&returnFocus.focus();});
+ document.addEventListener('click',event=>{
+  const button=event.target.closest('button');if(!button)return;
+  if(button.hasAttribute('data-compare-id')){event.preventDefault();const id=button.dataset.compareId;if(!catalog.has(id))return;if(ids.includes(id))ids=ids.filter(x=>x!==id);else if(ids.length<3)ids.push(id);else {bar.querySelector('[data-compare-message]').classList.remove('sr-only');bar.querySelector('[data-compare-message]').textContent=t('limit');return;}bar.querySelector('[data-compare-message]').textContent='';persist();update();}
+  if(button.hasAttribute('data-compare-open')){returnFocus=button;renderDialog();dialog.showModal();}
+  if(button.hasAttribute('data-compare-close'))dialog.close();
+  if(button.hasAttribute('data-compare-clear')){ids=[];persist();update();document.querySelector('[data-compare-id]')?.focus();}
+  if(button.hasAttribute('data-compare-remove')){ids=ids.filter(x=>x!==button.dataset.compareRemove);persist();if(ids.length<2)dialog.close();update();if(dialog.open)dialog.querySelector('[data-compare-close]')?.focus();}
+ });
+ update();
+});
+window.addEventListener('liberterra:languagechange',()=>{update();document.querySelector('[data-award-map]')?.replaceChildren(document.createTextNode(t('map')));document.querySelector('[data-award-owner]')?.replaceChildren(document.createTextNode(t('owner')));});
+})();
+
+
+
+}
+/* Stable geography independent of currently available listings. */
+globalThis.LiberterraGeo = (() => {
+ const regions = [
+  ['kg-chuy','Кыргызстан','Чуйская область',['Бишкек','Токмок','Кант','Кара-Балта','Шопоков','Орловка','Кемин']],
+  ['kg-issyk','Кыргызстан','Иссык-Кульская область',['Каракол','Чолпон-Ата','Балыкчы']],
+  ['kg-naryn','Кыргызстан','Нарынская область',['Нарын','Кочкор','Ат-Башы']],
+  ['kg-jalal','Кыргызстан','Джалал-Абадская область',['Джалал-Абад','Кара-Куль','Таш-Кумыр','Майлуу-Суу','Кербен','Кочкор-Ата']],
+  ['kg-osh','Кыргызстан','Ошская область',['Ош','Узген','Кара-Суу']],
+  ['kg-talas','Кыргызстан','Таласская область',['Талас']],
+  ['kg-batken','Кыргызстан','Баткенская область',['Баткен','Кызыл-Кия','Сулюкта','Раззаков']],
+  ['kz','Казахстан','Казахстан',['Алматы','Астана','Шымкент','Караганда']],
+  ['ru','Россия','Россия',['Москва','Санкт-Петербург','Екатеринбург','Казань','Новосибирск','Сочи']],
+  ['uz','Узбекистан','Узбекистан',['Ташкент','Самарканд','Бухара']],
+  ['tj','Таджикистан','Таджикистан',['Душанбе','Худжанд']],
+  ['ae','ОАЭ','ОАЭ',['Дубай','Абу-Даби']],
+  ['tr','Турция','Турция',['Стамбул','Анталья']],
+  ['us','США','США',['Нью-Йорк','Майами']],
+  ['az','Азербайджан','Азербайджан',['Баку']],
+  ['cz','Чехия','Чехия',['Прага']],
+  ['ua','Украина','Украина',['Киев']]
+ ];
+ const norm=value=>String(value||'').trim().toLocaleLowerCase('ru').replace(/ё/g,'е').replace(/[–—]/g,'-').replace(/\s+/g,' ');
+ const aliases={'питер':'санкт-петербург','санкт петербург':'санкт-петербург','спб':'санкт-петербург','алма-ата':'алматы','нур-султан':'астана','жалал-абад':'джалал-абад','bishkek':'бишкек','moscow':'москва','tashkent':'ташкент','almaty':'алматы','astana':'астана','yekaterinburg':'екатеринбург'};
+ const city=value=>aliases[norm(value)]||norm(value);
+ const countries={kg:'Кыргызстан',kz:'Казахстан',ru:'Россия',uz:'Узбекистан',tj:'Таджикистан',ae:'ОАЭ',tr:'Турция',us:'США',az:'Азербайджан',cz:'Чехия',ua:'Украина'};
+ const countryAliases={kyrgyzstan:'kg',кыргызстан:'kg',киргизия:'kg',kgz:'kg',kazakhstan:'kz',kaz:'kz',russia:'ru',rus:'ru',uzbekistan:'uz',uzb:'uz'};
+ const countryCode=value=>Object.keys(countries).find(k=>k===norm(value)||norm(countries[k])===norm(value))||countryAliases[norm(value)]||'';
+ const regionOf=item=>regions.find(r=>r[0]===item.region||norm(r[2])===norm(item.region)||r[3].some(c=>city(c)===city(item.city)));
+ function matches(item,selection){
+  if(!selection||selection==='all')return true;
+  const region=regionOf(item);
+  if(selection.startsWith('country:'))return (countryCode(item.country)||(region?region[0].split('-')[0]:''))===selection.slice(8);
+  if(selection.startsWith('region:'))return region?.[0]===selection.slice(7);
+  return city(item.city)===city(selection);
+ }
+ function populate(select,items,selected){
+  if(!select)return;
+  const option=(value,label)=>new Option(label,value);
+  const all=option('all',globalThis.LiberterraV20?.text('allCities')||'Все города');
+  const countryGroup=document.createElement('optgroup');countryGroup.label='Страны';
+  Object.entries(countries).forEach(([code,name])=>countryGroup.append(option('country:'+code,name+' — все города')));
+  const groups=regions.map(r=>{const group=document.createElement('optgroup');group.label=r[1]===r[2]?r[1]:r[1]+' · '+r[2];if(r[0].startsWith('kg-'))group.append(option('region:'+r[0],r[2]+' — все города'));r[3].forEach(c=>group.append(option(c,c)));return group;});
+  const known=new Set(regions.flatMap(r=>r[3].map(city)));
+  const extra=[...new Set(items.map(i=>i.city).filter(c=>c&&!known.has(city(c))))];
+  if(selected&&selected!=='all'&&!selected.includes(':')&&!known.has(city(selected))&&!extra.includes(selected))extra.push(selected);
+  if(extra.length){const group=document.createElement('optgroup');group.label='Другие города';extra.sort().forEach(c=>group.append(option(c,c)));groups.push(group);}
+  const kgAll=[...countryGroup.children].find(o=>o.value==='country:kg');if(kgAll)countryGroup.label='Другие страны';const kgGroups=groups.filter((g,i)=>regions[i]&&regions[i][0].startsWith('kg-')),otherGroups=groups.filter(g=>!kgGroups.includes(g));select.replaceChildren(all,...(kgAll?[kgAll]:[]),...kgGroups,countryGroup,...otherGroups);
+  const canonical=regions.flatMap(r=>r[3]).find(c=>city(c)===city(selected));
+  select.value=canonical||selected||'all';if(!select.value)select.value='all';
+ }
+ return {regions,countries,matches,populate};
+})();
+
 // Preserve query-based entry links when the legacy root route serves HTML.
 if (location.pathname === '/' && location.search && !document.querySelector('.v20-main')) {
   location.replace('/index.html' + location.search + location.hash);
@@ -75,14 +280,23 @@ const state = {
   objects: [],
   requests: [],
   favoritesOnly: false,
+  source: [],
+  sourceStaff: "all",
 };
 
 const CATALOG_FILTERS_KEY = "liberterra_catalog_filters_v1";
 const CATALOG_FILTER_KEYS = [
   "city", "deal", "rentTerm", "segment", "propertyType", "occupancy", "rooms", "district",
   "priceCurrency", "query", "priceMin", "priceMax", "areaMin", "areaMax", "floorMin",
-  "floorMax", "requestDeal",
+  "floorMax", "requestDeal", "sourceStaff",
 ];
+
+const SOURCE_GROUPS = ["mine", "agency", "other"];
+const SOURCE_LABELS = { mine: "Мои", agency: "Моей организации", other: "Других организаций" };
+const VIEWER_SESSION_KEY = "liberterra-verified-web-user";
+const AGENT_ACCOUNT_TYPES = ["agent", "Агент", "admin", "Администратор"];
+let viewer = null;
+let viewerRequested = false;
 
 function restoreCatalogFilters() {
   let saved = {};
@@ -94,6 +308,9 @@ function restoreCatalogFilters() {
     const value = params.has(key) ? params.get(key) : saved[key];
     if (value !== null && value !== undefined && value !== "") state[key] = String(value);
   });
+  const savedSource = Array.isArray(saved.source) ? saved.source.join(",") : saved.source;
+  const sourceValue = params.has("source") ? params.get("source") : savedSource;
+  state.source = String(sourceValue || "").split(",").map((part) => part.trim()).filter((part) => SOURCE_GROUPS.includes(part));
   const favoriteValue = params.has("favoritesOnly") ? params.get("favoritesOnly") : saved.favoritesOnly;
   state.favoritesOnly = favoriteValue === true || favoriteValue === "1" || favoriteValue === "true";
   if (!['аренда', 'продажа'].includes(state.deal)) state.deal = "аренда";
@@ -104,6 +321,7 @@ function restoreCatalogFilters() {
 function catalogFilterParams() {
   const params = new URLSearchParams();
   CATALOG_FILTER_KEYS.forEach((key) => params.set(key, String(state[key] ?? "")));
+  if (state.source.length) params.set("source", state.source.join(","));
   if (state.favoritesOnly) params.set("favoritesOnly", "1");
   return params;
 }
@@ -161,6 +379,79 @@ async function syncAccountFavorites() {
   } catch (_) {
     favoritesSyncStarted = false;
   }
+}
+
+function applyViewerProfile(profile) {
+  const user = profile?.user || {};
+  const isAgent = AGENT_ACCOUNT_TYPES.includes(normalize(user.account_type));
+  const name = normalizeSearch(user.name);
+  const agency = normalizeSearch(user.agency);
+  viewer = isAgent && (name || agency) ? { name, agency } : null;
+  if (!viewer && (state.source.length || state.sourceStaff !== "all")) {
+    state.source = [];
+    state.sourceStaff = "all";
+  }
+  render();
+}
+
+function hasWebSessionHint() {
+  try {
+    const raw = localStorage.getItem(VIEWER_SESSION_KEY) || sessionStorage.getItem(VIEWER_SESSION_KEY);
+    const cached = JSON.parse(raw || "null");
+    return Boolean(cached?.verified_at && Date.now() - Number(cached.verified_at) < 24 * 60 * 60 * 1000);
+  } catch (_) { return false; }
+}
+
+// The source filter needs the signed-in agent. Guests make no extra request.
+async function resolveViewer() {
+  if (viewerRequested) return;
+  const telegramSession = window.LiberterraAgentAccess?.hasUserSession?.() === true;
+  if (!telegramSession && !hasWebSessionHint()) return;
+  viewerRequested = true;
+  try {
+    if (telegramSession) {
+      applyViewerProfile(await window.LiberterraAgentAccess.request("get_user_profile", {}));
+      return;
+    }
+    const response = await fetch("/api/user-access", {
+      method: "POST",
+      credentials: "same-origin",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify({ action: "web_profile" }),
+    });
+    const body = await response.json().catch(() => ({}));
+    if (response.ok && body.ok) applyViewerProfile(body);
+  } catch (_) {
+    viewerRequested = false;
+  }
+}
+
+function sourceGroupOf(item) {
+  if (!viewer) return "other";
+  const name = normalizeSearch(item.listingAgentName);
+  const agency = normalizeSearch(item.listingAgentAgency);
+  if (viewer.name && name && name === viewer.name) return "mine";
+  if (viewer.agency && agency && agency === viewer.agency) return "agency";
+  return "other";
+}
+
+function sourceMatches(item) {
+  if (!viewer) return true;
+  if (state.source.length && !state.source.includes(sourceGroupOf(item))) return false;
+  if (state.sourceStaff !== "all" && normalizeSearch(item.listingAgentName) !== state.sourceStaff) return false;
+  return true;
+}
+
+function sourceFilterActive() {
+  return Boolean(viewer) && (state.source.length > 0 || state.sourceStaff !== "all");
+}
+
+function sourceFilterSummary() {
+  if (state.sourceStaff !== "all") {
+    const match = state.objects.find((item) => normalizeSearch(item.listingAgentName) === state.sourceStaff);
+    return normalize(match?.listingAgentName) || "выбранный сотрудник";
+  }
+  return state.source.map((group) => SOURCE_LABELS[group]).join(", ");
 }
 
 const grid = document.querySelector("#catalogGrid");
@@ -503,6 +794,8 @@ function normalizeRow(row) {
     requestDeal,
     segment,
     city: normalize(row.city) || "Бишкек",
+    region: normalize(row.region || row.oblast),
+    country: normalize(row.country),
     deal,
     dealLabel: isRequest ? requestActionLabel(requestDeal, segment) : deal,
     propertyType: detectPropertyType(row),
@@ -848,7 +1141,7 @@ function filteredObjects() {
   const collection = QUICK_COLLECTIONS.find((item) => item.id === state.quickCollection
     && Object.entries(collectionFilters(item)).every(([key, value]) => state[key] === value));
   return state.objects.filter((item) => {
-    if(state.city!=="all" && normalize(item.city)!==state.city)return false;
+    if(!globalThis.LiberterraGeo.matches(item,state.city))return false;
     if (collection && !collectionMatches(item, collection)) return false;
     if (state.favoritesOnly && !isFavorite(item)) return false;
     const byDeal =
@@ -875,6 +1168,7 @@ function filteredObjects() {
       }
     }
 
+    if (!sourceMatches(item)) return false;
     if (!priceMatches(item)) return false;
     if (!withinRange(item.areaNumber, state.areaMin, state.areaMax)) return false;
     if (!withinRange(item.floorNumber, state.floorMin, state.floorMax)) return false;
@@ -892,6 +1186,7 @@ function filteredObjects() {
 
 function hasActiveFilters() {
   return state.city !== "all" || state.favoritesOnly
+    || sourceFilterActive()
     || state.rentTerm !== "monthly"
     || state.segment !== "all"
     || state.propertyType !== "all"
@@ -911,7 +1206,7 @@ function requestObjects() {
   const intent=document.getElementById('requestIntent')?.value || state.requestDeal;
   const district=normalizeSearch(document.getElementById('requestZone')?.value || '');
   const type=document.getElementById('requestType')?.value || 'all';
-  return state.requests.filter(item=>(intent==='all'||item.requestDeal===intent)&&(!district||normalizeSearch(item.district).includes(district))&&(type==='all'||item.propertyType===type));
+  return sortRequestsNewestFirst(state.requests.filter(item=>(intent==='all'||item.requestDeal===intent)&&(!district||normalizeSearch(item.district).includes(district))&&(type==='all'||item.propertyType===type)));
 }
 
 function requestSubmittedTimestamp(value) {
@@ -996,7 +1291,7 @@ function cardPhoto(item, cardIndex) {
       .join("");
 
     return `
-      <img src="${escapeHtml(item.photoUrls[0])}" alt="${escapeHtml(item.title)}" loading="${cardIndex < 3 ? "eager" : "lazy"}" decoding="async" fetchpriority="${cardIndex < 3 ? "high" : "low"}" data-carousel-image="${cardIndex}">
+      <img src="${escapeHtml(item.photoUrls[0])}" alt="${escapeHtml(item.title)}" loading="${cardIndex < 4 ? "eager" : "lazy"}" decoding="async" fetchpriority="${cardIndex < 4 ? "high" : "low"}" data-carousel-image="${cardIndex}">
       ${item.photoUrls.length > 1 ? `
         <button class="carousel-arrow prev" type="button" aria-label="Предыдущее фото" data-carousel-card="${cardIndex}" data-carousel-step="-1">‹</button>
         <button class="carousel-arrow next" type="button" aria-label="Следующее фото" data-carousel-card="${cardIndex}" data-carousel-step="1">›</button>
@@ -1236,7 +1531,10 @@ function render() {
         <div class="state">
           <div>
             <strong>Ничего не нашлось</strong>
-            <span>Сбросьте часть фильтров или оставьте запрос — подберём.</span>
+            <span>${sourceFilterActive()
+              ? `По источнику «${escapeHtml(sourceFilterSummary())}» объектов нет. Снимите фильтр по источнику или измените остальные.`
+              : "Сбросьте часть фильтров или оставьте запрос — подберём."}</span>
+            ${sourceFilterActive() ? '<button class="state-action" type="button" data-source-reset>Показать все объекты</button>' : ""}
             <a class="state-action" href="https://t.me/Liberterra_kg_bot" target="_blank" rel="noopener">Ищу квартиру</a>
           </div>
         </div>
@@ -1327,6 +1625,7 @@ function updateFilterUi() {
   }
   const heroCity = document.querySelector('#heroCity');
   if (heroCity) heroCity.value = state.city;
+  updateSourceUi();
   if (favoritesFilter) {
     favoritesFilter.classList.toggle('is-active', state.favoritesOnly);
     favoritesFilter.setAttribute('aria-pressed', String(state.favoritesOnly));
@@ -1453,6 +1752,59 @@ document.addEventListener("keydown", (event) => {
     closeDetails();
   }
 });
+
+function updateSourceUi() {
+  const box = document.querySelector("#heroSource");
+  if (!box) return;
+  box.hidden = !viewer;
+  if (!viewer) return;
+  box.querySelectorAll("[data-source]").forEach((input) => {
+    input.checked = state.source.includes(input.dataset.source);
+  });
+  const staff = box.querySelector("#heroSourceStaff");
+  if (!staff) return;
+  const names = new Map();
+  state.objects.forEach((item) => {
+    if (normalize(item.deal).toLowerCase() !== state.deal) return;
+    const name = normalize(item.listingAgentName);
+    if (name) names.set(normalizeSearch(name), name);
+  });
+  const options = [...names.entries()].sort((a, b) => a[1].localeCompare(b[1], "ru"));
+  const signature = options.map(([key]) => key).join("|");
+  if (staff.dataset.signature !== signature) {
+    staff.dataset.signature = signature;
+    staff.innerHTML = `<option value="all">Любой сотрудник</option>${options
+      .map(([key, name]) => `<option value="${escapeHtml(key)}">${escapeHtml(name)}</option>`).join("")}`;
+  }
+  if (state.sourceStaff !== "all" && !names.has(state.sourceStaff)) state.sourceStaff = "all";
+  if (staff.value !== state.sourceStaff) staff.value = state.sourceStaff;
+}
+
+function initSourceFilter() {
+  const box = document.querySelector("#heroSource");
+  if (!box) return;
+  box.addEventListener("change", (event) => {
+    const checkbox = event.target.closest("[data-source]");
+    if (checkbox) {
+      const group = checkbox.dataset.source;
+      state.source = checkbox.checked
+        ? [...new Set([...state.source, group])]
+        : state.source.filter((value) => value !== group);
+      render();
+      return;
+    }
+    if (event.target.id === "heroSourceStaff") {
+      state.sourceStaff = event.target.value || "all";
+      render();
+    }
+  });
+  document.addEventListener("click", (event) => {
+    if (!event.target.closest("[data-source-reset]")) return;
+    state.source = [];
+    state.sourceStaff = "all";
+    render();
+  });
+}
 
 function initFilters() {
   filterGroups.forEach((group) => {
@@ -1655,6 +2007,8 @@ function initFieldFilters() {
     state.areaMax = "";
     state.floorMin = "";
     state.floorMax = "";
+    state.source = [];
+    state.sourceStaff = "all";
 
     if (catalogSearch) catalogSearch.value = "";
     if (districtFilter) districtFilter.value = "all";
@@ -1752,7 +2106,7 @@ function setObjects(rows) {
   );
   updateDistrictOptions();
   const citySelect=document.querySelector("#heroCity");
-  if(citySelect){const cities=[...new Set(state.objects.map(i=>i.city).filter(Boolean))].sort();citySelect.replaceChildren(new Option(window.LiberterraV20.text("allCities"),"all"),...cities.map(c=>new Option(c,c)));citySelect.value=cities.includes(state.city)?state.city:"all";state.city=citySelect.value;}
+  globalThis.LiberterraGeo.populate(citySelect,state.objects,state.city);
   render();
 }
 
@@ -1817,6 +2171,8 @@ if (!document.body.classList.contains("submission-page")) {
   initSearch();
   initFieldFilters();
   initCatalogFilterDisclosure();
+  initSourceFilter();
+  resolveViewer();
   renderSpecialists();
   loadObjects();
   window.addEventListener("focus", revalidateVisibleCatalog);
@@ -1827,12 +2183,19 @@ if (!document.body.classList.contains("submission-page")) {
 }
 
 window.addEventListener("liberterra:agent-role", () => {
+  resolveViewer();
   render();
   syncAccountFavorites();
 });
-window.addEventListener("liberterra:user-registered", syncAccountFavorites);
+window.addEventListener("liberterra:user-registered", () => {
+  viewerRequested = false;
+  resolveViewer();
+  syncAccountFavorites();
+});
 window.setTimeout(syncAccountFavorites, 1200);
 
 document.querySelector("#heroCity")?.addEventListener("change",e=>{state.city=e.target.value;render()});
 document.addEventListener("click",e=>{if(e.target.closest("[data-catalog-retry]")){showLoading();loadObjectsWithFetch();}});
 window.addEventListener("liberterra:languagechange",()=>{updateFilterUi()});
+
+globalThis.LiberterraGeo.populate(document.querySelector("#heroCity"),state.objects,state.city);

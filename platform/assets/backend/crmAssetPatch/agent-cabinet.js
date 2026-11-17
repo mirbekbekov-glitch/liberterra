@@ -83,7 +83,7 @@
         <div class="crm-object-copy">
           <div class="crm-object-topline">
             <span class="crm-status crm-status-${currentStatus}">${escapeHtml(statusLabel(item.status))}</span>
-            <span class="crm-review-badge">${isTrue(item.verified) ? "Проверен" : "На модерации"}</span>
+            ${isTrue(item.verified) ? "<span class='crm-review-badge'>Проверен</span>" : ""}
           </div>
           <h3><a href="/api/crm/object?id=${encodeURIComponent(item.id)}">${escapeHtml(objectLabel(item))}</a></h3>
           <p class="crm-object-location">${escapeHtml(item.district || "Район не указан")}</p>
@@ -197,13 +197,19 @@
     loading.hidden = false;
     loading.classList.remove("is-error");
     loading.textContent = "Проверяем доступ агента...";
+    var cacheKey = "lt-dashboard-cache-v1";
+    var cached = null;
+    try { var rawCache = JSON.parse(localStorage.getItem(cacheKey) || "null"); if (rawCache && Date.now() - rawCache.t < 86400000) cached = rawCache.v; } catch (e) {}
+    if (cached) { state.dashboard = cached; render(); loading.hidden = true; content.hidden = false; }
     try {
       state.dashboard = await window.LiberterraAgentAccess.request("get_agent_dashboard");
+      try { localStorage.setItem(cacheKey, JSON.stringify({ t: Date.now(), v: state.dashboard })); } catch (e) {}
       render();
       loading.hidden = true;
       content.hidden = false;
       loadPrivateAccess();
     } catch (error) {
+      if (cached) return;
       content.hidden = true;
       loading.hidden = false;
       loading.classList.add("is-error");

@@ -39,10 +39,9 @@
   });
   window.addEventListener('liberterra:crm-task',event=>{taskClient.value=event.detail.client_id||'';tasksForm.elements.object_id.value=event.detail.object_id||'';tasksForm.elements.title.value=event.detail.title||'';taskRequestId='';nav.querySelector('[data-crm-tab="tasks"]').click();tasksForm.elements.title.focus();});
   const tasksList=document.createElement('div');tasksList.className='crm-task-list';panels.tasks.append(tasksList);
-  let tasks=[],tasksReady=false,taskRequestId='',tasksLoad=0;
+  let tasks=[],taskRequestId='',tasksLoad=0;
   const taskText=value=>String(value??'');
   function renderTasks(){
-    window.dispatchEvent(new CustomEvent('liberterra:tasks-data',{detail:{tasks,ready:tasksReady}}));
     tasksList.replaceChildren();
     if(!tasks.length){paragraph(tasksList,'Задач пока нет. Добавьте первую задачу выше.');return;}
     tasks.sort((a,b)=>(a.status==='done')-(b.status==='done')||taskText(a.due_at||'9999').localeCompare(taskText(b.due_at||'9999')));
@@ -55,8 +54,8 @@
     }
   }
   async function loadTasks(){
-    const current=++tasksLoad;tasksReady=false;window.dispatchEvent(new CustomEvent('liberterra:tasks-data',{detail:{tasks:[],ready:false}}));tasksList.textContent='Загружаем задачи…';
-    try{const result=await window.LiberterraAgentAccess.request('list_agent_tasks');if(current!==tasksLoad||content.hidden)return;tasks=Array.isArray(result.tasks)?result.tasks:[];tasksReady=true;renderTasks();}
+    const current=++tasksLoad;tasksList.textContent='Загружаем задачи…';
+    try{const result=await window.LiberterraAgentAccess.request('list_agent_tasks');if(current!==tasksLoad||content.hidden)return;tasks=Array.isArray(result.tasks)?result.tasks:[];renderTasks();}
     catch(error){if(current!==tasksLoad||content.hidden)return;tasksList.textContent=`Не удалось загрузить задачи: ${error.message||'ошибка сервиса'}`;}
   }
   tasksForm.addEventListener('input',()=>{taskRequestId='';});

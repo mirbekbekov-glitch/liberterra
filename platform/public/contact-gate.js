@@ -21,14 +21,21 @@
     }
   }
 
+  function telephoneLink(value) {
+ const phone=String(value||'').trim().replace(/^tel:/i,'').replace(/[\s().-]/g,'');
+ if(!/^\+?\d{7,15}$/.test(phone))throw new Error('contact_unavailable');
+ return 'tel:'+phone;
+}
+
   function showContact(id, contact, message = "") {
     const safeId = String(id);
     const phone = formatPhone(contact.phone);
+    const callUrl = telephoneLink(contact.tel || contact.phone);
     document.querySelectorAll(`[data-contact-phone="${CSS.escape(safeId)}"]`).forEach((node) => {
-      node.innerHTML = `<a class="object-contact-phone" href="tel:${escapeHtml(contact.tel)}">${escapeHtml(phone)}</a>`;
+      node.innerHTML = `<a class="object-contact-phone" href="${escapeHtml(callUrl)}">${escapeHtml(phone)}</a>`;
     });
     document.querySelectorAll(`[data-contact-gate-wrap="${CSS.escape(safeId)}"]`).forEach((node) => {
-      node.innerHTML = `<a class="card-action primary" href="tel:${escapeHtml(contact.tel)}">Позвонить</a><a class="card-action secondary" href="${escapeHtml(whatsappLink(contact.whatsapp, message))}" target="_blank" rel="noopener">WhatsApp</a>`;
+      node.innerHTML = `<a class="card-action primary" href="${escapeHtml(callUrl)}">Позвонить</a><a class="card-action secondary" href="${escapeHtml(whatsappLink(contact.whatsapp, message))}" target="_blank" rel="noopener">WhatsApp</a>`;
     });
     document.querySelectorAll(`[data-contact-whatsapp="${CSS.escape(safeId)}"]`).forEach((node) => {
       node.outerHTML = `<a class="card-action primary object-message-action" href="${escapeHtml(whatsappLink(contact.whatsapp, message))}" target="_blank" rel="noopener">WhatsApp</a>`;
@@ -81,7 +88,7 @@
       // Keep this tied to the user's click. On mobile wa.me hands the visitor
       // straight to the WhatsApp app; in a desktop browser it opens WhatsApp Web.
       if (openWhatsApp) window.location.assign(whatsapp);
-      if (openCall) window.location.assign(data.tel);
+      if (openCall) window.location.assign(telephoneLink(data.tel || data.phone));
     } catch (error) {
       button.disabled = false;
       button.textContent = ["authorization_required", "registration_required"].includes(error.message) ? "Войдите, чтобы открыть номер" : "Номер временно недоступен";

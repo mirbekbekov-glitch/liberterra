@@ -5,6 +5,7 @@
     || (pathObjectMatch ? decodeURIComponent(pathObjectMatch[1]) : "");
   let workspace = null;
   let loadedObjectId = "";
+  let sessionRetries = 0;
   let ownerLocationMap = null;
   let ownerLocationMarker = null;
   const PHOTO_DELIVERY_ORIGIN = "https://hidden-pine-cbff.mirbekbekov.workers.dev";
@@ -60,7 +61,7 @@
           <label class="crm-field"><span>Описание</span><textarea name="description" rows="5" maxlength="700">${escapeHtml(item.description)}</textarea><small>До 700 символов. Оставьте только важные особенности и условия.</small></label>
           <fieldset class="owner-location-editor"><legend>Расположение на карте</legend><p>Нажмите на карту, чтобы поставить или изменить точку объекта.</p><div class="owner-location-map" data-owner-location-map></div><input type="hidden" name="latitude" value="${escapeHtml(item.latitude)}"><input type="hidden" name="longitude" value="${escapeHtml(item.longitude)}"><div class="owner-location-actions"><span data-owner-location-status>${item.latitude && item.longitude ? "Точка объекта указана" : "Точка пока не указана"}</span><button type="button" data-workspace-action="clear-owner-location" ${item.latitude && item.longitude ? "" : "hidden"}>Убрать точку</button></div></fieldset>
           ${photos.length ? `<fieldset class="owner-photo-editor"><legend>Фотографии</legend><p>Снимите отметку с фото, которое нужно удалить.</p><div class="owner-photo-grid">${photos.map((url, index) => `<label><img src="${escapeHtml(url)}" alt="Фото ${index + 1}" loading="lazy" decoding="async"><input type="checkbox" name="keep_photo" value="${escapeHtml(url)}" checked><span>Оставить</span></label>`).join("")}</div></fieldset>` : ""}
-          <label class="owner-photo-upload"><span>Добавить фотографии</span><input type="file" name="new_photos" accept="image/jpeg,image/png,image/webp" multiple><small>JPEG, PNG или WebP, до 8 МБ. Всего в объявлении — не больше 5 фото.</small><em data-new-photo-list>Файлы не выбраны</em></label>
+          <label class="owner-photo-upload"><span>Добавить фотографии</span><input type="file" name="new_photos" accept="image/jpeg,image/png,image/webp" multiple><small>JPEG, PNG или WebP до 24 МБ. Перед отправкой фото сохранятся с разрешением до 1600 px. Всего в объявлении — не больше 5 фото.</small><em data-new-photo-list>Файлы не выбраны</em></label>
           <div class="agent-workspace-action-row"><span data-owner-edit-message aria-live="polite"></span><button class="crm-primary-button" type="submit">Сохранить изменения</button></div>
           <div class="owner-delete-row"><button class="crm-danger-button" type="button" data-workspace-action="delete-object">Удалить объявление</button><small>Объявление исчезнет из каталога. Восстановить его сможет администратор.</small></div>
         </form>
@@ -212,11 +213,13 @@
       <section class="agent-object-workspace" aria-labelledby="agentWorkspaceTitle">
         <div class="agent-workspace-heading">
           <div>
-            <p class="crm-eyebrow">Обсуждение объекта</p>
-            <h2 id="agentWorkspaceTitle">Вопросы и комментарии</h2>
+            <p class="crm-eyebrow">Рабочая зона агента</p>
+            <h2 id="agentWorkspaceTitle">Заметки по объекту</h2>
           </div>
           ${workspace.role === "approved" ? '<a class="crm-cabinet-inline-link" href="/agent-cabinet.html">Открыть кабинет</a>' : ""}
         </div>
+
+        ${ownerEditorHtml()}
 
         ${workspace.role === "approved" ? `<div class="agent-workspace-grid">
           <section class="agent-note-panel" aria-labelledby="agentNoteTitle">
@@ -245,8 +248,6 @@
             `}
           </section>
         </div>` : ""}
-
-        ${ownerEditorHtml()}
 
         <section class="agent-comments-panel" aria-labelledby="agentCommentsTitle">
           <div class="agent-comments-heading">
@@ -332,8 +333,13 @@
     if (!window.LiberterraAgentAccess?.hasUserSession()) {
       workspace = null;
       slot.innerHTML = "";
+      if (sessionRetries < 12) {
+        sessionRetries += 1;
+        window.setTimeout(() => loadWorkspace({ force: true }), 400);
+      }
       return;
     }
+    sessionRetries = 0;
     if (!objectId || slot.dataset.loading === "true" || (!force && workspace && loadedObjectId === objectId)) return;
 
     slot.dataset.loading = "true";
@@ -522,12 +528,16 @@
       try {
         const uploadedPhotos = [];
         if (newPhotos.length) {
-          message.textContent = "Загружаем новые фотографии...";
+          message.textContent = "Подготавливаем новые фотографии...";
+          const { prepareListingPhoto } = await import("/listing-photo-resize.js");
+          const preparedPhotos = [];
+          for (const file of newPhotos) preparedPhotos.push(await prepareListingPhoto(file));
           const uploadData = new FormData();
           uploadData.set("telegram_init_data", window.Telegram?.WebApp?.initData || "");
           uploadData.set("object_id", objectId);
           uploadData.set("existing_count", String(keptPhotos.length));
-          newPhotos.forEach((file) => uploadData.append("photos", file, file.name));
+          preparedPhotos.forEach((file) => uploadData.append("photos", file, file.name));
+          message.textContent = "Загружаем новые фотографии...";
           const uploadResponse = await fetch("/api/object-photos", { method: "POST", body: uploadData });
           const uploadResult = await uploadResponse.json().catch(() => ({}));
           if (!uploadResponse.ok || uploadResult.ok !== true) throw new Error(uploadResult.error || "Не удалось загрузить фотографии.");
@@ -546,7 +556,10 @@
         message.textContent = "Изменения отправлены на повторную проверку.";
         await refreshWorkspace();
       } catch (error) {
-        message.textContent = commentErrorMessage(error);
+        message.textContent = error?.message === "invalid_photo" ? "Выберите фото в формате JPEG, PNG или WebP."
+          : error?.message === "photo_too_large" ? "Не удалось уменьшить фото до 8 МБ. Выберите другой файл."
+          : error?.message === "photo_processing_failed" ? "Не удалось подготовить фото. Выберите другой файл."
+          : commentErrorMessage(error);
       } finally {
         button.disabled = false;
       }

@@ -16,7 +16,7 @@
     if (["Квартира", "Комната"].includes(values.object_type)) {
       if (!/^\d{1,3}$/.test(text(values.floor))) issues.push("Этаж (0 для цоколя)");
       if (!integer(values.total_floors)) issues.push("Этажность дома");
-      if (Number(values.floor) > Number(values.total_floors)) issues.push("Этаж не может быть выше этажности дома");
+      if (integer(values.total_floors) && Number(values.floor) > Number(values.total_floors)) issues.push("Этаж не может быть выше этажности дома");
     }
     if (values.object_type === "Дом" && !integer(values.total_floors)) issues.push("Этажность дома");
     if (!Number.isInteger(photos) || photos < 1 || photos > 5) issues.push("От 1 до 5 фотографий");
@@ -30,6 +30,7 @@
   const panel = document.querySelector("#placementReview");
   const summary = document.querySelector("#placementSummary");
   const issues = document.querySelector("#placementIssues");
+  const issueLinks = document.querySelector("#placementIssueLinks");
   const confirm = document.querySelector("#placementConfirmed");
   let reviewed = "";
   function snapshot() {
@@ -55,7 +56,26 @@
     const source = document.createElement("li");
     source.textContent = `Источник: ${text(state.values.source_url) || "ручное заполнение"}. Фотографий: ${state.photos.length}`;
     summary.append(source);
-    issues.textContent = missing.length ? `Заполните или исправьте: ${missing.join("; ")}.` : "Обязательные параметры заполнены. Сверьте данные и фотографии с объектом.";
+    issues.textContent = missing.length ? `Заполните или исправьте: ${missing.join("; ")}. Подтверждение ниже станет доступным после исправления.` : "Обязательные параметры заполнены. Сверьте данные и фотографии с объектом.";
+    if (issueLinks) {
+      issueLinks.replaceChildren();
+      const fields = {"Тип сделки":"deal","Тип объекта":"object_type","Адрес":"address","Цена больше нуля":"price","Площадь больше нуля":"area","Количество комнат":"rooms","Этаж (0 для цоколя)":"floor","Этажность дома":"total_floors","Этаж не может быть выше этажности дома":"floor","Валюта":"price_currency","Расчёт цены":"price_basis"};
+      for (const message of missing) {
+        const field = message === "От 1 до 5 фотографий" ? document.querySelector("#submissionPhotos") : form.elements.namedItem(fields[message]);
+        if (!field) continue;
+        const row = document.createElement("li");
+        const button = document.createElement("button");
+        button.type = "button";
+        button.textContent = `${message} — исправить`;
+        button.addEventListener("click", () => {
+          field.scrollIntoView({behavior:"smooth",block:"center"});
+          field.focus({preventScroll:true});
+        });
+        row.append(button);
+        issueLinks.append(row);
+      }
+      issueLinks.hidden = !missing.length;
+    }
     confirm.disabled = missing.length > 0;
     confirm.checked = false;
     reviewed = missing.length ? "" : state.key;

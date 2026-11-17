@@ -3,7 +3,7 @@
   "bundles": [
     {
       "name": "backend",
-      "sha256": "29da63b64524e6d8c1b9b351aee450398ba45f0d9bb2599135ddd39fff3855c2",
+      "sha256": "8915d0deffdb87744da7041b055ac6abea016e2444ee202e01c01c84687a939d",
       "maps": [
         {
           "name": "crmAssetPatch",
@@ -11,19 +11,19 @@
             {
               "key": "/object.html",
               "file": "assets/backend/crmAssetPatch/object.html",
-              "sha256": "c2fcba8ba7ee1ad46b1e208ee5029cc4ae0d654a695a0647509101488972a38f",
+              "sha256": "355f4370674a9e1295453ecfc9573a2b8fa58c56ca6e24e14c447fafb5117101",
               "append": []
             },
             {
               "key": "/agent-cabinet.html",
               "file": "assets/backend/crmAssetPatch/agent-cabinet.html",
-              "sha256": "814ac0ceda0ac5607dd5f4bfa9c83068fcecb83d7b82421d83c95351e9892516",
+              "sha256": "0e08b5843c94219d696f608b55610549fc7152ecbce65c5554125e1d372aa476",
               "append": []
             },
             {
               "key": "/agent-cabinet.js",
               "file": "assets/backend/crmAssetPatch/agent-cabinet.js",
-              "sha256": "2690619357b5e867251847ac48ead9b61ac6412d22b18f3a5deb81edd0e07d36",
+              "sha256": "893d055e996f1c0f8a128da5503a54ec222c018f1765235e5c1a9a437e327dbc",
               "append": []
             },
             {
@@ -35,19 +35,19 @@
             {
               "key": "/style.css",
               "file": "assets/backend/crmAssetPatch/style.css",
-              "sha256": "51fc4b612c2ae5ba0b06e2e80b11f241e80a9e1cde7d7ca54654a64c78041be8",
+              "sha256": "8de7cb8299df755bed9f8ddd6b205ee446a8c66624a9e4cb2262b9c01c2b1195",
               "append": []
             },
             {
               "key": "/agent-access.js",
               "file": "assets/backend/crmAssetPatch/agent-access.js",
-              "sha256": "a496fa0e280969b8e9c001a40ec49125b124e0de040e10082002222adff808e0",
+              "sha256": "a58fb3662f801885bb70845d9569d2b44b5ee2e109bfe6d3302648dba49291dd",
               "append": []
             },
             {
               "key": "/profile.html",
               "file": "assets/backend/crmAssetPatch/profile.html",
-              "sha256": "cbf0f34e4c2e7b85c000d18c387c7a9e7d4fd52035f6b36a1fbe2d1522efba78",
+              "sha256": "7af74ebfeb3c406c1d866d265fed126191c23cf4f21edeb1a09201550abe87d7",
               "append": []
             },
             {
@@ -76,7 +76,7 @@
             {
               "key": "agent-cabinet.js",
               "file": "assets/backend/crmWorkflowAssets/agent-cabinet.js",
-              "sha256": "a49ec97245602d2c757cde58890f4468e6e866bca90536c5b1c32af9b6d29dc0",
+              "sha256": "9c16b4e44984ecbf43d9c1d2388d6b431d1577f7b00d5ec7b45c44c4f7bf78aa",
               "append": []
             },
             {
@@ -94,7 +94,7 @@
             {
               "key": "crm-workflow.js",
               "file": "assets/backend/crmWorkflowAssets/crm-workflow.js",
-              "sha256": "10144da4770e18a4467897ca8e8767ea5eb3fee96770bffeae9061b58ba1d7e0",
+              "sha256": "2bb04d8388a5ffce1e763ba1269b4bd748de51bfc867b45a245c5d634dd030a0",
               "append": []
             },
             {
@@ -106,7 +106,7 @@
             {
               "key": "concept-v20.css",
               "file": "assets/backend/crmWorkflowAssets/concept-v20.css",
-              "sha256": "92669fe7aad93d4828185ea661cf6b60ff397b4ffcf683f55067c80521be3edc",
+              "sha256": "783ef0637d9a58f5a0c498ccae3c227f668bbb5b8e87932e6439ffb07eba70f6",
               "append": []
             },
             {
@@ -136,13 +136,13 @@
             {
               "key": "agent-access.js",
               "file": "assets/backend/crmWorkflowAssets/agent-access.js",
-              "sha256": "697487a37e222cb4750798e13c44378f3651d6fb40bcbc96cce6ac68249ac4ba",
+              "sha256": "3515dee5385683363bd28474bc99fcc841518163a87514f50c1a4578985b90f6",
               "append": []
             },
             {
               "key": "agent-cabinet.html",
               "file": "assets/backend/crmWorkflowAssets/agent-cabinet.html",
-              "sha256": "1b617d02ecbbcb73d508f1d1a68078150fafe929b76d5ddcd7337eb77ed8eb07",
+              "sha256": "b79e6be2d64134ca7c3cdd99e39b4046f7ffb6dfcae1fe2cfa1e05fe0ab0a224",
               "append": []
             },
             {
@@ -160,7 +160,7 @@
             {
               "key": "auth-entry.js",
               "file": "assets/backend/crmWorkflowAssets/auth-entry.js",
-              "sha256": "c0a107c6deab0eb213b8e44580c384643675c9e2f1746a82062e19cff91e5d2f",
+              "sha256": "4873f40c7b2da1cafd6eb18651421f467dd8114ee4ea843520300cb4a72c28bd",
               "append": []
             },
             {
@@ -170,12 +170,515 @@
               "append": []
             }
           ]
+        },
+        {
+          "name": "files",
+          "entries": [
+            {
+              "key": "/add-object.js",
+              "file": "assets/backend/files/add-object.js",
+              "sha256": "dcd10c09ae3b7563864816590239ca3d01af907c20bc48f9bd1366fdb082b2bc",
+              "append": []
+            },
+            {
+              "key": "/agent-access.js",
+              "file": "assets/backend/files/agent-access.js",
+              "sha256": "6b14d6784d8de9327795dd78cae22594cab9b7d816b94333dfb0fee683071c92",
+              "append": []
+            },
+            {
+              "key": "/listing-format.js",
+              "file": "assets/backend/files/listing-format.js",
+              "sha256": "fa6e91fe5ba92977d0f7ffec682c8349f317e2af0cc842aefdc55352b0cc32b6",
+              "append": []
+            },
+            {
+              "key": "/script.js",
+              "file": "assets/backend/files/script.js",
+              "sha256": "ccf37ded477114806252186652e6725541db38c776906a64fbd1c3f11b1cc94a",
+              "append": []
+            },
+            {
+              "key": "/object.js",
+              "file": "assets/backend/files/object.js",
+              "sha256": "56cf6fbee0bc287076baf16751802e0de90092a43425069ed736ef52259e9b34",
+              "append": []
+            },
+            {
+              "key": "/style.css",
+              "file": "assets/backend/files/style.css",
+              "sha256": "01ede9691717fe4617705259654e63a9b8f88b66955839cbeae48df1a701a6ce",
+              "append": []
+            },
+            {
+              "key": "/profile.js",
+              "file": "assets/backend/files/profile.js",
+              "sha256": "ba9c4e02d38b188ab0eccddeafd5bc4b6c79febf99d6fe5200480f3d03a7db9b",
+              "append": []
+            },
+            {
+              "key": "/my-listings.js",
+              "file": "assets/backend/files/my-listings.js",
+              "sha256": "43262e8a7df1566a993ba7aac7153aa7cdad31f1e8ce872372bed64269e2406b",
+              "append": []
+            },
+            {
+              "key": "/site-theme.css",
+              "file": "assets/backend/files/site-theme.css",
+              "sha256": "b1bcc513cbea1e036189f69a539e635e88aee0746bb554ec710915983e604a6d",
+              "append": []
+            },
+            {
+              "key": "/home-refresh.js",
+              "file": "assets/backend/files/home-refresh.js",
+              "sha256": "23d512d4dd050681572271b6460b3c6c305251a2ba0f2c622be79c830129f92f",
+              "append": []
+            },
+            {
+              "key": "/site-theme.js",
+              "file": "assets/backend/files/site-theme.js",
+              "sha256": "cafcd19c3107b98701f2303e21792bf8e5f379296239b029e4ca30cfaf35e3a3",
+              "append": []
+            },
+            {
+              "key": "/index.html",
+              "file": "assets/backend/files/index.html",
+              "sha256": "83feb937ea65588172692b5ddaeb1948159a75dd1eaeec76782dd331b747667d",
+              "append": []
+            },
+            {
+              "key": "/miniapp.html",
+              "file": "assets/backend/files/miniapp.html",
+              "sha256": "abbab95cd0770eeeb2f72f28067df65a380601507252da579e555db8b8bd1a64",
+              "append": []
+            },
+            {
+              "key": "/concept-v20.css",
+              "file": "assets/backend/files/concept-v20.css",
+              "sha256": "ebf367c62e1fc84b285208d27ace9babec74eb72113d703302d27fd5f5e39535",
+              "append": []
+            },
+            {
+              "key": "/concept-v20.js",
+              "file": "assets/backend/files/concept-v20.js",
+              "sha256": "424801d06f23c27f6e84456f67540b38233e27fc17c326de4cfcb19037e8f670",
+              "append": []
+            },
+            {
+              "key": "/i18n.js",
+              "file": "assets/backend/files/i18n.js",
+              "sha256": "d2d6e3e6d29e891ca76fd54c6118b0675d4bbdf803541fc99ab746c316a9e3a1",
+              "append": []
+            },
+            {
+              "key": "/",
+              "file": "assets/backend/files/_root.html",
+              "sha256": "5bc6db6e0a2e02531ac1d5244c9de133fd96a7c708611ecc359d9b1fc5c5610d",
+              "append": []
+            },
+            {
+              "key": "/catalog.html",
+              "file": "assets/backend/files/catalog.html",
+              "sha256": "75dc8f128ae6c5cc617ead4b247ae865dec6a754729055082f0850093e587988",
+              "append": []
+            },
+            {
+              "key": "/requests.html",
+              "file": "assets/backend/files/requests.html",
+              "sha256": "c3de1488f23f9fc5d9ec5f3e51237c2ff28e8b34e44671a30851f966638088c4",
+              "append": []
+            },
+            {
+              "key": "/agents.html",
+              "file": "assets/backend/files/agents.html",
+              "sha256": "af8b6d39cb6bad64a82f3497b45885c5f13cd07935f8c8dc8f76d2329160e57a",
+              "append": []
+            },
+            {
+              "key": "/agent-public.html",
+              "file": "assets/backend/files/agent-public.html",
+              "sha256": "17b0311f86d0dc430005230b88eca72e8c0c355375bf143f903c520ba8eb759b",
+              "append": []
+            },
+            {
+              "key": "/object.html",
+              "file": "assets/backend/files/object.html",
+              "sha256": "9b49b37e7b2bb1ff95ff0e56839d3f7bc954265c01fa4619c53e3597fc9f9392",
+              "append": []
+            },
+            {
+              "key": "/object-map.html",
+              "file": "assets/backend/files/object-map.html",
+              "sha256": "9f9c0cee23e762d1d09143cc3bf9235349134382d4eb3d150c621bba7c5fe54b",
+              "append": []
+            },
+            {
+              "key": "/district-map.html",
+              "file": "assets/backend/files/district-map.html",
+              "sha256": "21be4f473c9fcc5f45ad6fe6a3b4928cb3df9d76bfc96e9c1eb5db957e4937c0",
+              "append": []
+            },
+            {
+              "key": "/newbuildings.html",
+              "file": "assets/backend/files/newbuildings.html",
+              "sha256": "c00c1fabfc9fe12dbcd8a964bedfa07ddcbcbc2b1b8cda27786334eb02cc5bc3",
+              "append": []
+            },
+            {
+              "key": "/newbuilding.html",
+              "file": "assets/backend/files/newbuilding.html",
+              "sha256": "cacab8dda5f0c03e7750a3d055a434bb7d6a9b004ad59f01a9c8bd2986eb6108",
+              "append": []
+            },
+            {
+              "key": "/mortgage.html",
+              "file": "assets/backend/files/mortgage.html",
+              "sha256": "4cc4d99a30a09d11593657a0bc8fcffe693312aaa93c46425a4380d919762e40",
+              "append": []
+            },
+            {
+              "key": "/calculator.html",
+              "file": "assets/backend/files/calculator.html",
+              "sha256": "b56d0eb1a0202c50c2b5eaed1972b837c40437b9642af754c744e1eeee4454fe",
+              "append": []
+            },
+            {
+              "key": "/add-object.html",
+              "file": "assets/backend/files/add-object.html",
+              "sha256": "b6b380c1d691d9df0337ea8e4b327a734a36fbd20dea19d5ac5b6864cb17f277",
+              "append": []
+            },
+            {
+              "key": "/add-request.html",
+              "file": "assets/backend/files/add-request.html",
+              "sha256": "237223508802cf992c4e3e8b82a7e28abcb11053acc1599e10cb46d52d72c8c7",
+              "append": []
+            },
+            {
+              "key": "/contract-help.html",
+              "file": "assets/backend/files/contract-help.html",
+              "sha256": "adf5e68c26b7a04d7e3d306d80a6a6df717b64b6a4bfd322db290159491ae89a",
+              "append": []
+            },
+            {
+              "key": "/home-v20.css",
+              "file": "assets/backend/files/home-v20.css",
+              "sha256": "c068f3477a40b45d68a64ac91b8b3b9151e622b2aa4ed6842765af15442152f6",
+              "append": []
+            },
+            {
+              "key": "/home-v20.js",
+              "file": "assets/backend/files/home-v20.js",
+              "sha256": "4f1b54e8475a28599926df60d97bc33a0171aa5e3f567d5da18003c3de0d5c0e",
+              "append": []
+            },
+            {
+              "key": "/public-v20.css",
+              "file": "assets/backend/files/public-v20.css",
+              "sha256": "93986071395c915d208f5de5789e424bdddd64c39ae3d3393771dc537a114ec9",
+              "append": []
+            },
+            {
+              "key": "/public-v20.js",
+              "file": "assets/backend/files/public-v20.js",
+              "sha256": "8acafed434476f13a24ad1d60d271cc867f1f05b1196a43f46ae09f9f2035333",
+              "append": []
+            },
+            {
+              "key": "/public-copy.js",
+              "file": "assets/backend/files/public-copy.js",
+              "sha256": "87cbd53d4a81dc440d88d469ac2f7421856093a13ee2e686a90aa633c71cdbe2",
+              "append": []
+            },
+            {
+              "key": "/reference-translations.js",
+              "file": "assets/backend/files/reference-translations.js",
+              "sha256": "aebe8d12ce924c91a126a99c3e3e8649ea290d21a913fa5ef0231858acb262d5",
+              "append": []
+            },
+            {
+              "key": "/reference-translator.js",
+              "file": "assets/backend/files/reference-translator.js",
+              "sha256": "9177dd47429b21cea81b95e7caa85b355311de57b7199e27b8605b0c74b46c50",
+              "append": []
+            },
+            {
+              "key": "/calculator-math.js",
+              "file": "assets/backend/files/calculator-math.js",
+              "sha256": "d2b1ac397dbd861cb6320881c562c2e6981e74c047e2b6d3229f9e25f8d9fffa",
+              "append": []
+            },
+            {
+              "key": "/calculators.js",
+              "file": "assets/backend/files/calculators.js",
+              "sha256": "d629163d59ddb8deac67db4833da0172487b450442e8c8b8209b7596a499af6c",
+              "append": []
+            },
+            {
+              "key": "/public-pagination.js",
+              "file": "assets/backend/files/public-pagination.js",
+              "sha256": "95ae943f827b411c7db5b5607964d49f53fb660f958ab37345c5721c7d300c7b",
+              "append": []
+            },
+            {
+              "key": "/public-money.js",
+              "file": "assets/backend/files/public-money.js",
+              "sha256": "aa357f437c29365f7fda44b1f3f58012297ad4038ef4b07b6fbfa9826d713da8",
+              "append": []
+            },
+            {
+              "key": "/request-filters-v20.js",
+              "file": "assets/backend/files/request-filters-v20.js",
+              "sha256": "b11312e9b485f94bef3dcd8d6272c5aa4d134e73a4ad051618ac08a51d1eab57",
+              "append": []
+            },
+            {
+              "key": "/object-layout-v20.js",
+              "file": "assets/backend/files/object-layout-v20.js",
+              "sha256": "a477e9def7c1519422d1dd39d20a0640800225dcc5a66ecc0543e302f50156fc",
+              "append": []
+            },
+            {
+              "key": "/add-layout-v20.js",
+              "file": "assets/backend/files/add-layout-v20.js",
+              "sha256": "80b65fff96c2ca01f190d5df65922a1969aa428de61926f152409248378c7d77",
+              "append": []
+            },
+            {
+              "key": "/newbuildings.js",
+              "file": "assets/backend/files/newbuildings.js",
+              "sha256": "efb24e812d9181a49b3492902aba839d15148713e7f75509b03dae044e73b614",
+              "append": []
+            },
+            {
+              "key": "/newbuilding.js",
+              "file": "assets/backend/files/newbuilding.js",
+              "sha256": "c9214073363d30fc12b44bb7763cadecb73d18331df1cf85d5efd6558e629f19",
+              "append": []
+            },
+            {
+              "key": "/back-navigation.js",
+              "file": "assets/backend/files/back-navigation.js",
+              "sha256": "f59e03579f0cdf8b6498f0ced1cf9a26fea12c2efee50aa87b1b7eb0ef86b030",
+              "append": []
+            },
+            {
+              "key": "/placement-review.css",
+              "file": "assets/backend/files/placement-review.css",
+              "sha256": "23f9247fa564b4fc47ac2bb60b023d436159d22e999ec3f717412910a98d2ac5",
+              "append": []
+            },
+            {
+              "key": "/placement-review.js",
+              "file": "assets/backend/files/placement-review.js",
+              "sha256": "fb1cf2f57927a96c10f2747c0cf20c14c616edb8e148e33d58556e4c3c17c1df",
+              "append": []
+            },
+            {
+              "key": "/agent-registry.css",
+              "file": "assets/backend/files/agent-registry.css",
+              "sha256": "fbd3474fda4c586f70925904c4944f00da87f705beb798288126039229908624",
+              "append": []
+            },
+            {
+              "key": "/agent-registry.js",
+              "file": "assets/backend/files/agent-registry.js",
+              "sha256": "77bd4ba2e1cd8151a41abfbb7546bc20a6d027a02841f1fa0c686e49721d6479",
+              "append": []
+            },
+            {
+              "key": "/agent-directory.css",
+              "file": "assets/backend/files/agent-directory.css",
+              "sha256": "5b8f99ed8772d297bd808be23d2432a8605aac237643baec5a740e6d8ea16ad3",
+              "append": []
+            },
+            {
+              "key": "/v20-global.css",
+              "file": "assets/backend/files/v20-global.css",
+              "sha256": "69b45b4443ee3b1175efb43e2347ef0f7b2496ba060f0cd35d85fc6cf8535816",
+              "append": []
+            },
+            {
+              "key": "/v20-global.js",
+              "file": "assets/backend/files/v20-global.js",
+              "sha256": "435d5706f2b3e7eea07f8c998eea9a38d54dd0f6cfdcff046c3370850a549564",
+              "append": []
+            },
+            {
+              "key": "/api/crm/agent-cabinet",
+              "file": "assets/backend/files/api/crm/agent-cabinet",
+              "sha256": "05820e791af2ef67d0753613ab350e0d1b653b19d4e0c9157fe44238eb79ee08",
+              "append": []
+            },
+            {
+              "key": "/agent-cabinet.html",
+              "file": "assets/backend/files/agent-cabinet.html",
+              "sha256": "36b92e5be52707d06d469f3c392e86ef880a6479d60fa19db50ff0b9c194e3c8",
+              "append": []
+            },
+            {
+              "key": "/crm-private-ui.js",
+              "file": "assets/backend/files/crm-private-ui.js",
+              "sha256": "9e9b50831d91c252de20dae927506cb5736488ead54df1bbc4653610bbf1d254",
+              "append": []
+            },
+            {
+              "key": "/crm-private-ui.css",
+              "file": "assets/backend/files/crm-private-ui.css",
+              "sha256": "47ff81f4d6885e061087c96da7698a43aced10af620653649e27630c841f4dfe",
+              "append": []
+            },
+            {
+              "key": "/crm-private-theme.js",
+              "file": "assets/backend/files/crm-private-theme.js",
+              "sha256": "180ebfd1d2c672716c328b6346560db1eb3228c5eeef894cef77f773b98b9762",
+              "append": []
+            },
+            {
+              "key": "/profile",
+              "file": "assets/backend/files/profile",
+              "sha256": "56a9e23fe4fd4712a5128a813093fc7278e1b5127ed6ce257e918f1f19d25d74",
+              "append": []
+            },
+            {
+              "key": "/profile.html",
+              "file": "assets/backend/files/profile.html",
+              "sha256": "271613a64dc66ae3e1e3ce2e47e2caf2ad76215a65cc87bc04137f79f7192e6b",
+              "append": []
+            },
+            {
+              "key": "/profile-v2.css",
+              "file": "assets/backend/files/profile-v2.css",
+              "sha256": "f00e24a9f12dd585f9d1935279cd0f89cbef77d127d86fcefdbdcacd6d1b4e5b",
+              "append": []
+            },
+            {
+              "key": "/form-refresh.css",
+              "file": "assets/backend/files/form-refresh.css",
+              "sha256": "8a071536f06c3a6cc4f3331db6bc46e5f4f982e3f65ae474780fab5aad98596d",
+              "append": []
+            },
+            {
+              "key": "/my-listings.html",
+              "file": "assets/backend/files/my-listings.html",
+              "sha256": "edcd1bd584cd47bc223fdae4ba91541ef02a868b8e30669dc1288fe8569da5cf",
+              "append": []
+            },
+            {
+              "key": "/my-listings-v2.css",
+              "file": "assets/backend/files/my-listings-v2.css",
+              "sha256": "567e7e9dc1a4d29ecb8f7e8730660a3b188606df8583a2f3301187e887d66b30",
+              "append": []
+            },
+            {
+              "key": "/my-listings",
+              "file": "assets/backend/files/my-listings",
+              "sha256": "a563e11ef55566c627ad1b94d8c61ba85a88ae8082eef2f7fc75b8c6000cf06d",
+              "append": []
+            },
+            {
+              "key": "/my-requests.html",
+              "file": "assets/backend/files/my-requests.html",
+              "sha256": "eb280280e5771d605cb3032197abbe2f0888401c090359402514e441bea73910",
+              "append": []
+            },
+            {
+              "key": "/my-requests.js",
+              "file": "assets/backend/files/my-requests.js",
+              "sha256": "de59aa16b0be9be0a2987de9a59d00729d2538bd268be3e2770b3c550d7b1c54",
+              "append": []
+            },
+            {
+              "key": "/viewing-history.html",
+              "file": "assets/backend/files/viewing-history.html",
+              "sha256": "0013b5ee8d4640fce8493454d412de454a5ace9d14f63f2ffef658692814ee7a",
+              "append": []
+            },
+            {
+              "key": "/viewing-requests.js",
+              "file": "assets/backend/files/viewing-requests.js",
+              "sha256": "850ca86bedc94bad7f9305c632da42112856764e6bf0010e5bf4c663913d2e0c",
+              "append": []
+            },
+            {
+              "key": "/personal-sections.css",
+              "file": "assets/backend/files/personal-sections.css",
+              "sha256": "e7763afe1b783ee34eef8677116c172dba21d821ba6fac4abe6c5013981e2b22",
+              "append": []
+            },
+            {
+              "key": "/my-requests",
+              "file": "assets/backend/files/my-requests",
+              "sha256": "b197866466c3e2cc0d7e13c31b19b9fe1f4d936623f49eb933760ac4b56c5e57",
+              "append": []
+            },
+            {
+              "key": "/viewing-history",
+              "file": "assets/backend/files/viewing-history",
+              "sha256": "20a690d8ac2a5216514a5c552600204a479aa4e9272892b05d7abf23838075b1",
+              "append": []
+            },
+            {
+              "key": "/owners.html",
+              "file": "assets/backend/files/owners.html",
+              "sha256": "0d4849e167eecec896532466878baae23f3df804b22d88f6397884e951b59b51",
+              "append": []
+            },
+            {
+              "key": "/login.html",
+              "file": "assets/backend/files/login.html",
+              "sha256": "c244a2271a311dee2918ccdd59b5a2ec0817f203bfd74bb8f82e21c468b63a6a",
+              "append": []
+            },
+            {
+              "key": "/login-entry.js",
+              "file": "assets/backend/files/login-entry.js",
+              "sha256": "58a98ffdc28194db9f9731a3bc185748cbd29b47d4ac98a65e8e1da35be58709",
+              "append": []
+            },
+            {
+              "key": "/auth-entry.js",
+              "file": "assets/backend/files/auth-entry.js",
+              "sha256": "88416c5edfad2e6b3695561ba19efa28e3cb0f0024196c71d972487f39a2276b",
+              "append": []
+            },
+            {
+              "key": "/auth-entry.css",
+              "file": "assets/backend/files/auth-entry.css",
+              "sha256": "a935ca5d2f492f354ecdda554da3b06e573a139cc9794125e95e94af46e7b6df",
+              "append": []
+            },
+            {
+              "key": "/favicon.png",
+              "file": "assets/backend/files/favicon.png",
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "append": []
+            },
+            {
+              "key": "/agent-object-workspace.js",
+              "file": "assets/backend/files/agent-object-workspace.js",
+              "sha256": "d01582b2a34d8035702cc8c2acd75b7f542d69c6296ab4a688652b8686b57fe2",
+              "append": []
+            },
+            {
+              "key": "/listing-photo-resize.js",
+              "file": "assets/backend/files/listing-photo-resize.js",
+              "sha256": "4c5b823a398f341212c018a7e184f4258d15e06454c1d367b1fa14e69d97bd03",
+              "append": []
+            },
+            {
+              "key": "/partners.html",
+              "file": "assets/backend/files/partners.html",
+              "sha256": "f65d0506f0d8da0e866b0b60e573fb3a14d5f3b38f4561b0c4ecae378edc7e4a",
+              "append": []
+            }
+          ]
         }
       ]
     },
     {
       "name": "site",
-      "sha256": "81cbf7f6eed3daa1f2ea47c3962255e9f0c7fbe1de57a143ee7912715a6918ee",
+      "sha256": "61a0471d67866a64ec1726126bdb8b87eb666e43c9dfe230f8396cc69deba720",
       "maps": [
         {
           "name": "files",
@@ -183,13 +686,13 @@
             {
               "key": "/add-object.js",
               "file": "assets/site/files/add-object.js",
-              "sha256": "79fc5f3004d41ec211d22af05e9afe5f3e0d821eca64af257663921c0990dc85",
+              "sha256": "dcd10c09ae3b7563864816590239ca3d01af907c20bc48f9bd1366fdb082b2bc",
               "append": []
             },
             {
               "key": "/agent-access.js",
               "file": "assets/site/files/agent-access.js",
-              "sha256": "fd7d2710a6602d0c68d4d6fed1223bd533853e99aa8aac60407cfc47cf788097",
+              "sha256": "ffef14af6f55a31d072395cc7626897c8cded6c5e0551d427b83c6225666067e",
               "append": []
             },
             {
@@ -201,37 +704,37 @@
             {
               "key": "/script.js",
               "file": "assets/site/files/script.js",
-              "sha256": "3dc8cb6188d302671c5ba52b5a0db7dbf71b880b33bed294e6c6f7c9fa5c2107",
+              "sha256": "c79969ba160a816245e7b3b3790f422efecffbd6cc13798ba53d80d2e6fd3abc",
               "append": []
             },
             {
               "key": "/object.js",
               "file": "assets/site/files/object.js",
-              "sha256": "1a5a5000a514798b93b82becae1189e610c20bdfa8e572879a2b3b3405db084d",
+              "sha256": "56cf6fbee0bc287076baf16751802e0de90092a43425069ed736ef52259e9b34",
               "append": []
             },
             {
               "key": "/style.css",
               "file": "assets/site/files/style.css",
-              "sha256": "bc916384eca36604d95523cf67658aae4b63af30bb728ee4dada809c670cacbf",
+              "sha256": "01ede9691717fe4617705259654e63a9b8f88b66955839cbeae48df1a701a6ce",
               "append": []
             },
             {
               "key": "/profile.js",
               "file": "assets/site/files/profile.js",
-              "sha256": "26fe3f2f4103100e6736a84fd56ba58352422d0e174bb1c8778ba61bb273f808",
+              "sha256": "ba9c4e02d38b188ab0eccddeafd5bc4b6c79febf99d6fe5200480f3d03a7db9b",
               "append": []
             },
             {
               "key": "/my-listings.js",
               "file": "assets/site/files/my-listings.js",
-              "sha256": "ce9307597f426160dbe1b0285f0dc1660f25d6ba319d96b23d1ed19a49d51159",
+              "sha256": "43262e8a7df1566a993ba7aac7153aa7cdad31f1e8ce872372bed64269e2406b",
               "append": []
             },
             {
               "key": "/site-theme.css",
               "file": "assets/site/files/site-theme.css",
-              "sha256": "afcfe8e219c323e8046295472acf9410ed02b3085723b82ed44fcc84d45e71f6",
+              "sha256": "b1bcc513cbea1e036189f69a539e635e88aee0746bb554ec710915983e604a6d",
               "append": []
             },
             {
@@ -243,25 +746,25 @@
             {
               "key": "/site-theme.js",
               "file": "assets/site/files/site-theme.js",
-              "sha256": "fcae62dc9e69462f2ae938bd8ed5d0354fd938aa679fef460d2ef01512cc5f62",
+              "sha256": "8e1286d92b760b5262d9a0f250eb0e9782c1e660c5290d00cdb850338d813667",
               "append": []
             },
             {
               "key": "/index.html",
               "file": "assets/site/files/index.html",
-              "sha256": "84dda5d5112691f10d3e4687d481d1cb6fcfb78d3677666d230127bd2759a19c",
+              "sha256": "4e3c432fac38bcc1eb8b7e5e01e84df26171bebc4fe1acc97ce7ceed98f2f082",
               "append": []
             },
             {
               "key": "/miniapp.html",
               "file": "assets/site/files/miniapp.html",
-              "sha256": "e65bca838cffcfff56a33fda5844a55b056160492fa31ec54b1eea5745fe9f20",
+              "sha256": "abbab95cd0770eeeb2f72f28067df65a380601507252da579e555db8b8bd1a64",
               "append": []
             },
             {
               "key": "/concept-v20.css",
               "file": "assets/site/files/concept-v20.css",
-              "sha256": "92669fe7aad93d4828185ea661cf6b60ff397b4ffcf683f55067c80521be3edc",
+              "sha256": "ebf367c62e1fc84b285208d27ace9babec74eb72113d703302d27fd5f5e39535",
               "append": []
             },
             {
@@ -273,121 +776,121 @@
             {
               "key": "/i18n.js",
               "file": "assets/site/files/i18n.js",
-              "sha256": "98db402d9ae660a1b349c66c8c85df9b916e7ab30fa00d9c816f352526f989d0",
+              "sha256": "4e65fabc63994222fd6e71570903b1990dc84ba07188aede6e1467e6773a0a0e",
               "append": []
             },
             {
               "key": "/",
               "file": "assets/site/files/_root.html",
-              "sha256": "36120c005401d18444ee663cce899ec9fa2683c937b8d2fa4c335ce7189e8c28",
+              "sha256": "5bc6db6e0a2e02531ac1d5244c9de133fd96a7c708611ecc359d9b1fc5c5610d",
               "append": []
             },
             {
               "key": "/catalog.html",
               "file": "assets/site/files/catalog.html",
-              "sha256": "cb68cff70c9891e2d14ab8b15596f26f6acc22c768629c0d6c441d6eb0651dc0",
+              "sha256": "12d49abb997659c76d30c8806903f4ab5ca9e7e66f90612c009d4a2dc6e5238e",
               "append": []
             },
             {
               "key": "/requests.html",
               "file": "assets/site/files/requests.html",
-              "sha256": "a927da9397c290104f64aa91644c86fa1c2b307bc1349ff0605966e0a54c87fa",
+              "sha256": "c3de1488f23f9fc5d9ec5f3e51237c2ff28e8b34e44671a30851f966638088c4",
               "append": []
             },
             {
               "key": "/agents.html",
               "file": "assets/site/files/agents.html",
-              "sha256": "1d45bc149a80c80f6bb237ae9f87b9705bca7522a84184c1bdb4e902f8257fd1",
+              "sha256": "af8b6d39cb6bad64a82f3497b45885c5f13cd07935f8c8dc8f76d2329160e57a",
               "append": []
             },
             {
               "key": "/agent-public.html",
               "file": "assets/site/files/agent-public.html",
-              "sha256": "a8f5d0b5a195d8018aca2925aaf91a03031fa92288b96f3c41208be0ddfa04c3",
+              "sha256": "17b0311f86d0dc430005230b88eca72e8c0c355375bf143f903c520ba8eb759b",
               "append": []
             },
             {
               "key": "/object.html",
               "file": "assets/site/files/object.html",
-              "sha256": "71d4544cb20bb26a5c682912bb8a08b9b7e758a1d24ea651edd01f9244d4723e",
+              "sha256": "9b49b37e7b2bb1ff95ff0e56839d3f7bc954265c01fa4619c53e3597fc9f9392",
               "append": []
             },
             {
               "key": "/object-map.html",
               "file": "assets/site/files/object-map.html",
-              "sha256": "c86165bed273b227089fb26550f53160dcc28b9b963ee24d1fe516733b95ba48",
+              "sha256": "9f9c0cee23e762d1d09143cc3bf9235349134382d4eb3d150c621bba7c5fe54b",
               "append": []
             },
             {
               "key": "/district-map.html",
               "file": "assets/site/files/district-map.html",
-              "sha256": "457eae19f80598e17f803b0528a604b6d47f4c4320fbed133db1a248d1aa9c43",
+              "sha256": "21be4f473c9fcc5f45ad6fe6a3b4928cb3df9d76bfc96e9c1eb5db957e4937c0",
               "append": []
             },
             {
               "key": "/newbuildings.html",
               "file": "assets/site/files/newbuildings.html",
-              "sha256": "2456b8ee5312df2b0a8593e58e751d1c4ba3059139eb9f7f11ebd4dcef406ec8",
+              "sha256": "c00c1fabfc9fe12dbcd8a964bedfa07ddcbcbc2b1b8cda27786334eb02cc5bc3",
               "append": []
             },
             {
               "key": "/newbuilding.html",
               "file": "assets/site/files/newbuilding.html",
-              "sha256": "edb2a3a3187e807d2f488124d2fd120ab55824e3be1c9167062c040b8fd5e88d",
+              "sha256": "cacab8dda5f0c03e7750a3d055a434bb7d6a9b004ad59f01a9c8bd2986eb6108",
               "append": []
             },
             {
               "key": "/mortgage.html",
               "file": "assets/site/files/mortgage.html",
-              "sha256": "5cb5258b3143201539a8740789156c400e634accebdf36f8f169b7525960a246",
+              "sha256": "4cc4d99a30a09d11593657a0bc8fcffe693312aaa93c46425a4380d919762e40",
               "append": []
             },
             {
               "key": "/calculator.html",
               "file": "assets/site/files/calculator.html",
-              "sha256": "862a881c4cb2651fdbb34b684c3ea72a0880cf7770413eb8858b69b1197f0c0c",
+              "sha256": "b56d0eb1a0202c50c2b5eaed1972b837c40437b9642af754c744e1eeee4454fe",
               "append": []
             },
             {
               "key": "/add-object.html",
               "file": "assets/site/files/add-object.html",
-              "sha256": "14b948bac6f56b73c2fe09064c66c51edb32ad3ac92000513ae76238336900fc",
+              "sha256": "b6b380c1d691d9df0337ea8e4b327a734a36fbd20dea19d5ac5b6864cb17f277",
               "append": []
             },
             {
               "key": "/add-request.html",
               "file": "assets/site/files/add-request.html",
-              "sha256": "e414e1b0649ab7c006b36b994793f359e94eacbe372192d6b613c65033625efe",
+              "sha256": "268c92d757dd13a0030ff28552d8ead11e18169048dd146ab97ac8c6e989de7b",
               "append": []
             },
             {
               "key": "/contract-help.html",
               "file": "assets/site/files/contract-help.html",
-              "sha256": "bedbdefda155220b3f3e23baf2c62a9743bea74167a7ddb492e155140e59487d",
+              "sha256": "adf5e68c26b7a04d7e3d306d80a6a6df717b64b6a4bfd322db290159491ae89a",
               "append": []
             },
             {
               "key": "/home-v20.css",
               "file": "assets/site/files/home-v20.css",
-              "sha256": "6ae96c4b64884778270bc6d8b8b3b7e38c40e1b682ad5fcd7f5e2a6ab0b5d73b",
+              "sha256": "c068f3477a40b45d68a64ac91b8b3b9151e622b2aa4ed6842765af15442152f6",
               "append": []
             },
             {
               "key": "/home-v20.js",
               "file": "assets/site/files/home-v20.js",
-              "sha256": "f3ef5b7fb4cfa8a9adea37a6b49076fe845470819eb838e6343a48d08e554f9b",
+              "sha256": "96548de7a2f5308c40402a191b56f69344206179594f05a5f10c075d1de6c18f",
               "append": []
             },
             {
               "key": "/public-v20.css",
               "file": "assets/site/files/public-v20.css",
-              "sha256": "c4ef5160d4208ee5ef419a73714d887ec2ec00bf46cfa4481b567db2b85db8c3",
+              "sha256": "93986071395c915d208f5de5789e424bdddd64c39ae3d3393771dc537a114ec9",
               "append": []
             },
             {
               "key": "/public-v20.js",
               "file": "assets/site/files/public-v20.js",
-              "sha256": "a2474cb900e583ee2d05ef217d2f0c89ff43db7075659766bd4be18af1001c9c",
+              "sha256": "8acafed434476f13a24ad1d60d271cc867f1f05b1196a43f46ae09f9f2035333",
               "append": []
             },
             {
@@ -447,7 +950,7 @@
             {
               "key": "/add-layout-v20.js",
               "file": "assets/site/files/add-layout-v20.js",
-              "sha256": "ab19ccf603abc8ae0f2ad0f1183ff563cb02752fcc6858f9a80e56719b1fc518",
+              "sha256": "80b65fff96c2ca01f190d5df65922a1969aa428de61926f152409248378c7d77",
               "append": []
             },
             {
@@ -471,37 +974,37 @@
             {
               "key": "/placement-review.css",
               "file": "assets/site/files/placement-review.css",
-              "sha256": "c82577e857b34c9ce9962a46f6c8021c77be16b4b51d8cc7d00f5a46858d6157",
+              "sha256": "23f9247fa564b4fc47ac2bb60b023d436159d22e999ec3f717412910a98d2ac5",
               "append": []
             },
             {
               "key": "/placement-review.js",
               "file": "assets/site/files/placement-review.js",
-              "sha256": "3e3d3b9d6063a4bc3016fffe87389fa3774764033f637a2921777d77aefca106",
+              "sha256": "fb1cf2f57927a96c10f2747c0cf20c14c616edb8e148e33d58556e4c3c17c1df",
               "append": []
             },
             {
               "key": "/agent-registry.css",
               "file": "assets/site/files/agent-registry.css",
-              "sha256": "7184859d78172618a737c12992bf019e3e8760d0225efadb36d5b086d43caadc",
+              "sha256": "fbd3474fda4c586f70925904c4944f00da87f705beb798288126039229908624",
               "append": []
             },
             {
               "key": "/agent-registry.js",
               "file": "assets/site/files/agent-registry.js",
-              "sha256": "2ef501a578d9eb37d2615efa62e99607b47034e7e1e947282352ff734803d178",
+              "sha256": "4592bb951b17ad40d52975646f8f2bd572df4e415ff55a19f44f918c42d8a5a8",
               "append": []
             },
             {
               "key": "/agent-directory.css",
               "file": "assets/site/files/agent-directory.css",
-              "sha256": "4c1e570dc96090b2a780e3a83ca6d0c37737f9e6a17b48fc254e9dfd05751eec",
+              "sha256": "5b8f99ed8772d297bd808be23d2432a8605aac237643baec5a740e6d8ea16ad3",
               "append": []
             },
             {
               "key": "/v20-global.css",
               "file": "assets/site/files/v20-global.css",
-              "sha256": "b42be21eb5b7ad473a7d61746cf1405ff9b8d7594798efee5dd259f3a45af3a7",
+              "sha256": "d07642845723d47654a0b995dfc257d8d53c878e9b0f7d57c0ed4be100266f14",
               "append": []
             },
             {
@@ -513,13 +1016,13 @@
             {
               "key": "/api/crm/agent-cabinet",
               "file": "assets/site/files/api/crm/agent-cabinet",
-              "sha256": "f283b202b9214a2ab8c19862e91d2481b09871b0f0bf1130469b2c8744e79139",
+              "sha256": "05820e791af2ef67d0753613ab350e0d1b653b19d4e0c9157fe44238eb79ee08",
               "append": []
             },
             {
               "key": "/agent-cabinet.html",
               "file": "assets/site/files/agent-cabinet.html",
-              "sha256": "f283b202b9214a2ab8c19862e91d2481b09871b0f0bf1130469b2c8744e79139",
+              "sha256": "0281339b29738305de752ee815feecc09bbb16dd05cb4e2780153ac13752815c",
               "append": []
             },
             {
@@ -531,7 +1034,7 @@
             {
               "key": "/crm-private-ui.css",
               "file": "assets/site/files/crm-private-ui.css",
-              "sha256": "2543d712f9f48a3fb5a1ff76534702d519aa62a4414b3220bc2c2393cd9ae61a",
+              "sha256": "47ff81f4d6885e061087c96da7698a43aced10af620653649e27630c841f4dfe",
               "append": []
             },
             {
@@ -543,19 +1046,19 @@
             {
               "key": "/profile",
               "file": "assets/site/files/profile",
-              "sha256": "375570b531c0d61723d7e5f618e99f53e34b7e99fd29935b6d30bffcb83a084f",
+              "sha256": "56a9e23fe4fd4712a5128a813093fc7278e1b5127ed6ce257e918f1f19d25d74",
               "append": []
             },
             {
               "key": "/profile.html",
               "file": "assets/site/files/profile.html",
-              "sha256": "375570b531c0d61723d7e5f618e99f53e34b7e99fd29935b6d30bffcb83a084f",
+              "sha256": "271613a64dc66ae3e1e3ce2e47e2caf2ad76215a65cc87bc04137f79f7192e6b",
               "append": []
             },
             {
               "key": "/profile-v2.css",
               "file": "assets/site/files/profile-v2.css",
-              "sha256": "c9f9cf49e53f1505fb0b0eb2a268ddb6f987588f6a0f3bf9f2f651edbf008ad1",
+              "sha256": "2e833ef8a32166326d717baf87fa94d6c94f6d7d5ee8da54ada56fc28707c49f",
               "append": []
             },
             {
@@ -567,25 +1070,25 @@
             {
               "key": "/my-listings.html",
               "file": "assets/site/files/my-listings.html",
-              "sha256": "0c69208831a5adc421a567b3511da1fb2f21eef3f9324c71ccd69384e3e1c3f4",
+              "sha256": "edcd1bd584cd47bc223fdae4ba91541ef02a868b8e30669dc1288fe8569da5cf",
               "append": []
             },
             {
               "key": "/my-listings-v2.css",
               "file": "assets/site/files/my-listings-v2.css",
-              "sha256": "f6b04e47a4ca4defb30992444e1996d24bfaeb0d9c372589609d8127aeba5029",
+              "sha256": "567e7e9dc1a4d29ecb8f7e8730660a3b188606df8583a2f3301187e887d66b30",
               "append": []
             },
             {
               "key": "/my-listings",
               "file": "assets/site/files/my-listings",
-              "sha256": "0c69208831a5adc421a567b3511da1fb2f21eef3f9324c71ccd69384e3e1c3f4",
+              "sha256": "a563e11ef55566c627ad1b94d8c61ba85a88ae8082eef2f7fc75b8c6000cf06d",
               "append": []
             },
             {
               "key": "/my-requests.html",
               "file": "assets/site/files/my-requests.html",
-              "sha256": "01966528a8c0126ae48b0389b075b2df7a74cc75d6cd976f77d09e55452ef7ac",
+              "sha256": "eb280280e5771d605cb3032197abbe2f0888401c090359402514e441bea73910",
               "append": []
             },
             {
@@ -597,7 +1100,7 @@
             {
               "key": "/viewing-history.html",
               "file": "assets/site/files/viewing-history.html",
-              "sha256": "8256d484deae3539aa729dff90fc1fc40b9ac890d2a4f8539a8b642095f52d88",
+              "sha256": "0013b5ee8d4640fce8493454d412de454a5ace9d14f63f2ffef658692814ee7a",
               "append": []
             },
             {
@@ -609,31 +1112,31 @@
             {
               "key": "/personal-sections.css",
               "file": "assets/site/files/personal-sections.css",
-              "sha256": "9a7a8688e3e08d76eb5fad7c0d74696853d96ba8ae85326145cf841198822c3a",
+              "sha256": "e7763afe1b783ee34eef8677116c172dba21d821ba6fac4abe6c5013981e2b22",
               "append": []
             },
             {
               "key": "/my-requests",
               "file": "assets/site/files/my-requests",
-              "sha256": "01966528a8c0126ae48b0389b075b2df7a74cc75d6cd976f77d09e55452ef7ac",
+              "sha256": "b197866466c3e2cc0d7e13c31b19b9fe1f4d936623f49eb933760ac4b56c5e57",
               "append": []
             },
             {
               "key": "/viewing-history",
               "file": "assets/site/files/viewing-history",
-              "sha256": "8256d484deae3539aa729dff90fc1fc40b9ac890d2a4f8539a8b642095f52d88",
+              "sha256": "20a690d8ac2a5216514a5c552600204a479aa4e9272892b05d7abf23838075b1",
               "append": []
             },
             {
               "key": "/owners.html",
               "file": "assets/site/files/owners.html",
-              "sha256": "a323b6414238cd897ee8859eeab838bd779562a3a5c3c1b77c81345cd4d50d2e",
+              "sha256": "0d4849e167eecec896532466878baae23f3df804b22d88f6397884e951b59b51",
               "append": []
             },
             {
               "key": "/login.html",
               "file": "assets/site/files/login.html",
-              "sha256": "842e2271d471cfde516019570443e1d36d34e05c28b96bf00ca03734db2f9885",
+              "sha256": "c244a2271a311dee2918ccdd59b5a2ec0817f203bfd74bb8f82e21c468b63a6a",
               "append": []
             },
             {
@@ -652,6 +1155,30 @@
               "key": "/auth-entry.css",
               "file": "assets/site/files/auth-entry.css",
               "sha256": "a935ca5d2f492f354ecdda554da3b06e573a139cc9794125e95e94af46e7b6df",
+              "append": []
+            },
+            {
+              "key": "/favicon.png",
+              "file": "assets/site/files/favicon.png",
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "append": []
+            },
+            {
+              "key": "/agent-object-workspace.js",
+              "file": "assets/site/files/agent-object-workspace.js",
+              "sha256": "d01582b2a34d8035702cc8c2acd75b7f542d69c6296ab4a688652b8686b57fe2",
+              "append": []
+            },
+            {
+              "key": "/listing-photo-resize.js",
+              "file": "assets/site/files/listing-photo-resize.js",
+              "sha256": "4c5b823a398f341212c018a7e184f4258d15e06454c1d367b1fa14e69d97bd03",
+              "append": []
+            },
+            {
+              "key": "/partners.html",
+              "file": "assets/site/files/partners.html",
+              "sha256": "f65d0506f0d8da0e866b0b60e573fb3a14d5f3b38f4561b0c4ecae378edc7e4a",
               "append": []
             }
           ]

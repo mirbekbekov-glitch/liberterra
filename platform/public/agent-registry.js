@@ -10,57 +10,138 @@
   function element(tag, text) { const n=document.createElement(tag); if(text)n.textContent=text; return n; }
   function valid(record) {
     const age=Date.now()-Date.parse(record?.checked_at);
-    return Boolean(record?.status==='verified' && record.certificate && Number.isFinite(age) && age>=0 && age<=90*86400000 && /^https:\/\/www\.cci\.kg\/reestry\/[A-Za-z0-9_./%?=&-]+$/.test(record.source));
+    return Boolean(record?.status==='verified' && typeof record.certificate==='string' && record.certificate.trim() && Number.isFinite(age) && age>=0 && age<=90*86400000 && /^https:\/\/www\.cci\.kg\/reestry\/[A-Za-z0-9_./%?=&-]+$/.test(record.source));
+  }
+  // Public evidence comes from the server's registry projection, never a profile checkbox.
+  function selectAgents(agents, mode) {
+    if (mode === 'only') return agents.filter(agent => valid(agent.registry));
+    if (mode === 'verified') return agents.slice().sort((a, b) => Number(valid(b.registry)) - Number(valid(a.registry)));
+    return agents.slice();
   }
   function badge(parent, record) {
     parent.querySelector('[data-registry-badge]')?.remove();
-    if (!record || record.status !== 'verified' || !record.certificate) return;
-    const age = Date.now()-Date.parse(record.checked_at);
-    if (!Number.isFinite(age) || age<0 || age>90*86400000) return;
-    if (!/^https:\/\/www\.cci\.kg\/reestry\/[A-Za-z0-9_./%?=&-]+$/.test(record.source)) return;
-    const box=element('details'); box.className='registry-badge'; box.dataset.registryBadge='';
-    box.append(element('summary','✓ '+t(0)),element('p',t(1)+': '+record.certificate),element('p',t(2)+': '+new Date(record.checked_at).toLocaleDateString(document.documentElement.lang)));
-    const link=element('a',t(3)); link.href=record.source; link.target='_blank'; link.rel='noopener noreferrer'; box.append(link,element('p',t(4))); parent.append(box);
+    const verified = valid(record);
+    const copies = {
+      ru: ['Реестр не подтверждён', 'На платформе пока нет действующего подтверждения. Это не означает, что агент отсутствует в реестре.', 'Аттестация подтверждена', 'Открыть реестр ТПП КР'],
+      en: ['Registry unconfirmed', 'The platform has no current verification. This does not mean the agent is absent from the register.', 'Certification verified', 'Open the CCI KR register'],
+      zh: ['名册状态未确认', '平台暂无有效核验。这不代表该经纪人不在名册中。', '资格已核实', '打开工商会名册'],
+      ky: ['Реестр ырасталган эмес', 'Платформада учурдагы ырастоо жок. Бул агент реестрде жок дегенди билдирбейт.', 'Аттестация ырасталды', 'КР СӨП реестрин ачуу']
+    };
+    const lang = (document.documentElement.lang || 'ru').split('-')[0];
+    const copy = copies[lang === 'kg' ? 'ky' : lang] || copies.ru;
+    const box = element('details');
+    box.className = 'registry-badge registry-badge--' + (verified ? 'verified' : 'unconfirmed');
+    box.dataset.registryBadge = verified ? 'verified' : 'unconfirmed';
+    const summary = element('summary');
+    const icon = element('span', verified ? '✓' : 'i');
+    icon.className = 'registry-status-icon';
+    icon.setAttribute('aria-hidden', 'true');
+    summary.append(icon, element('span', verified ? t(0) : copy[0]));
+    box.append(summary);
+    if (verified) {
+      box.append(element('p', copy[2]), element('p', t(1) + ': ' + record.certificate),
+        element('p', t(2) + ': ' + new Date(record.checked_at).toLocaleDateString(lang === 'kg' ? 'ky' : lang)));
+    } else {
+      box.append(element('p', copy[1]));
+    }
+    const link = element('a', verified ? t(3) : copy[3]);
+    link.href = verified ? record.source : source;
+    link.target = '_blank';
+    link.rel = 'noopener noreferrer';
+    box.append(link);
+    if (verified) box.append(element('p', t(4)));
+    parent.append(box);
+  }
+
+  function adminReviews(parent, request) {
+    const section=element('section');section.id='certificateReviews';section.className='registry-editor';parent.append(section);
+    section.append(element('h3','Проверка сертификатов'));
+    const open=element('button','Загрузить заявки');open.type='button';section.append(open);
+    const notice=element('p');notice.setAttribute('role','status');section.append(notice);
+    const list=element('div');section.append(list);
+    async function load(){
+      open.disabled=true;notice.textContent='Загружаем заявки…';list.replaceChildren();
+      try{
+        const result=await request('list_certificate_reviews');if(!section.isConnected)return;
+        const reviews=Array.isArray(result.reviews)?result.reviews:[];
+        notice.textContent=reviews.length?'Заявок на проверку: '+reviews.length:'Нет заявок на проверку.';
+        for(const review of reviews){
+          const form=element('form');form.className='registry-editor';list.append(form);
+          form.append(element('h4',review.agent_name||'Агент'),element('p','ФИО: '+review.full_name),element('p','Сертификат: '+review.certificate));
+          function field(label,type){const wrap=element('label',label),input=element('input');input.type=type;wrap.append(input);form.append(wrap);return input;}
+          const sourceInput=field('Ссылка на запись официального реестра','url');sourceInput.value=source;
+          const validInput=field('Номер и ФИО сверены с официальным реестром; сертификат действителен','checkbox');
+          const ownerInput=field('Подтверждена принадлежность аккаунта владельцу сертификата','checkbox');
+          const reason=field('Причина отказа','text');reason.maxLength=500;
+          const label=element('label','Решение'),decision=element('select');
+          for(const [value,text]of [['','Выберите решение'],['verified','Подтвердить'],['rejected','Отклонить']]){const option=element('option',text);option.value=value;decision.append(option);}decision.required=true;label.append(decision);form.append(label);
+          const save=element('button','Сохранить решение');save.type='submit';form.append(save);
+          const message=element('p');message.setAttribute('role','status');form.append(message);
+          form.onsubmit=async event=>{
+            event.preventDefault();if(save.disabled)return;
+            if(decision.value==='verified'&&(!validInput.checked||!ownerInput.checked)){message.textContent='Для подтверждения отметьте обе выполненные проверки.';return;}
+            if(decision.value==='verified'&&!/^https:\/\/www\.cci\.kg\/reestry\/[A-Za-z0-9_./%?=&-]+$/.test(sourceInput.value.trim())){message.textContent='Укажите ссылку на официальный реестр ТПП КР.';return;}
+            save.disabled=true;message.textContent='Сохраняем решение…';
+            try{
+              await request('decide_certificate_review',{agent_id:review.agent_id,decision:decision.value,source:sourceInput.value.trim(),reason:reason.value.trim(),checked_valid:validInput.checked,checked_identity:ownerInput.checked});
+              if(!section.isConnected)return;
+              form.replaceChildren(element('p',decision.value==='verified'?'Подтверждено. Отметка появится в каталоге после обновления данных (до 30 секунд).':'Заявка отклонена.'));
+            }catch(error){if(section.isConnected){message.textContent='Решение не подтверждено сервером. Обновите список перед повторной попыткой.';save.disabled=false;}}
+          };
+        }
+      }catch(error){if(section.isConnected)notice.textContent='Не удалось получить заявки. Проверьте права администратора и повторите.';}
+      finally{open.disabled=false;}
+    }
+    open.onclick=load;
   }
   async function editor(parent) {
     parent.querySelector('[data-registry-editor]')?.remove();
-    const box=element('section'); box.dataset.registryEditor=''; box.className='registry-editor'; parent.append(box);
-    const status=element('p'); status.setAttribute('role','status');
-    try {
-      const initial=await window.LiberterraAgentAccess.request('get_agent_registry',{});
-      if (!box.isConnected) return;
-      box.append(element('h3',t(5)));
-      const form=element('form'); box.append(form);
-      function field(title,name,type='text') { const label=element('label',title),input=element('input'); input.name=name;input.type=type;label.append(input);form.append(label);return input; }
-      const target=initial.is_admin?field(t(15),'agent_id'):null;
-      if(target) { target.pattern='[0-9]+'; const load=element('button',t(16));load.type='button';form.append(load);load.onclick=async()=>{load.disabled=true;try{const r=await window.LiberterraAgentAccess.request('get_agent_registry',{agent_id:target.value});fill(r.registry);status.textContent='';}catch(_){status.textContent=t(20);}finally{load.disabled=false;}}; }
-      const full=field(t(6),'full_name');full.required=true;full.minLength=5;full.maxLength=160;
-      const cert=field(t(7),'certificate');cert.required=true;cert.maxLength=40;
-      const url=field(t(8),'source','url');url.required=true;
-      let state,confirm;
-      if(initial.is_admin){const label=element('label',t(17));state=element('select');['pending','verified','rejected'].forEach((v,i)=>{const o=element('option',t(12+i));o.value=v;state.append(o);});label.append(state);form.append(label);confirm=field(t(18),'checked_valid','checkbox');confirm.parentElement.className='registry-confirm';}
-      const save=element('button',t(initial.is_admin?19:9));save.type='submit';form.append(element('p',t(21)),save,status);
-      function fill(r){full.value=r?.full_name||'';cert.value=r?.certificate||'';url.value=r?.source||source;if(state)state.value=r?.status||'pending';if(confirm)confirm.checked=false;status.textContent=r?t(12+['pending','verified','rejected'].indexOf(r.status)):'';}
-      fill(initial.registry);
-      form.addEventListener('input',e=>{if(confirm && e.target!==confirm)confirm.checked=false;});
-      form.onsubmit=async e=>{e.preventDefault();save.disabled=true;try{await window.LiberterraAgentAccess.request('set_agent_registry',{agent_id:target?.value||'',full_name:full.value,certificate:cert.value,source:url.value,status:state?.value||'pending',checked_valid:confirm?.checked===true});status.textContent=t(10);}catch(_){status.textContent=t(11);}finally{save.disabled=false;}};
-    } catch(e) {
-      if (!box.isConnected) return;
-      if(e.code==='agent_not_found'){box.remove();return;}
-      box.append(element('h3',t(5)));
-      const lang=(document.documentElement.lang||'ru').split('-')[0];
-      if(e.code==='unsupported_action'){
-        const messages={ru:'Проверка реестра пока не подключена к этому способу входа. Статус сертификата не подтверждён.',en:'Registry verification is not yet available for this sign-in method. Certificate status is unconfirmed.',zh:'此登录方式暂不支持名册核验。证书状态尚未确认。'};
-        status.textContent=messages[lang]||messages.ru;box.append(status);
-        const link=element('a',t(3));link.href=source;link.target='_blank';link.rel='noopener noreferrer';box.append(link);
-      }else{
-        status.textContent=t(20);box.append(status);
-        const retry=element('button',({ru:'Повторить загрузку',en:'Retry',zh:'重试'})[lang]||'Повторить загрузку');retry.type='button';
-        retry.onclick=()=>{retry.disabled=true;editor(parent);};box.append(retry);
+    const box=element('section');box.dataset.registryEditor='';box.className='registry-editor';parent.append(box);
+    box.append(element('h3','Реестр риелторов ТПП КР'));
+    const status=element('p','Загружаем данные сертификата…');status.setAttribute('role','status');box.append(status);
+    const request=async(action,data={})=>{
+      try{return await window.LiberterraAgentAccess.request(action,data);}
+      catch(error){
+        if(action!=='get_user_profile'||error.code!=='unsupported_action')throw error;
+        const response=await fetch('/api/user-access',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action:'web_profile'})});
+        const result=await response.json();if(!response.ok||!result.ok)throw Error('profile_unavailable');return result;
       }
-    }
+    };
+    try {
+      const result=await request('get_user_profile');
+      if(!box.isConnected)return;
+      const user=result.user;
+      if(user?.is_admin===true)adminReviews(box,request);
+      if(!user||user.account_type!=='Агент'){status.textContent='Подача сертификата доступна в профиле агента.';return;}
+      const labels={verified:'Аттестация подтверждена',pending:'Сертификат на проверке',rejected:'Сертификат не подтверждён',unverified:'Сертификат ещё не подтверждён'};
+      status.textContent=labels[user.certificate_verification?.status]||labels.unverified;window.dispatchEvent(new CustomEvent('liberterra:certificate-status',{detail:{status:labels[user.certificate_verification?.status]?user.certificate_verification.status:'unverified'}}));
+      const form=element('form');box.append(form);
+      function input(label,name,value,max){const wrap=element('label',label),field=element('input');field.name=name;field.value=value||'';field.required=true;field.maxLength=max;wrap.append(field);form.append(wrap);return field;}
+      const full=input('ФИО по сертификату','certificate_legal_name',user.certificate_legal_name,160);full.minLength=5;
+      const cert=input('Номер сертификата','certificate_number',String(user.certificate_number||'').replace(/^№\s*/u,''),40);cert.pattern='[A-Za-zА-Яа-я0-9-]{3,40}';
+      form.append(element('p','Укажите данные точно как в сертификате. Администратор сверит их с реестром и подтвердит принадлежность сертификата вашему аккаунту.'));
+      const save=element('button','Отправить на проверку');save.type='submit';form.append(save);
+      const sourceLink=element('a','Открыть реестр ТПП КР');sourceLink.href=source;sourceLink.target='_blank';sourceLink.rel='noopener noreferrer';box.append(sourceLink);
+      form.onsubmit=async event=>{
+        event.preventDefault();if(save.disabled)return;save.disabled=true;status.textContent='Сохраняем данные сертификата…';
+        let saved=false;
+        try {
+          const fresh=await request('get_user_profile');
+          if(!box.isConnected)return;
+          if(!fresh.user||fresh.user.account_type!=='Агент')throw Error('agent_required');
+          await request('update_user_profile',{full_name:fresh.user.name,phone:fresh.user.phone,certificate_number:cert.value.trim(),certificate_legal_name:full.value.trim()});
+          saved=true;
+          const review=await request('submit_certificate_review');
+          if(!box.isConnected)return;
+          window.dispatchEvent(new CustomEvent('liberterra:certificate-status',{detail:{status:review.status==='verified'?'verified':'pending'}}));status.textContent=review.status==='verified'?'Аттестация уже подтверждена.':'Заявка отправлена на проверку. Статус появится здесь после решения администратора.';
+          save.textContent='Отправить повторно';
+        }catch(error){if(box.isConnected)status.textContent=saved?'Данные сохранены, но отправка на проверку не подтверждена. Обновите страницу и проверьте статус перед повторной отправкой.':'Не удалось сохранить сертификат. Проверьте вход и данные, затем попробуйте снова.';}
+        finally{save.disabled=false;}
+      };
+    }catch(error){if(!box.isConnected)return;status.textContent='Не удалось загрузить сертификат. Войдите в аккаунт и повторите.';const retry=element('button','Повторить');retry.type='button';retry.onclick=()=>editor(parent);box.append(retry);}
   }
-  window.LiberterraRegistry={badge,editor,valid};
+
+  window.LiberterraRegistry={badge,editor,valid,selectAgents};
   function translateSort(){const select=document.querySelector('#agentRegistrySort');if(!select)return;const lang=(document.documentElement.lang||'ru').split('-')[0];const labels={ru:['Порядок специалистов','По количеству объявлений','Сначала с подтверждённым реестром','Только с подтверждённым реестром'],en:['Sort specialists','By listing count','Registry verified first','Registry verified only'],zh:['经纪人排序','按房源数量','已核实名册优先','仅已核实名册']}[lang]||[];if(!labels.length)return;document.querySelector('[data-registry-sort-label]').textContent=labels[0];Array.from(select.options).forEach((o,i)=>o.textContent=labels[i+1]);}
   document.addEventListener('DOMContentLoaded',translateSort);
   new MutationObserver(translateSort).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});

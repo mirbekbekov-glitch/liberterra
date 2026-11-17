@@ -5,7 +5,7 @@ async function start({port=4173,dataDir=path.join(root,'.sandbox')}={}){
  build();fs.mkdirSync(dataDir,{recursive:true});const lock=path.join(dataDir,'server.lock');
  const store=sandbox(path.join(dataDir,'sheets.json')),sessions=new Map();let origin;
  const actorFor=request=>sessions.get((request.headers.get('cookie')||'').match(/(?:^|;\s*)lt_sandbox=([a-f0-9]+)/)?.[1]);
- const context=vm.createContext({Request,Response,Headers,URL,TextDecoder,Uint8Array,AbortSignal,
+ const context=vm.createContext({Request,Response,Headers,URL,URLSearchParams,TextDecoder,Uint8Array,AbortSignal,__name:value=>value,
   ACCOUNT_WEBHOOK_URL:'https://sandbox.invalid/apps-script',
   verifyWebSession:async request=>{const actor=actorFor(request);return actor?{sub:actor}:null;},isAuthorizedWebSession:async()=>true,
   fetch:async(url,options)=>{

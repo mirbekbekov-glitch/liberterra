@@ -9,6 +9,9 @@
     }
     return box;
   }
+  function knownUser(){try{const r=JSON.parse(localStorage.getItem('liberterra-verified-web-user')||'null');return r&&r.verified_at&&Date.now()-Number(r.verified_at)<7*24*60*60*1000?r.user:null;}catch(_){return null;}}
+  function accountActions(){const box=document.createElement('div');box.className='lt-auth-actions lt-auth-account';const p=document.createElement('a');p.href='/profile.html';p.className='lt-auth-primary';p.textContent='Профиль';const out=document.createElement('a');out.href='/';out.className='lt-auth-secondary lt-auth-logout';out.style.cssText='background:transparent!important;color:#252a31!important;border:1px solid #d6dbe1!important;box-shadow:none!important';out.textContent='Выйти';out.addEventListener('click',async e=>{e.preventDefault();out.textContent='Выходим…';try{await fetch('/api/logout',{method:'POST',credentials:'same-origin'});}catch(_){}finally{localStorage.removeItem('liberterra-verified-web-user');sessionStorage.removeItem('liberterra-verified-web-user');sessionStorage.removeItem('liberterra-profile-view');location.assign('/');}});box.append(p,out);return box;}
+  function show(el,on){el.hidden=!on;if(on)el.style.removeProperty('display');else el.style.setProperty('display','none','important');}
   function update() {
     const loading=document.querySelector('#profileCard .profile-loading');
     if(loading&&document.querySelector('#userRegistrationGate [data-email-auth-form]')&&!window.LiberterraUserAccess?.isRegistered?.()){
@@ -18,9 +21,13 @@
       empty.append(title,description,actions());loading.replaceWith(empty);
     }
     const header=document.querySelector('.public-header')||document.querySelector('.site-header .header-controls');
-    if(header&&!header.querySelector('.lt-auth-actions'))header.append(actions());
-    const entry=header?.querySelector('.lt-auth-actions');
-    if(entry)entry.hidden=Boolean(document.querySelector('.lt-account-menu'));
+    const user=knownUser(),menu=Boolean(document.querySelector('.lt-account-menu'));
+    if(header&&!header.querySelector('.lt-auth-actions:not(.lt-auth-account)'))header.append(actions());
+    const entry=header?.querySelector('.lt-auth-actions:not(.lt-auth-account)');
+    if(entry)show(entry,!(Boolean(user)||menu));
+    let account=header?.querySelector('.lt-auth-account');
+    if(header&&user&&!menu&&!account){account=accountActions();header.append(account);}
+    if(account)show(account,Boolean(user)&&!menu);
     for(const empty of document.querySelectorAll('#profileCard .profile-empty,.crm-access-state')) {
       if(empty.querySelector('.lt-auth-actions'))continue;
       if(!/Войдите|registration_required|telegram_required/.test(empty.textContent))continue;

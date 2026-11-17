@@ -7,7 +7,7 @@
   --v20-accent-hover: #601a31;
   --v20-accent-soft: #f3e6eb;
   --v20-accent-secondary: #df8739;
-  --v20-paper: #f8f5ef;
+  --v20-paper: #F5F7FA;
   --v20-line: #e4dfd8;
   --v20-muted: #56524d;
   --v20-field-line: #91867c;
@@ -442,7 +442,6 @@ body.v20[data-public-theme="dark"] :is(input, textarea)::placeholder {
 
 /* Keep the sign-in heading legible over its dark photo background. */
 body.v20 .registration-entry-card h2{color:#fff!important}
-
 
 /* Источник объекта: виден только агенту с подтверждённым доступом. */
 .v20-source{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:12px;padding-top:12px;border-top:1px solid var(--v-line,#e2dcd4)}

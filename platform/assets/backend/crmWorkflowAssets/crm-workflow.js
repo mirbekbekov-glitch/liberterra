@@ -56,6 +56,37 @@
     form._record=result.record;form._pending=null;render();return result.record;
   }
   function tab(key){root.querySelector(`[data-crm-tab="${key}"]`).click();}
+  function openTabFromHash(attempt){
+    const key=String(location.hash||"").replace(/^#/,"").trim();
+    if(!key)return;
+    const target=root.querySelector(`[data-crm-tab="${key}"]`);
+    if(target){target.click();return;}
+    if((attempt||0)<20)setTimeout(()=>openTabFromHash((attempt||0)+1),250);
+  }
+  window.addEventListener("hashchange",()=>openTabFromHash(0));
+  setTimeout(()=>openTabFromHash(0),0);
+  // Кабинет схлопнут до четырёх разделов: остальные вкладки скрыты, их содержимое перенесено
+  function simplifyCabinet(attempt){
+    if(!document.querySelector("#crm-four-tabs")){
+      const st=document.createElement("style");
+      st.id="crm-four-tabs";
+      st.textContent=`body.agent-crm-page .crm-tabs [data-crm-tab]{display:none!important}body.agent-crm-page .crm-tabs [data-crm-tab="overview"],body.agent-crm-page .crm-tabs [data-crm-tab="requests"],body.agent-crm-page .crm-tabs [data-crm-tab="objects"],body.agent-crm-page .crm-tabs [data-crm-tab="clients"],body.agent-crm-page .crm-tabs [data-crm-tab="tasks"]{display:flex!important}`;
+      document.head.appendChild(st);
+    }
+    if(root.dataset.simplified==="1")return;
+    const buttons=[...root.querySelectorAll("[data-crm-tab]")];
+    if(!buttons.length){if((attempt||0)<20)setTimeout(()=>simplifyCabinet((attempt||0)+1),250);return;}
+    root.dataset.simplified="1";
+    const KEEP={overview:"Сегодня",requests:"Заявки",objects:"Объекты",clients:"Клиенты"};
+    const MERGE={clients:["deals","selections"],objects:["owners"]};
+    const panel=(key)=>root.querySelector(`[data-crm-panel="${key}"]`);
+    Object.keys(MERGE).forEach((target)=>{const host=panel(target);if(!host)return;MERGE[target].forEach((key)=>{const p=panel(key);if(!p||p===host)return;while(p.firstChild)host.appendChild(p.firstChild);});});
+    buttons.forEach((btn)=>{const key=btn.dataset.crmTab;if(KEEP[key]){btn.hidden=false;btn.style.setProperty("display","flex","important");if(!btn.children.length)btn.textContent=KEEP[key];return;}btn.hidden=true;btn.style.display="none";});
+    const visible=buttons.filter((btn)=>!btn.hidden);
+    const active=visible.find((btn)=>btn.classList.contains("is-active")||btn.getAttribute("aria-selected")==="true");
+    if(!active&&visible.length)visible[0].click();
+  }
+  setTimeout(()=>simplifyCabinet(0),0);
   const clientArea=node('section',undefined,'crm-client-workflow');panels.clients.prepend(clientArea);
   clientArea.append(node('h2','Клиенты'),node('p','Покупатели и арендаторы: требования, контакты и стадии работы.'));
   const clientForm=makeForm(clientArea,[['name','Имя клиента','text'],['phone','Телефон','tel'],['role','Роль','select',roles],['stage','Этап работы','select',stages],['city','Город','text'],['district','Район / ЖК','text'],['property_type','Тип недвижимости','text'],['rooms','Комнаты','text'],['budget_min','Бюджет от','number'],['budget_max','Бюджет до','number'],['currency','Валюта','select',{USD:'USD',KGS:'KGS'}],['notes','Требования и заметки','textarea']],'Сохранить клиента',async(data,form)=>{await save('client',data,form);});
@@ -109,7 +140,7 @@
     setOptions(appointmentForm.elements.object_id,state.objects,item=>objectName(item.id));
     renderClients();renderPicker();renderSelections();renderAppointments();renderObjectStages();renderRequests();
     overview.textContent=`Клиентов: ${clients.length} · Подборок: ${records('selection').length} · Запланировано показов: ${records('appointment').filter(item=>item.status==='planned').length}`;
-    window.dispatchEvent(new CustomEvent('liberterra:crm-data',{detail:{clients,objects:state.objects,records:state.records,ready:state.ready,dealStages:state.dealStages||[]}}));
+    window.dispatchEvent(new CustomEvent('liberterra:crm-data',{detail:{clients,objects:state.objects}}));
   }
   function renderClients(){
     clientList.replaceChildren();ownerList.replaceChildren();if(!records('client').some(client=>client.role==='owner'))ownerList.append(node('p','Собственников пока нет. Добавьте контакт или перенесите его из заявок.'));const query=clientSearch.value.trim().toLocaleLowerCase('ru');
@@ -197,14 +228,13 @@
     });
   }
   async function load(){
-    window.dispatchEvent(new CustomEvent('liberterra:crm-loading'));
     const epoch=++state.epoch;state.ready=false;globalStatus.textContent='Загружаем CRM…';elements.forEach(form=>form.querySelectorAll('input,select,textarea,button').forEach(el=>el.disabled=true));
-    try{const result=await window.LiberterraAgentAccess.request('list_crm_workflow');if(epoch!==state.epoch||content.hidden)return;state.records=result.records||[];state.objects=result.objects||[];state.requests=result.requests||[];state.specialization=result.specialization||'';state.dealStages=result.deal_stages||[];state.ready=true;render();globalStatus.textContent='CRM обновлена. Данные сохраняются в вашем кабинете.';}
+    try{const result=await (window.LiberterraCrmEarly?window.LiberterraCrmEarly.take():window.LiberterraAgentAccess.request('list_crm_workflow'));if(epoch!==state.epoch||content.hidden)return;state.records=result.records||[];state.objects=result.objects||[];state.requests=result.requests||[];state.specialization=result.specialization||'';state.ready=true;render();globalStatus.textContent='CRM обновлена. Данные сохраняются в вашем кабинете.';}
     catch(error){if(epoch===state.epoch){state.records=[];state.objects=[];state.requests=[];render();globalStatus.textContent=`CRM недоступна: ${errorText(error)} Нажмите «Обновить CRM».`;}}
     finally{if(epoch===state.epoch)elements.forEach(form=>form.querySelectorAll('input,select,textarea,button').forEach(el=>el.disabled=!state.ready));}
   }
   new MutationObserver(()=>{if(content.hidden){state.epoch++;state.ready=false;state.records=[];state.objects=[];state.requests=[];elements.forEach(resetForm);selectedObjects.clear();render();}}).observe(content,{attributes:true,attributeFilter:['hidden']});
-  window.LiberterraCrmWorkflow={update(){queueMicrotask(load);},reload:load};
+  window.LiberterraCrmWorkflow={update(){queueMicrotask(load);}};
   // Refresh shared intake only while it is being viewed; do not poll hidden tabs.
   setInterval(()=>{if(state.ready&&!document.hidden&&!content.hidden&&!panels.requests.hidden)load();},60000);
   root.addEventListener('click',event=>{
