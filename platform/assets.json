@@ -678,7 +678,7 @@
     },
     {
       "name": "site",
-      "sha256": "27c907958e71f927cabe84186c2d609f688c1b48ecd2d5d8925e5eb4065bbbc7",
+      "sha256": "c66fddbcc47e368e10874036ac7f88713532af98c9f38e85e0f165506bc41cfe",
       "maps": [
         {
           "name": "files",
@@ -704,7 +704,7 @@
             {
               "key": "/script.js",
               "file": "assets/site/files/script.js",
-              "sha256": "669fb02ed46935415b817672f17ecd5724e4d0ea75943b6a61ced88d717c28be",
+              "sha256": "24fcbb9e938849cbc5a2c07812a417c9a1ea7b541b5b625afd9c628c1a66eb19",
               "append": []
             },
             {
@@ -1058,7 +1058,7 @@
             {
               "key": "/profile-v2.css",
               "file": "assets/site/files/profile-v2.css",
-              "sha256": "828c3cf57d385b9dffb1dea5313d4426e1e559a64f5b498da03015527ca5db8b",
+              "sha256": "b10c7ab675ebd7c0abb87c79dcb25be30c2ff2e5ecce5fa0c7b85a332e66afa9",
               "append": []
             },
             {

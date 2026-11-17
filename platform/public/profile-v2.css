@@ -1034,3 +1034,8 @@ body.v20.profile-page .pv2-edit-actions .pv2-btn{flex:1 1 140px;justify-content:
 }
 html[data-theme=dark] body.v20.profile-page .pv2-edit-field > span:not(#lt0){color:#B9C0CA}
 html[data-theme=dark] body.v20.profile-page .pv2-edit-note.error:not(#lt0){color:#F0A09A}
+
+/* Профиль 20261117-2: поля формы смены email. */
+body.v20.profile-page #pv2EmailEdit .pv2-edit-field input[readonly]{opacity:.75}
+body.v20.profile-page #pv2EmailEdit [data-pv2-email-code][hidden]{display:none}
+body.v20.profile-page .pv2-section-header [data-pv2-email-edit]{white-space:nowrap}

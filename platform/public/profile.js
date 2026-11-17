@@ -47,7 +47,7 @@
   };
   const objectById = new Map(rows.map((row) => [clean(row.id), row]));
   const profileCacheKey = "liberterra-profile-v2-view";
-  const profileCacheVersion = 3;
+  const profileCacheVersion = 4;
   const formatPhone = (raw) => {
     const text = String(raw || "").trim();
     const digits = text.replace(/\D/g, "");
@@ -228,6 +228,14 @@
             <p class="pv2-edit-note" data-pv2-edit-note role="status" hidden></p>
             <div class="pv2-edit-actions"><button class="pv2-btn" type="submit" data-pv2-edit-save>Сохранить</button><button class="pv2-btn pv2-btn-secondary" type="button" data-pv2-edit-cancel>Отмена</button></div>
           </form>
+          <form class="pv2-edit-form" id="pv2EmailEdit" hidden>
+            <div class="pv2-edit-grid">
+              <label class="pv2-edit-field"><span>Новый email</span><input name="new_email" type="email" autocomplete="email" maxlength="160" required></label>
+              <label class="pv2-edit-field" data-pv2-email-code hidden><span>Код из письма</span><input name="code" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6"></label>
+            </div>
+            <p class="pv2-edit-note" data-pv2-edit-note role="status" hidden></p>
+            <div class="pv2-edit-actions"><button class="pv2-btn" type="submit" data-pv2-email-save>Отправить код</button><button class="pv2-btn pv2-btn-secondary" type="button" data-pv2-email-cancel>Отмена</button></div>
+          </form>
         </section>
         <button class="profile-logout pv2-btn pv2-btn-secondary" type="button" data-profile-logout>Выйти из аккаунта</button>
         ${avatarEditorEnabled ? '<div class="pv2-modal-overlay" id="pv2AvatarModal" role="dialog" aria-modal="true" aria-label="Фото профиля" aria-hidden="true"><div class="pv2-modal"><div class="pv2-modal-header"><h3>Фото профиля</h3><button class="pv2-modal-close" type="button" data-pv2-avatar-close aria-label="Закрыть">×</button></div><div class="pv2-modal-body"><p class="pv2-avatar-hint">Загрузите портретное фото: клиенты больше доверяют агенту, когда видят лицо. Документы и скриншоты для аватара не подходят.</p><div data-pv2-avatar-editor-slot></div></div></div></div>' : ""}`;
@@ -288,6 +296,33 @@
     }
     if (event.target.closest("[data-link-telegram-account]")) {
       window.LiberterraUserAccess?.linkTelegramAccount?.();
+      return;
+    }
+    if (event.target.closest("[data-pv2-email-edit]")) {
+      const form = profileNode.querySelector("#pv2EmailEdit");
+      if (!form) return;
+      const opening = form.hidden;
+      form.hidden = !opening;
+      profileNode.querySelectorAll("[data-pv2-email-edit][aria-expanded]").forEach((item) => item.setAttribute("aria-expanded", String(opening)));
+      if (opening) {
+        form.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        form.elements.new_email?.focus();
+      }
+      return;
+    }
+    if (event.target.closest("[data-pv2-email-cancel]")) {
+      const form = profileNode.querySelector("#pv2EmailEdit");
+      if (form) {
+        form.reset();
+        form.hidden = true;
+        form.querySelector("[data-pv2-email-code]").hidden = true;
+        const save = form.querySelector("[data-pv2-email-save]");
+        if (save) { save.disabled = false; save.textContent = "Отправить код"; }
+        const note = form.querySelector("[data-pv2-edit-note]");
+        if (note) { note.textContent = ""; note.hidden = true; }
+        profileNode.querySelectorAll("[data-pv2-email-edit][aria-expanded]").forEach((item) => item.setAttribute("aria-expanded", "false"));
+        profileNode.querySelector("[data-pv2-email-edit]")?.focus();
+      }
       return;
     }
     const editToggle = event.target.closest("[data-pv2-profile-edit]");
@@ -358,6 +393,63 @@
       await loadProfile({ force: true });
     } catch (error) {
       show(error?.message || "Не удалось сохранить. Попробуйте ещё раз.", "error");
+      if (save) { save.disabled = false; save.textContent = label; }
+    }
+  });
+  const emailErrors = {
+    email_taken: "Этот адрес уже привязан к другому аккаунту.",
+    email_unchanged: "Это ваш текущий адрес.",
+    invalid_email: "Проверьте адрес: он должен быть вида name@example.com.",
+    retry_later: "Код уже отправлен. Подождите несколько минут и попробуйте снова.",
+    code_expired: "Код истёк. Запросите новый.",
+    invalid_code: "Неверный код. Проверьте письмо.",
+    too_many_attempts: "Слишком много попыток. Запросите новый код.",
+    registration_required: "Войдите в аккаунт на сайте.",
+    profile_unavailable: "Сервис недоступен. Попробуйте позже.",
+    unknown_action: "Смена email пока не включена на сервере.",
+  };
+  profileNode.addEventListener("submit", async (event) => {
+    const form = event.target.closest("#pv2EmailEdit");
+    if (!form) return;
+    event.preventDefault();
+    const note = form.querySelector("[data-pv2-edit-note]");
+    const save = form.querySelector("[data-pv2-email-save]");
+    const codeField = form.querySelector("[data-pv2-email-code]");
+    const show = (text, kind) => {
+      if (!note) return;
+      note.textContent = text;
+      note.className = "pv2-edit-note" + (kind ? " " + kind : "");
+      note.hidden = !text;
+    };
+    const fail = (error) => show(emailErrors[error?.code] || error?.message || "Не удалось выполнить запрос.", "error");
+    const sending = codeField.hidden;
+    const email = String(form.elements.new_email?.value || "").trim().toLowerCase();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email) || email.length > 160) { show(emailErrors.invalid_email, "error"); form.elements.new_email?.focus(); return; }
+    const code = String(form.elements.code?.value || "").replace(/\D/g, "");
+    if (!sending && !/^[0-9]{6}$/.test(code)) { show("Код состоит из шести цифр.", "error"); form.elements.code?.focus(); return; }
+    const label = save ? save.textContent : "";
+    if (save) { save.disabled = true; save.textContent = sending ? "Отправляем…" : "Проверяем…"; }
+    show("", "");
+    try {
+      if (!window.LiberterraAgentAccess?.request) throw new Error("Профиль недоступен. Обновите страницу.");
+      if (sending) {
+        await window.LiberterraAgentAccess.request("profile_email_start", { email: email });
+        codeField.hidden = false;
+        if (form.elements.new_email) form.elements.new_email.readOnly = true;
+        if (save) { save.disabled = false; save.textContent = "Подтвердить"; }
+        show("Код отправлен на " + email + ". Он действует 10 минут.", "");
+        form.elements.code?.focus();
+        return;
+      }
+      await window.LiberterraAgentAccess.request("profile_email_verify", { email: email, code: code });
+      show("Email изменён на " + email + ". Сейчас выйдем из аккаунта — войдите с новым адресом.", "");
+      try { sessionStorage.removeItem(profileCacheKey); localStorage.removeItem(profileCacheKey); } catch (_) {}
+      window.setTimeout(async () => {
+        try { await fetch("/api/logout", { method: "POST", credentials: "same-origin" }); } catch (_) {}
+        location.assign("/login.html");
+      }, 2500);
+    } catch (error) {
+      fail(error);
       if (save) { save.disabled = false; save.textContent = label; }
     }
   });
@@ -512,7 +604,15 @@
       securityFields.forEach(field => securityGrid.append(field));
       security.element.append(securityGrid);
       const emailForm = personal.querySelector('#pv2EmailEdit');
-      if (emailForm) security.element.append(emailForm);
+      if (emailForm) {
+        const editEmail = node('button', 'Изменить email', 'pv2-btn pv2-btn-secondary');
+        editEmail.type = 'button';
+        editEmail.setAttribute('data-pv2-email-edit', '');
+        editEmail.setAttribute('aria-expanded', 'false');
+        editEmail.setAttribute('aria-controls', 'pv2EmailEdit');
+        security.header.append(editEmail);
+        security.element.append(emailForm);
+      }
       (profile.querySelector('.pv2-workspace-section:last-of-type') || personal).after(security.element);
     }
   }

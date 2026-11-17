@@ -260,7 +260,7 @@ const SPECIALISTS = [
 
 const state = {
   catalogStatus: "loading",
-  deals: ["продажа"],
+  deals: ["аренда"],
   rentTerm: "monthly",
   segment: "all",
   propertyType: "all",
@@ -321,7 +321,7 @@ function restoreCatalogFilters() {
   state.source = String(sourceValue || "").split(",").map((part) => part.trim()).filter((part) => SOURCE_GROUPS.includes(part));
   const favoriteValue = params.has("favoritesOnly") ? params.get("favoritesOnly") : saved.favoritesOnly;
   state.favoritesOnly = favoriteValue === true || favoriteValue === "1" || favoriteValue === "true";
-  if (!state.deals.length) state.deals = ["продажа"];
+  if (!state.deals.length) state.deals = ["аренда"];
   if (!dealSelected("аренда")) state.occupancy = "all";
   if (!['usd','kgs'].includes(state.priceCurrency)) state.priceCurrency = 'usd';
 }
