@@ -678,7 +678,7 @@
     },
     {
       "name": "site",
-      "sha256": "c66fddbcc47e368e10874036ac7f88713532af98c9f38e85e0f165506bc41cfe",
+      "sha256": "e77c124cc6844fa143cc1d2c027f429f9d7d7d8d82c4d2a4c3aaa05fc0e363e7",
       "maps": [
         {
           "name": "files",
@@ -1004,7 +1004,7 @@
             {
               "key": "/v20-global.css",
               "file": "assets/site/files/v20-global.css",
-              "sha256": "d07642845723d47654a0b995dfc257d8d53c878e9b0f7d57c0ed4be100266f14",
+              "sha256": "90f1da34332e41687b2facc46a32dd8d56faa34077a300a60014b2eaa23c1304",
               "append": []
             },
             {

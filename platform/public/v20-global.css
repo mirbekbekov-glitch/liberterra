@@ -452,3 +452,9 @@ body.v20 .registration-entry-card h2{color:#fff!important}
 .v20-source-opts input{width:18px;height:18px;min-width:18px;margin:0;accent-color:#c0392b}
 .v20-source select#heroSourceStaff{height:40px;margin:0;flex:0 1 220px;max-width:220px;padding:8px 10px;border:1px solid #bcb3a9;border-radius:10px;font:14px 'Segoe UI',sans-serif;background:var(--v-panel,#fff);color:var(--v-ink,#241f1c)}
 @media(max-width:760px){.v20-source{align-items:flex-start;flex-direction:column;gap:10px}.v20-source select#heroSourceStaff{flex:1 1 auto;max-width:100%;width:100%}}
+
+/* Тач-таргеты 20261117: шапка и подвал на телефоне. */
+@media (max-width:760px){
+.public-v20 .public-header .public-brand:not(#lt0){display:flex!important;align-items:center!important;min-height:44px!important}
+.public-v20 .public-footer a:not(#lt0){display:inline-block!important;padding:10px 6px!important}
+}
