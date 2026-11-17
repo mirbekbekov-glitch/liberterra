@@ -9070,6 +9070,22 @@ body.v20[data-public-theme="dark"] :is(input, textarea)::placeholder {
 
 /* Keep the sign-in heading legible over its dark photo background. */
 body.v20 .registration-entry-card h2{color:#fff!important}
+
+/* Источник объекта: виден только агенту с подтверждённым доступом. */
+.v20-source{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:12px;padding-top:12px;border-top:1px solid var(--v-line,#e2dcd4)}
+.v20-source[hidden]{display:none}
+.v20-source-label{font:600 12px/1.4 'Segoe UI',sans-serif;color:var(--v-muted,#6f655d);text-transform:uppercase;letter-spacing:.04em}
+.v20-source-opts{display:flex;gap:14px;flex-wrap:wrap}
+.v20-source-opts label{display:inline-flex;align-items:center;gap:6px;font:14px/1.4 'Segoe UI',sans-serif;color:var(--v-ink,#241f1c);cursor:pointer}
+.v20-source-opts input{width:18px;height:18px;min-width:18px;margin:0;accent-color:#c0392b}
+.v20-source select#heroSourceStaff{height:40px;margin:0;flex:0 1 220px;max-width:220px;padding:8px 10px;border:1px solid #bcb3a9;border-radius:10px;font:14px 'Segoe UI',sans-serif;background:var(--v-panel,#fff);color:var(--v-ink,#241f1c)}
+@media(max-width:760px){.v20-source{align-items:flex-start;flex-direction:column;gap:10px}.v20-source select#heroSourceStaff{flex:1 1 auto;max-width:100%;width:100%}}
+
+/* Тач-таргеты 20261117: шапка и подвал на телефоне. */
+@media (max-width:760px){
+.public-v20 .public-header .public-brand:not(#lt0){display:flex!important;align-items:center!important;min-height:44px!important}
+.public-v20 .public-footer a:not(#lt0){display:inline-block!important;padding:10px 6px!important}
+}
 </style><link rel="stylesheet" href="/v20-global.css?v=20261022-1" media="print">
   <script src="/viewing-requests.js?v=20261012-guest-viewing-1" defer></script>
   
