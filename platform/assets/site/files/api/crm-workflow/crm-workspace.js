@@ -64,9 +64,11 @@
       button.addEventListener('click',async()=>{button.disabled=true;try{await window.LiberterraAgentAccess.request('save_agent_task',{task_id:task.task_id,status:task.status==='done'?'open':'done'});await loadTasks();}catch(error){button.disabled=false;tasksForm.querySelector('[role="status"]').textContent=error.message||'Не удалось обновить задачу.';}});item.append(button);tasksList.append(item);
     }
   }
+  window.LiberterraCrmTasks={reload:function(){return loadTasks();}};
   async function loadTasks(){
     const current=++tasksLoad;tasksReady=false;window.dispatchEvent(new CustomEvent('liberterra:tasks-data',{detail:{tasks:[],ready:false}}));tasksList.textContent='Загружаем задачи…';
-    try{const result=await window.LiberterraAgentAccess.request('list_agent_tasks');if(current!==tasksLoad||content.hidden)return;tasks=Array.isArray(result.tasks)?result.tasks:[];tasksReady=true;renderTasks();}
+    const early=window.LiberterraTasksEarly?window.LiberterraTasksEarly.take():null;
+    try{const result=await (early||window.LiberterraAgentAccess.request('list_agent_tasks'));if(current!==tasksLoad||content.hidden)return;tasks=Array.isArray(result.tasks)?result.tasks:[];tasksReady=true;renderTasks();}
     catch(error){if(current!==tasksLoad||content.hidden)return;tasksList.textContent=`Не удалось загрузить задачи: ${error.message||'ошибка сервиса'}`;}
   }
   tasksForm.addEventListener('input',()=>{taskRequestId='';});

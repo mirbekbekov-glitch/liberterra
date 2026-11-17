@@ -448,6 +448,59 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
   };
 })();
 
+/* Задачи грузятся тем же ранним параллельным запросом и держатся в кэше:
+   иначе счётчик на рабочем столе ждёт сначала панель, потом ещё один ответ Apps Script. */
+(function(){
+  if (location.pathname.indexOf('/agent-cabinet.html') !== 0) return;
+  var known = document.documentElement.getAttribute('data-agent-role') === 'approved';
+  try { if (!known) known = localStorage.getItem('lt-agent-menu') === '1'; } catch (e) {}
+  if (!known) return;
+  if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initData) return;
+  var p = fetch('/api/crm-action', {
+    method: 'POST', credentials: 'same-origin', cache: 'no-store',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ action: 'list_agent_tasks' }),
+    signal: AbortSignal.timeout(30000)
+  }).then(function(r){
+    return r.json().catch(function(){ return {}; }).then(function(j){
+      if (!r.ok || !j.ok) {
+        var e = new Error(j.message || 'Не удалось загрузить задачи.');
+        e.code = j.error || 'crm_service_unavailable';
+        throw e;
+      }
+      return j;
+    });
+  });
+  var KEY = 'lt-tasks-cache-v1';
+  function readCache(){
+    try {
+      var r = JSON.parse(localStorage.getItem(KEY) || 'null');
+      if (r && Date.now() - r.t < 86400000) return r.v;
+    } catch (e) {}
+    return null;
+  }
+  p.then(function(v){
+    try {
+      var s = JSON.stringify({ t: Date.now(), v: v });
+      if (s.length < 500000) localStorage.setItem(KEY, s);
+    } catch (e) {}
+  }).catch(function(){});
+  window.LiberterraTasksEarly = {
+    take: function(){
+      var cached = readCache();
+      if (cached) {
+        p.then(function(j){
+          window.LiberterraTasksEarly = { take: function(){ window.LiberterraTasksEarly = null; return Promise.resolve(j); } };
+          if (window.LiberterraCrmTasks) window.LiberterraCrmTasks.reload();
+        }).catch(function(){ window.LiberterraTasksEarly = null; });
+        return Promise.resolve(cached);
+      }
+      window.LiberterraTasksEarly = null;
+      return p.catch(function(){ return window.LiberterraAgentAccess.request('list_agent_tasks'); });
+    }
+  };
+})();
+
 
 /* === Объект и профиль открываются внутри кабинета, без перезагрузки === */
 (function(){
