@@ -113,8 +113,8 @@
           "map": "crmWorkflowAssets",
           "key": "crm-workflow.js",
           "file": "assets/backend/assign/crmWorkflowAssets/crm-workflow.js",
-          "sha256": "a85724a91036812d0f9284e957c41e73268e22deaeed9775c349f1618dbcf6ac",
-          "bytes": 162728
+          "sha256": "e4b451ccf106dc01ea5dd313f269178fca6e0e2c557f5b0b57b7b06c6309deec",
+          "bytes": 164991
         },
         {
           "map": "crmAssetPatch",
