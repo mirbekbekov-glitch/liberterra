@@ -2266,8 +2266,12 @@ async function createSubmission(request, env) {
       const result = await upstream.json();
       return respond(result, upstream.ok && result.ok ? 201 : 503);
     } catch (_) {
-      const confirmed = await confirmSavedSubmission(env, authorResult.webUserId, String(form.get("submission_id") || ""));
-      if (confirmed) return respond({ ok: true, id: confirmed, recovered: true }, 201);
+      const attemptId = String(form.get("submission_id") || "");
+      for (let tries = 0; tries < 4; tries++) {
+        if (tries) await new Promise((resolve) => setTimeout(resolve, 4000));
+        const confirmed = await confirmSavedSubmission(env, authorResult.webUserId, attemptId);
+        if (confirmed) return respond({ ok: true, id: confirmed, recovered: true }, 201);
+      }
       return respond({ ok: false, error: "submission_unconfirmed" }, 503);
     }
   }
