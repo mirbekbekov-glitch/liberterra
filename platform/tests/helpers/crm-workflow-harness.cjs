@@ -35,7 +35,11 @@ module.exports=function harness(){
     AGENT_TASK_HEADERS:['task_id','agent_key','title','object_id','due_at','status','created_at','updated_at','client_id'],
     getAgentTasksSheet_:()=>{const sheet=book.getSheetByName('Agent Tasks')||book.insertSheet('Agent Tasks');ensure(sheet,c.AGENT_TASK_HEADERS);return sheet;}
   });
-  vm.runInContext(fs.readFileSync(require('node:path').resolve(__dirname,'../../apps-script/crm-workflow-server.gs'),'utf8'),c);
+  // В Apps Script все файлы проекта делят одну область видимости: серверу CRM нужны
+  // помощники из public-resources.gs и service-requests.gs.
+  ['public-resources.gs','service-requests.gs','crm-workflow-server.gs'].forEach(name=>{
+    vm.runInContext(fs.readFileSync(require('node:path').resolve(__dirname,'../../apps-script/'+name),'utf8'),c);
+  });
   return {c,objects,sheets,setSpecialization(value){specialization=value;},setActor(value){actor=value;},setApproved(value){approved=value;},setRegistered(value){registered=value;},setLocked(value){locked=value;},
     request(action,payload={}){if(action==='get_public_crm_selection')return c.getPublicCrmSelection_(payload);if(['list_agent_tasks','save_agent_task'].includes(action))return c.agentTasksAction_(payload,action);return c.crmWorkflowAction_(payload,action);}};
 };

@@ -102,7 +102,9 @@
  }
  function renderDay(){
   metrics.replaceChildren();attention.replaceChildren();
-  const active=records('deal').filter(d=>!['won','lost'].includes(d.stage)),final=active.filter(d=>['agreement','documents'].includes(d.stage));
+  // Финальные этапы берём с сервера: воронку меняют в Apps Script, зашивать их сюда нельзя.
+  const finalStages=state.stages.map(s=>s.id).filter(id=>!['won','lost'].includes(id)).slice(-2);
+  const active=records('deal').filter(d=>!['won','lost'].includes(d.stage)),final=active.filter(d=>finalStages.includes(d.stage));
   const today=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Bishkek',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
   const due=(tasks||[]).filter(t=>t.status==='open'&&t.due_at&&Number.isFinite(Date.parse(t.due_at)));
   const overdue=due.filter(t=>Date.parse(t.due_at)<Date.now()),todayTasks=due.filter(t=>new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Bishkek',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date(t.due_at))===today);
