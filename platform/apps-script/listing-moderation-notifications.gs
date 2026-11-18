@@ -31,7 +31,7 @@ function dispatchListingModerationNotifications() {
     for (let i = 0; i < rows.length && count < 5; i++) {
       const row = rows[i], id = row[idCol].trim();
       if (!/^site-[0-9a-f-]{36}$/i.test(id) || row[statusCol].trim().toLowerCase() !== 'на модерации') continue;
-      const key = 'LISTING_NOTICE_SENT_' + id;
+      const key = 'LISTING_NOTICE_BUTTONS_SENT_' + id;
       if (props.getProperty(key)) continue;
       const url = book.getUrl() + '#gid=' + sheet.getSheetId() + '&range=A' + (i + 2);
       const text = ['🏠 Объявление с сайта ожидает вашей проверки',
@@ -39,8 +39,12 @@ function dispatchListingModerationNotifications() {
         'Район: ' + row[districtCol].slice(0, 160),
         'Цена: ' + row[priceCol].slice(0, 80),
         'ID: ' + id, '', 'Открыть запись в таблице:', url,
-        '', 'Объявление ещё не опубликовано. Решение принимает администратор.'].join('\n');
-      listingNoticeSend_(text);
+        '', 'Объявление ещё не опубликовано. Проверьте данные перед решением.'].join('\n');
+      const uuid = id.slice(5);
+      listingNoticeSend_(text, {inline_keyboard: [[
+        {text: '✅ Одобрить', callback_data: 'site_approve:' + uuid},
+        {text: '❌ Отклонить', callback_data: 'site_reject:' + uuid}
+      ]]});
       // Mark only after Telegram confirms receipt; failed attempts retry next run.
       props.setProperty(key, new Date().toISOString());
       count++;
@@ -49,11 +53,11 @@ function dispatchListingModerationNotifications() {
   } finally { lock.releaseLock(); }
 }
 
-function listingNoticeSend_(text) {
+function listingNoticeSend_(text, replyMarkup) {
   const props = PropertiesService.getScriptProperties();
   const response = UrlFetchApp.fetch('https://api.telegram.org/bot' + props.getProperty('BOT_TOKEN') + '/sendMessage', {
     method: 'post', contentType: 'application/json', muteHttpExceptions: true,
-    payload: JSON.stringify({chat_id: props.getProperty('ADMIN_CHAT_ID'), text: text, disable_web_page_preview: true})
+    payload: JSON.stringify({chat_id: props.getProperty('ADMIN_CHAT_ID'), text: text, disable_web_page_preview: true, reply_markup: replyMarkup || undefined})
   });
   let result;
   try { result = JSON.parse(response.getContentText()); } catch (_) { throw new Error('Telegram returned invalid response'); }

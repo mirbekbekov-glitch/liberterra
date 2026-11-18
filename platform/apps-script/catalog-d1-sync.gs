@@ -1,5 +1,5 @@
 // Public catalogue mirror. Sheets remains authoritative; no source rows are changed.
-const D1_CATALOG_PRIVATE_HEADERS = PRIVATE_CONTRACT_HEADERS.concat(["phone"]);
+const D1_CATALOG_PRIVATE_HEADERS = PRIVATE_CONTRACT_HEADERS.concat(["phone", "coop_share", "coop_total"]);
 
 function buildPublicCatalogD1Snapshot_() {
   SpreadsheetApp.flush();

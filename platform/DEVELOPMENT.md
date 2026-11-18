@@ -20,7 +20,7 @@ node platform/dev/server.cjs
 - Селекторы панели обязаны начинаться с `.v20-source`: `.v20-main label{display:block}` специфичнее одиночного класса и разворачивает строки списка в столбик.
 - Не каждый файл карты отдаётся из карты: часть маршрутов перекрыта присваиваниями, часть собирается на лету, а три CSS подключены как `media="print"` и на экране не действуют. Список, причины и порядок проверки — в разделе «Какие файлы отдаются не из карты ресурсов».
 - CRM UI редактируется в `assets/backend/crmWorkflowAssets/`. Новая воронка и рабочий день находятся в `features/deals.js` и `features/deals.css`; `features.json` подключает их к существующим ресурсам, без новых production-маршрутов.
-- `apps-script/` — серверные исходники, копируемые в результат. `public/` и `provenance.json` — HTTP-снимок, обновлённый 17 ноября 2026 года.
+- `apps-script/` — все 13 файлов живого проекта, снятые через Apps Script API (версия 97). `public/` и `provenance.json` — HTTP-снимок.
 - `dist/build-manifest.json` содержит хеши выходных файлов без даты, случайных ID и абсолютных путей. Две чистые сборки и повторная сборка проверяются автоматическим тестом. Не кладите ручные файлы в `dist`: неизвестные файлы останавливают повторную сборку.
 
 Извлечение и обратная сборка воспроизводят опубликованный site Worker побайтно: SHA-256 `b70b238201527f058505b5283d9718577626c632c87b99283f01f6320e14fdc5` совпадает с активной версией. Backend отличается намеренно: `features.json` добавляет невыложенную воронку сделок, поэтому его сборка не равна активному `45d8ee65402331fbdbea4aafc7e1adf38f8a835f9d117edb840553090480439a`. Исходные Worker и публичный снимок не изменены. `verify-source --baseline` предназначен для исходного коммита, а не для изменённого Apps Script.
@@ -186,17 +186,28 @@ Cloudflare хранит версии: панель → Workers & Pages → `libe
 
 Изменение хранения добавочное: новый тип в существующем листе CRM Workflow, без удаления или преобразования записей клиентов. Сначала обновляется Apps Script с поддержкой `deal_stages` и `deal`, затем собранный backend Worker. Старый сервер не должен получать новую форму: UI без метаданных этапов блокирует создание сделки. При откате сохраняются все строки сделок; нельзя очищать лист. Старый интерфейс не показывает новый тип, поэтому перед откатом нужен экспорт и план сохранения доступа к этим данным.
 
-## Apps Script: снимок неполный (17 ноября 2026)
+## Apps Script: снимок и правка через API (18 ноября 2026)
 
-**`apps-script/Code.gs` в ветке отстаёт от живого проекта, а не опережает его.** Владелец правит Apps Script вручную, и эти правки в выгрузку не попадали. Проверено по активным воркерам: живой backend пересылает в Apps Script `update_user_profile`, `profile_email_start`, `profile_email_verify`, `set_agent_photo`, `submit_certificate_review`, `list_certificate_reviews`, `decide_certificate_review`, живой site вызывает ещё `save_registration_role`, `submit_web_agent_application`, `check_agent_web`, `create_service_request`, `list_service_requests`, `get_team_first_response`. В снимке нет ни одного из них:
+Снимок в `apps-script/` снят через Apps Script API (`projects.get` и `projects.content`) и содержит **все 13 файлов проекта**, а не 6, как раньше. Активная версия — 97, развёртывание «Воронка сделок» указывает на неё.
+
+До 18 ноября снимок отставал от живого проекта и это было опасно: семь файлов в него вообще не попадали, а в них лежали `update_user_profile`, `profile_email_start`, `profile_email_verify`, `submit_certificate_review`, `list_certificate_reviews`, `decide_certificate_review`, `save_registration_role`, `submit_web_agent_application`, `create_service_request`, `list_service_requests`, `get_public_resources`, `moderate_site_listing`, `moderate_site_agent`. Замена живого проекта таким снимком убрала бы редактирование профиля, смену email, подтверждение сертификата, модерацию из бота и заявку агента. Правило на будущее остаётся: **перед заменой сверяйте число файлов и набор действий, а не только `Код.gs`.**
+
+### Как править Apps Script из сессии
+
+Нужен OAuth-токен владельца со scope `script.projects` и `script.deployments` (OAuth Playground; в настройках `script.google.com/home/usersettings` должен быть включён Apps Script API). Токен сохраняется как network secret на хост `script.googleapis.com` и живёт час.
 
 ```
-grep -c update_user_profile platform/apps-script/Code.gs   # 0
+GET  https://script.googleapis.com/v1/projects/{scriptId}/content     # прочитать все файлы
+PUT  https://script.googleapis.com/v1/projects/{scriptId}/content     # записать (files целиком)
+POST https://script.googleapis.com/v1/projects/{scriptId}/versions    # создать версию
+PUT  https://script.googleapis.com/v1/projects/{scriptId}/deployments/{deploymentId}
 ```
 
-Отсюда правило: **живой `Код.gs` нельзя заменять копией из репозитория.** Замена убрала бы редактирование профиля, смену email, подтверждение сертификата, модерацию из бота и заявку агента. Правки Apps Script вносятся только точечными вставками по якорям, а снимок остаётся снимком. Выровнять его можно лишь получив полный текст живого проекта и перезахватив.
+`scriptId` и `deploymentId` лежат в `provenance.json` → `appsScript`. Обновлять нужно **существующее** развёртывание «Воронка сделок»: у нового будет другой URL, которого Worker не знает. В `PUT content` передаётся весь массив `files` — читайте, меняйте нужные, отправляйте все.
 
-Невыложенная правка колонок агента оформлена именно так: `apps-script/PENDING-agent-columns.md` — пять вставок (телефон в `agentRecordById_`, `listing_agent_name` и `listing_agent_agency` в `OBJECT_HEADERS`, заполнение на обоих путях публикации, разовая `backfillListingAgentColumns`), причина, порядок применения и проверка. Без этих колонок фильтр каталога «Моей организации» работать не может: агентство берётся из реестра по имени агента, а имени в фиде нет.
+Чего API не даёт: запуск функции (`scripts.run` требует ещё и собственные разрешения скрипта — таблицы, почта). Разовые `backfill*` запускаются вручную в редакторе.
+
+Правка колонок агента применена этим путём 18 ноября: телефон в `agentRecordById_`, `listing_agent_name` и `listing_agent_agency` в `OBJECT_HEADERS` и на обоих путях публикации, `backfillListingAgentColumns`. Тогда же восстановлены `profileEmailStart_` и `profileEmailVerify_` в `profile-update.gs` и две строки диспетчера: смена email на сайте была выложена 17 ноября, но серверной части в проекте не оказалось, и кнопка возвращала «не включена».
 
 ## Проверки 2026-10-27
 

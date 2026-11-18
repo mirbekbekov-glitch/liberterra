@@ -101,10 +101,10 @@
     }
   ],
   "appsScript": {
-    "version": 68,
+    "version": 97,
     "projectId": "1bfWtYF3UPxFJ1imuhX-tUZppf5B2g0sMlDLxRAXM6E9HKKrcLjZ_EOn2",
     "deploymentId": "AKfycbz3BT6KumndzL-Q_F7jPky-8jMKFtq4O2WlDU3D0LCIUQOwueOdjfA_Gw9ZKDbfj8DQ",
-    "verification": "Deployment manager matched the backend ACCOUNT_WEBHOOK_URL; all 7 version-history files matched normalized SHA-256."
+    "verification": "Captured through the Apps Script API (projects.get/content) on 2026-11-18; deployment «Воронка сделок» points at version 97. All 13 project files are included."
   },
   "health": {
     "ok": true,
@@ -126,52 +126,94 @@
     },
     {
       "path": "apps-script/Code.gs",
-      "sha256": "42e231fc35b29054885b598d0909edd49726363975c12a7233c9ae4df0b8b411",
-      "bytes": 254511,
-      "normalizedLfSha256": "da3f3dce3834416a1116a27e58fbc4cd10743ea9b81e3e0689cdb80c5254b548",
-      "verification": "Apps Script history version 68 clipboard SHA-256, normalized LF"
+      "sha256": "bdfcd1e3a20e2ab6b1511d6a95f65437588a7639893cead12c00fe457815fb94",
+      "bytes": 272896,
+      "normalizedLfSha256": "bdfcd1e3a20e2ab6b1511d6a95f65437588a7639893cead12c00fe457815fb94",
+      "verification": "Apps Script API projects.content, version 97"
+    },
+    {
+      "path": "apps-script/appsscript.json",
+      "sha256": "a445be95428e9988ad3703c6bd256093db216cbecd66cb9283c8ddf177baf18f",
+      "bytes": 205,
+      "normalizedLfSha256": "a445be95428e9988ad3703c6bd256093db216cbecd66cb9283c8ddf177baf18f",
+      "verification": "Apps Script API projects.content, version 97"
+    },
+    {
+      "path": "apps-script/catalog-d1-sync.gs",
+      "sha256": "1ae7fc83cba72a06e4a733124c58e6cf7f55c9716d5b7c8489fff796b49d22a3",
+      "bytes": 5049,
+      "normalizedLfSha256": "1ae7fc83cba72a06e4a733124c58e6cf7f55c9716d5b7c8489fff796b49d22a3",
+      "verification": "Apps Script API projects.content, version 97"
+    },
+    {
+      "path": "apps-script/certificate-review.gs",
+      "sha256": "d0700a5f36d08f030b5ff888d4b6d6219c60e36022c49692fd9edc2de2d09818",
+      "bytes": 7974,
+      "normalizedLfSha256": "d0700a5f36d08f030b5ff888d4b6d6219c60e36022c49692fd9edc2de2d09818",
+      "verification": "Apps Script API projects.content, version 97"
     },
     {
       "path": "apps-script/crm-workflow-server.gs",
-      "sha256": "d1319a8d616ecb0515e1c7e5009860f099a0f6084516d5430f216280ef398f43",
-      "bytes": 21645,
-      "normalizedLfSha256": "6e83672317458ee1520663cd955cb9bc6f477fab7739ff390afa26f162f26029",
-      "verification": "Apps Script history version 68 clipboard SHA-256, normalized LF"
+      "sha256": "0d52e53ac5de402d4a8435258d3b77f6eee3ae1117c4466898ad1a649e818883",
+      "bytes": 38260,
+      "normalizedLfSha256": "0d52e53ac5de402d4a8435258d3b77f6eee3ae1117c4466898ad1a649e818883",
+      "verification": "Apps Script API projects.content, version 97"
+    },
+    {
+      "path": "apps-script/listing-moderation-notifications.gs",
+      "sha256": "d174ae48a994d5eed14baa9d7b31be069be57cd2dcd9c10de489197779ba35d5",
+      "bytes": 4065,
+      "normalizedLfSha256": "d174ae48a994d5eed14baa9d7b31be069be57cd2dcd9c10de489197779ba35d5",
+      "verification": "Apps Script API projects.content, version 97"
+    },
+    {
+      "path": "apps-script/profile-update.gs",
+      "sha256": "6959023e04d39b3b551a7bb85769abaec86b510c1a2d343e13bf4e87c3d7e41c",
+      "bytes": 12933,
+      "normalizedLfSha256": "6959023e04d39b3b551a7bb85769abaec86b510c1a2d343e13bf4e87c3d7e41c",
+      "verification": "Apps Script API projects.content, version 97"
+    },
+    {
+      "path": "apps-script/public-resources.gs",
+      "sha256": "f3b554b9976ab8183051c8ff3626e700b3445acb307d0816feb7c9a17fac39ba",
+      "bytes": 3218,
+      "normalizedLfSha256": "f3b554b9976ab8183051c8ff3626e700b3445acb307d0816feb7c9a17fac39ba",
+      "verification": "Apps Script API projects.content, version 97"
+    },
+    {
+      "path": "apps-script/registration-notifications.gs",
+      "sha256": "635f24c8e29530b2f6339f5b54c648c8fea48bb4f0e3282295b4873a0e50b179",
+      "bytes": 4413,
+      "normalizedLfSha256": "635f24c8e29530b2f6339f5b54c648c8fea48bb4f0e3282295b4873a0e50b179",
+      "verification": "Apps Script API projects.content, version 97"
+    },
+    {
+      "path": "apps-script/service-requests.gs",
+      "sha256": "24e39eafe4f6f797671ab24fb7a2fa805c22b379d4aa6f93942f7e46cfe6eaf5",
+      "bytes": 14014,
+      "normalizedLfSha256": "24e39eafe4f6f797671ab24fb7a2fa805c22b379d4aa6f93942f7e46cfe6eaf5",
+      "verification": "Apps Script API projects.content, version 97"
+    },
+    {
+      "path": "apps-script/site-telegram-moderation.gs",
+      "sha256": "f2e373111ed57ac261adf9fc1aec39b17a0baa8be288b37837edea575a0051a4",
+      "bytes": 2682,
+      "normalizedLfSha256": "f2e373111ed57ac261adf9fc1aec39b17a0baa8be288b37837edea575a0051a4",
+      "verification": "Apps Script API projects.content, version 97"
     },
     {
       "path": "apps-script/viewing-server.gs",
       "sha256": "08627ba7e2696256da1ca7a72b60d01fa0b6f112534349efaf2809deebbdee5c",
       "bytes": 7581,
       "normalizedLfSha256": "08627ba7e2696256da1ca7a72b60d01fa0b6f112534349efaf2809deebbdee5c",
-      "verification": "Apps Script history version 68 clipboard SHA-256, normalized LF"
+      "verification": "Apps Script API projects.content, version 97"
     },
     {
       "path": "apps-script/web-account-context.gs",
       "sha256": "78165d641bd1e450503832a23819a20ccc8bd27d53ebc6318c0b070c9126739b",
       "bytes": 1339,
       "normalizedLfSha256": "78165d641bd1e450503832a23819a20ccc8bd27d53ebc6318c0b070c9126739b",
-      "verification": "Apps Script history version 68 clipboard SHA-256, normalized LF"
-    },
-    {
-      "path": "apps-script/catalog-d1-sync.gs",
-      "sha256": "9b8728a06b0db969d1422b19f4c94b4296cdaf02cfc35bd7e4b49d0be4cc3662",
-      "bytes": 5021,
-      "normalizedLfSha256": "9b8728a06b0db969d1422b19f4c94b4296cdaf02cfc35bd7e4b49d0be4cc3662",
-      "verification": "Apps Script history version 68 clipboard SHA-256, normalized LF"
-    },
-    {
-      "path": "apps-script/listing-moderation-notifications.gs",
-      "sha256": "1a6fff3a87758049d47c0b06e4fe0d9f3c7927a9af129daa43ba6b4c9664d5d9",
-      "bytes": 3783,
-      "normalizedLfSha256": "1a6fff3a87758049d47c0b06e4fe0d9f3c7927a9af129daa43ba6b4c9664d5d9",
-      "verification": "Apps Script history version 68 clipboard SHA-256, normalized LF"
-    },
-    {
-      "path": "apps-script/appsscript.json",
-      "sha256": "02a77b77326a7e3ad1729031247b5c23f314723ca26a03cab0efce0c60a93f02",
-      "bytes": 204,
-      "normalizedLfSha256": "02a77b77326a7e3ad1729031247b5c23f314723ca26a03cab0efce0c60a93f02",
-      "verification": "Apps Script history version 68 clipboard SHA-256, normalized LF"
+      "verification": "Apps Script API projects.content, version 97"
     },
     {
       "path": "public/add-layout-v20.js",

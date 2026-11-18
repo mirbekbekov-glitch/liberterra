@@ -137,6 +137,9 @@ const OBJECT_HEADERS = [
   "created_at",
   "updated_at",
   "listing_agent_phone", "contact_privacy_mode",
+  "listing_agent_name", "listing_agent_agency",
+  "coop_share",
+  "coop_total",
 ];
 
 const PRIVATE_CONTRACT_HEADERS = [
@@ -173,12 +176,16 @@ const AGENT_HEADERS = [
   "password_hash",
   "password_iterations",
   "Пароль обновлён",
+  "Номер сертификата",
+  "ФИО по сертификату",
+  "Делится комиссией",
+  "Редакция правил",
 ];
 
 const USER_HEADERS = [
   "telegram_id", "Имя", "Телефон", "Username", "Тип", "Статус", "Дата регистрации", "Обновлено",
   "Первый вход", "Последний вход", "Посещений", "Последняя страница", "Источник", "Уведомления",
-  "web_user_id", "Email", "Email подтверждён", "password_salt", "password_hash", "password_iterations", "Пароль обновлён"
+  "web_user_id", "Email", "Email подтверждён", "password_salt", "password_hash", "password_iterations", "Пароль обновлён", "Цель регистрации", "Цель использования"
 ];
 const AUTHORIZED_USER_HEADERS = [
   "ID пользователя", "Имя", "Телефон", "Email", "Дата авторизации", "Последний вход"
@@ -311,8 +318,83 @@ function doPost(e) {
     }
     const payload = parseRequestPayload_(e);
     const action = cleanText_(payload.action).toLowerCase();
+    if (action === "get_public_resources") return jsonOutput_(crmPublicResources_(payload));
+    if (["create_service_request", "list_service_requests"].includes(action)) return jsonOutput_(serviceRequestAction_(payload));
     if (["list_agent_tasks", "save_agent_task"].includes(action)) return jsonOutput_(agentTasksAction_(payload, action));
-    if (["list_crm_workflow", "save_crm_record"].includes(action)) return jsonOutput_(crmWorkflowAction_(payload, action));
+        if (["list_crm_workflow", "save_crm_record"].includes(action)) return jsonOutput_(crmWorkflowAction_(payload, action));
+    if (action === "check_agent_web") return jsonOutput_(checkWebAgent_(payload));
+    if (action === "get_team_first_response") return jsonOutput_(teamFirstResponseAction_(payload));
+function teamFirstResponse_(actor, rows, now, options) {
+  const requestedDays = Number(options && options.period_days);
+  const periodDays = [0, 7, 30].includes(requestedDays) ? requestedDays : 7;
+  const since = periodDays ? now - periodDays * 86400000 : 0;
+  const detailKind = cleanText_(options && options.detail_kind);
+  const allowedDetails = ["unclaimed", "claimed", "overdue", "answered"];
+  const offset = Math.max(0, Math.min(10000, Math.floor(Number(options && options.offset) || 0)));
+  const catalog = catalogRows_();
+  const requests = new Map();
+  ["sale", "rent"].forEach((specialization) => crmRequestFeed_(Object.assign({}, actor, { specialization: specialization }), catalog, rows)
+    .forEach((request) => requests.set(request.id, request)));
+  const records = rows.map((row) => row.record);
+  const clients = records.filter((record) => record.kind === "client" && record.source_request_id);
+  const deals = records.filter((record) => record.kind === "deal");
+  const events = crmResultRows_();
+  const clientByRequest = new Map(clients.map((record) => [record.source_request_id, record]));
+  const dealsByClient = new Map(), eventsByDeal = new Map();
+  deals.forEach((deal) => { const list = dealsByClient.get(deal.client_id) || []; list.push(deal); dealsByClient.set(deal.client_id, list); });
+  events.forEach((event) => { const list = eventsByDeal.get(event.deal_id) || []; list.push(event); eventsByDeal.set(event.deal_id, list); });
+  const names = new Map();
+  const agentRows = typeof getAgentsSheet_ === "function" ? sheetRowsAsObjects_(getAgentsSheet_(), AGENT_HEADERS) : [];
+  agentRows.forEach((row) => {
+    const id = cleanText_(row.telegram_id), name = cleanText_(row["Имя"]);
+    if (id && name) names.set(id, name.slice(0, 120));
+  });
+  passwordAccounts_().filter((row) => row._account_type === "Агент").forEach((row) => {
+    const id = cleanText_(row.web_user_id), name = cleanText_(row["Имя"]);
+    if (id && name && !names.has("web:" + id)) names.set("web:" + id, name.slice(0, 120));
+  });
+  const byAgent = new Map(), detailRows = [], total = { unclaimed: 0, claimed: 0, overdue: 0, answered: 0 }, older = { count: 0 };
+  requests.forEach((request) => {
+    const received = Date.parse(request.created_at || "");
+    if (!Number.isFinite(received) || received > now) return;
+    if (received < since) { older.count++; return; }
+    const client = clientByRequest.get(request.id);
+    const overdue = now - received > 3600000;
+    const detail = { id: cleanText_(request.id).slice(0, 100), title: cleanText_(request.title).slice(0, 160),
+      created_at: new Date(received).toISOString(), direction: request.direction === "sale" ? "sale" : request.direction === "rent" ? "rent" : "unknown",
+      claim_status: client ? "claimed" : "unclaimed", agent_name: "" };
+    if (!client) { total.unclaimed++; if (overdue) total.overdue++; detailRows.push({ item: detail, unclaimed: true, claimed: false, overdue: overdue, answered: false }); return; }
+    total.claimed++;
+    const key = client.agent_key, group = byAgent.get(key) || { name: names.get(key) || "", claimed: 0, overdue: 0, answered: 0 };
+    group.claimed++;
+    detail.agent_name = group.name || "Агент";
+    const responded = (dealsByClient.get(client.id) || []).filter((deal) => deal.source === "request:" + request.id)
+      .some((deal) => crmResultChain_(deal, eventsByDeal.get(deal.id) || []).some((event) => ["Позвонить", "Отправить подборку", "Назначить показ"].includes(event.action)
+        && cleanText_(event.result) && Number.isFinite(Date.parse(event.at)) && Date.parse(event.at) >= received));
+    if (responded) { group.answered++; total.answered++; }
+    else if (overdue) { group.overdue++; total.overdue++; }
+    detailRows.push({ item: detail, unclaimed: false, claimed: true, overdue: !responded && overdue, answered: responded });
+    byAgent.set(key, group);
+  });
+  const agents = Array.from(byAgent.entries()).sort((a, b) => a[0].localeCompare(b[0])).map((entry, index) =>
+    Object.assign({}, entry[1], { name: entry[1].name || "Агент №" + (index + 1) }))
+    .sort((a, b) => b.overdue - a.overdue || a.name.localeCompare(b.name, "ru"));
+  detailRows.sort((a, b) => b.item.created_at.localeCompare(a.item.created_at) || a.item.id.localeCompare(b.item.id));
+  const selected = allowedDetails.includes(detailKind) ? detailRows.filter((row) => row[detailKind]) : [];
+  return { limit_minutes: 60, period_days: periodDays, period_from: since ? new Date(since).toISOString() : null,
+    older_count: older.count, unclaimed: total.unclaimed, claimed: total.claimed, overdue: total.overdue, answered: total.answered,
+    agents: agents, detail: allowedDetails.includes(detailKind) ? { kind: detailKind, total: selected.length, offset: offset,
+      items: selected.slice(offset, offset + 40).map((row) => row.item) } : null };
+}
+function teamFirstResponseAction_(payload) {
+  const actor = crmWorkflowContext_(payload);
+  if (!actor.ok) return actor;
+  if (actor.isAdmin !== true) return { ok: false, error: "crm_admin_required" };
+  try {
+    const rows = crmWorkflowRows_(crmWorkflowSheet_(false));
+    return { ok: true, generated_at: new Date().toISOString(), first_response: teamFirstResponse_(actor, rows, Date.now(), payload) };
+  } catch (_) { return { ok: false, error: "crm_storage_error" }; }
+}
     if (action === "get_public_crm_selection") return jsonOutput_(getPublicCrmSelection_(payload));
     if (action === "newbuilding_consultation") return jsonOutput_(newbuildingConsultation_(payload));
 
@@ -341,7 +423,17 @@ function doPost(e) {
     if (action === "password_auth_record") return jsonOutput_(passwordAuthRecord_(payload));
     if (action === "web_session_status") return jsonOutput_(webSessionStatus_(payload));
     if (action === "get_web_user_profile") return jsonOutput_(getWebUserProfile_(payload));
+    if (action === "save_registration_role") return jsonOutput_(saveRegistrationRole_(payload));
+    if (action === "submit_web_agent_application") return jsonOutput_(submitWebAgentApplication_(payload));
+    if (action === "update_user_profile") return jsonOutput_(updateUserProfile_(payload));
+    if (action === "profile_email_start") return jsonOutput_(profileEmailStart_(payload));
+    if (action === "profile_email_verify") return jsonOutput_(profileEmailVerify_(payload));
+    if (action === "submit_certificate_review") return jsonOutput_(submitCertificateReview_(payload));
+    if (action === "list_certificate_reviews") return jsonOutput_(listCertificateReviews_(payload));
+    if (action === "decide_certificate_review") return jsonOutput_(decideCertificateReview_(payload));
     if (action === "create_web_listing") return jsonOutput_(createWebListing_(payload));
+    if (action === "moderate_site_listing") return jsonOutput_(moderateSiteListingForBot_(payload));
+    if (action === "moderate_site_agent") return jsonOutput_(moderateSiteAgentForBot_(payload));
     if (action === "upload_web_listing_photos") return jsonOutput_(uploadWebListingPhotos_(payload));
     if (["list_message_threads", "open_message_thread", "read_message_thread", "send_message"].includes(action)) {
       return jsonOutput_(messageAction_(payload, action));
@@ -560,6 +652,8 @@ function appendObject_(row) {
     safeRow.phone = "";
     safeRow.public_contact_phone = agentPhone;
     safeRow.listing_agent_phone = agentPhone;
+    safeRow.listing_agent_name = agent && agent.role === "approved" ? cleanText_(agent.name) : "";
+    safeRow.listing_agent_agency = agent && agent.role === "approved" ? cleanText_(agent.agency) : "";
     safeRow.contact_name = "";
     safeRow.owner_name = "";
     safeRow.owner_contact_phone = "";
@@ -1397,6 +1491,24 @@ function cleanAnalyticsText_(value, maxLength) {
   return cleanText_(value).replace(/[\u0000-\u001f\u007f]+/g, " ").slice(0, maxLength);
 }
 
+function checkWebAgent_(payload) {
+  // Website twin of checkAgent_: the Worker verified the session and sent the
+  // account id, so the agent row is resolved by web_user_id, never by a claim.
+  const registered = registeredUserContext_(payload);
+  if (!registered.ok || !registered.webUserId) return agentAccessResponse_("guest");
+  const agent = sheetRowsAsObjects_(getAgentsSheet_(), AGENT_HEADERS).find((row) =>
+    cleanText_(row.web_user_id) === registered.webUserId &&
+    cleanText_(row.telegram_id) === cleanText_(registered.telegramId));
+  if (!agent) return agentAccessResponse_("guest");
+  return agentAccessResponse_(
+    roleFromStatus_(agent["Статус"]),
+    cleanText_(registered.telegramId),
+    agent["Направление"],
+    agent["Условия приняты"],
+    agent["Дата согласия"]
+  );
+}
+
 function checkAgent_(payload) {
   const auth = validateTelegramInitData_(payload.init_data || payload.initData, payload.telegram_id);
   if (!auth.ok) {
@@ -1555,6 +1667,7 @@ function registerAgent_(payload) {
   let role = "pending";
   let termsAccepted = "";
   let termsAcceptedAt = "";
+  let applicationAt = 0;
   try {
     const sheet = getAgentsSheet_();
     const headerMap = ensureHeaders_(sheet, AGENT_HEADERS);
@@ -1563,6 +1676,10 @@ function registerAgent_(payload) {
 
     if (rowNumber) {
       const currentStatus = sheet.getRange(rowNumber, headerMap["Статус"]).getDisplayValue();
+      const previousDate = sheet.getRange(rowNumber, headerMap["Дата"]).getValue();
+      if (roleFromStatus_(currentStatus) === "pending" && previousDate instanceof Date) {
+        applicationAt = previousDate.getTime();
+      }
       termsAccepted = sheet.getRange(rowNumber, headerMap["Условия приняты"]).getDisplayValue();
       termsAcceptedAt = sheet.getRange(rowNumber, headerMap["Дата согласия"]).getDisplayValue();
       if (roleFromStatus_(currentStatus) === "approved") {
@@ -1583,7 +1700,8 @@ function registerAgent_(payload) {
     rowValues[headerMap["Опыт"] - 1] = safeSheetValue_(experience);
     rowValues[headerMap["Документ"] - 1] = safeSheetValue_(documentValue);
     rowValues[headerMap["Статус"] - 1] = status;
-    rowValues[headerMap["Дата"] - 1] = new Date();
+    if (!applicationAt) applicationAt = Date.now();
+    rowValues[headerMap["Дата"] - 1] = new Date(applicationAt);
     rowValues[headerMap["Условия приняты"] - 1] = safeSheetValue_(termsAccepted);
     rowValues[headerMap["Дата согласия"] - 1] = termsAcceptedAt;
     sheet.getRange(rowNumber, 1, 1, rowValues.length).setValues([rowValues]);
@@ -1591,13 +1709,14 @@ function registerAgent_(payload) {
     lock.releaseLock();
   }
 
-  const notificationSent = notifyAdminAboutAgent_({
+  const notificationSent = role === "pending" && notifyAdminAboutSiteAgent_({
     telegramId: auth.telegramId,
     fullName: fullName,
     agency: agency || "Не указано",
     specialization: agentSpecializationLabel_(specialization),
     phone: phone,
     username: username,
+    applicationAt: applicationAt,
   });
 
   const response = agentAccessResponse_(
@@ -1638,9 +1757,28 @@ function agentAccessResponse_(role, telegramId, specializationValue, termsAccept
     labels: {
       other_agent_note: "Объект другого агента — комиссия делится 50/50",
     },
-    other_agent_object_ids: otherAgentObjectIds_(telegramId),
-    verified_contract_object_ids: verifiedContractObjectIds_(),
   };
+  // These three lists need a full catalog read, so they are built once and
+  // cached briefly: the agent layer is requested on every page an agent opens.
+  const accessCache = CacheService.getScriptCache();
+  const accessKey = "agent-access-lists:" + cleanText_(telegramId);
+  let lists = null;
+  const cachedLists = accessCache.get(accessKey);
+  if (cachedLists) {
+    try { lists = JSON.parse(cachedLists); } catch (_error) { lists = null; }
+  }
+  if (!lists) {
+    const catalog = catalogRows_();
+    lists = {
+      other_agent_object_ids: otherAgentObjectIds_(telegramId),
+      coop_offers: coopOfferShares_(catalog),
+      verified_contract_object_ids: verifiedContractObjectIds_(catalog),
+    };
+    try { accessCache.put(accessKey, JSON.stringify(lists), 120); } catch (_error) {}
+  }
+  response.agent_access.other_agent_object_ids = lists.other_agent_object_ids;
+  response.agent_access.coop_offers = lists.coop_offers;
+  response.agent_access.verified_contract_object_ids = lists.verified_contract_object_ids;
   return response;
 }
 
@@ -1715,8 +1853,16 @@ function otherAgentObjectIds_(telegramId) {
     .filter(Boolean);
 }
 
-function verifiedContractObjectIds_() {
-  return objectRows_().reduce((objectIds, row) => {
+function coopOfferShares_(catalog) {
+  return objectRows_(catalog).reduce((offers, row) => {
+    const objectId = cleanText_(row.id), share = cleanText_(row.coop_share);
+    if (objectId && share) offers.push({ id: objectId, share: share, total: cleanText_(row.coop_total) });
+    return offers;
+  }, []);
+}
+
+function verifiedContractObjectIds_(catalog) {
+  return objectRows_(catalog).reduce((objectIds, row) => {
     if (isTrue_(row.contract_signed)) {
       const objectId = cleanText_(row.id);
       if (objectId) objectIds.push(objectId);
@@ -1728,10 +1874,14 @@ function verifiedContractObjectIds_() {
 function approvedAgentContext_(payload, authenticatedContext) {
   if (!authenticatedContext && payload.web_user_id) authenticatedContext = registeredUserContext_(payload);
   if (authenticatedContext && authenticatedContext.ok && authenticatedContext.webUserId) {
-    const account = passwordAccounts_().find((row) => cleanText_(row.web_user_id) === authenticatedContext.webUserId && row._account_type === "Агент");
-    if (!account || !passwordAccountActive_(account,"Агент")) return {ok:false,error:"agent_not_approved"};
-    if (!isAgentTermsAccepted_(account["Условия приняты"])) return {ok:false,error:"terms_not_accepted"};
-    const specialization = normalizeAgentSpecialization_(account["Направление"]);
+    const account = passwordAccounts_().find((row) => cleanText_(row.web_user_id) === authenticatedContext.webUserId);
+    if (!account || !passwordAccountActive_(account, account._account_type)) return {ok:false,error:"agent_not_approved"};
+    const agent = sheetRowsAsObjects_(getAgentsSheet_(), AGENT_HEADERS).find((row) =>
+      cleanText_(row.web_user_id) === authenticatedContext.webUserId &&
+      cleanText_(row.telegram_id) === cleanText_(authenticatedContext.telegramId));
+    if (!agent || roleFromStatus_(agent["Статус"]) !== "approved") return {ok:false,error:"agent_not_approved"};
+    if (!isAgentTermsAccepted_(agent["Условия приняты"])) return {ok:false,error:"terms_not_accepted"};
+    const specialization = normalizeAgentSpecialization_(agent["Направление"]);
     if (!specialization) return {ok:false,error:"specialization_required"};
     return Object.assign({},authenticatedContext,{role:"approved",specialization:specialization});
   }
@@ -1812,15 +1962,21 @@ function registeredUserContext_(payload) {
       return { ok: false, role: "guest", registered: false, error: "registration_required" };
     }
     const telegramId = cleanText_(row.telegram_id) || "web:" + webUserId;
+    const agentRow = sheetRowsAsObjects_(getAgentsSheet_(), AGENT_HEADERS)
+      .find((item) => cleanText_(item.web_user_id) === webUserId && cleanText_(item.telegram_id) === telegramId);
+    const approvedAgent = Boolean(agentRow && roleFromStatus_(agentRow["Статус"]) === "approved");
     const properties = PropertiesService.getScriptProperties();
     const adminId = cleanText_(properties.getProperty("ADMIN_TELEGRAM_ID") || properties.getProperty("ADMIN_CHAT_ID"));
     return {
       ok: true,
-      role: row._account_type === "Агент" ? "approved" : "user",
+      role: row._account_type === "Агент" || approvedAgent ? "approved" : "user",
       telegramId: telegramId,
       name: cleanText_(row["Имя"]) || "Пользователь",
       phone: cleanText_(row["Телефон"]),
-      accountType: row._account_type || cleanText_(row["Тип"]) || "Пользователь",
+      accountType: row._account_type === "Агент" || approvedAgent ? "Агент" : "Пользователь",
+      registrationRole: cleanText_(row["Цель регистрации"]),
+      registrationPurpose: cleanText_(row["Цель использования"]),
+      agentApplicationStatus: agentRow ? roleFromStatus_(agentRow["Статус"]) : "",
       registered: true,
       isAdmin: Boolean(adminId && adminId === telegramId),
       webUserId: webUserId,
@@ -1888,6 +2044,7 @@ function registerUser_(payload) {
   write("Последний вход", now);
   if (!current[headerMap["Уведомления"] - 1]) write("Уведомления", "да");
   sheet.getRange(rowNumber, 1, 1, current.length).setValues([current]);
+  if (!existingDate) notifyAdminAboutSiteUser_({telegramId: context.telegramId, name: name, phone: phone});
   return { ok: true, registered: true, user: { name: name, account_type: accountType } };
 }
 
@@ -1989,6 +2146,7 @@ function verifyEmailAuth_(payload) {
   sheet.getRange(rowNumber, 1, 1, current.length).setValues([current]);
   const user = {}; Object.keys(headers).forEach((header) => user[header] = current[headers[header] - 1]);
   authorizeUser_(user);
+  if (!exists) notifyAdminAboutSiteUser_({webUserId: userId, name: user["Имя"], phone: user["Телефон"], email: email});
   return { ok: true, registered: true, user: userForPasswordAuth_(user) };
 }
 
@@ -2147,6 +2305,8 @@ function passwordRegisterStart_(payload) {
   const name = cleanText_(payload.full_name).slice(0, 120);
   const phone = cleanText_(payload.phone).slice(0, 40);
   const code = cleanText_(payload.code);
+  const registrationRole = cleanText_(payload.registration_role).toLowerCase() || "client";
+  if (["client", "owner", "agent"].indexOf(registrationRole) === -1) return { ok: false, error: "invalid_registration_role" };
   if (!email || name.length < 2 || !isValidWorkPhone_(phone) || !/^[0-9]{6}$/.test(code) || !validPasswordRecord_(payload)) return { ok: false, error: "invalid_registration" };
   const sheet = getUsersSheet_();
   const headers = ensureHeaders_(sheet, USER_HEADERS);
@@ -2159,8 +2319,14 @@ function passwordRegisterStart_(payload) {
   const cache = CacheService.getScriptCache();
   const key = passwordChallengeKey_("register", email);
   if (cache.get(key)) return { ok: false, error: "retry_later" };
-  cache.put(key, JSON.stringify({ hash: emailCodeHash_(email, code), attempts: 0, email: email, name: name, phone: phone, accountType: "Пользователь", passwordSalt: cleanText_(payload.password_salt), passwordHash: cleanText_(payload.password_hash), passwordIterations: Number(payload.password_iterations) }), 10 * 60);
-  sendPasswordCode_(email, code, "Подтверждение регистрации Liberterra", "Ваш код для создания аккаунта Liberterra");
+  cache.put(key, JSON.stringify({ hash: emailCodeHash_(email, code), attempts: 0, email: email, name: name, phone: phone, registrationRole: registrationRole, accountType: "Пользователь", passwordSalt: cleanText_(payload.password_salt), passwordHash: cleanText_(payload.password_hash), passwordIterations: Number(payload.password_iterations) }), 10 * 60);
+  try {
+    sendPasswordCode_(email, code, "Подтверждение регистрации Liberterra", "Ваш код для создания аккаунта Liberterra");
+  } catch (error) {
+    console.error("Registration email delivery failed: " + (error && error.message ? error.message : error));
+    cache.remove(key);
+    return { ok: false, error: "email_delivery_failed" };
+  }
   return { ok: true, expires_in: 600 };
 }
 
@@ -2197,11 +2363,15 @@ function passwordRegisterVerify_(payload) {
   const now = new Date();
   write("web_user_id", cleanText_(values[headers.web_user_id - 1]) || Utilities.getUuid()); write("Email", verified.email); write("Email подтверждён", now);
   write("Имя", cleanText_(values[headers["Имя"] - 1]) || verified.challenge.name); write("Телефон", cleanText_(values[headers["Телефон"] - 1]) || verified.challenge.phone); write("Тип", "Пользователь"); write("Статус", "активен");
+  write("Цель регистрации", ["client", "owner", "agent"].indexOf(verified.challenge.registrationRole) !== -1 ? verified.challenge.registrationRole : "client");
   write("Дата регистрации", now); write("Первый вход", now); write("Последний вход", now); write("Обновлено", now); write("Уведомления", "да");
   write("password_salt", verified.challenge.passwordSalt); write("password_hash", verified.challenge.passwordHash); write("password_iterations", verified.challenge.passwordIterations); write("Пароль обновлён", now);
   sheet.getRange(row, 1, 1, values.length).setValues([values]);
   const user = {}; Object.keys(headers).forEach((header) => user[header] = values[headers[header] - 1]);
   authorizeUser_(user);
+  if (!existingRow) notifyAdminAboutSiteUser_({
+    webUserId: user.web_user_id, name: user["Имя"], phone: user["Телефон"], email: verified.email
+  });
   return { ok: true, registered: true, user: userForPasswordAuth_(user) };
 }
 
@@ -2583,7 +2753,8 @@ function getUserProfile_(payload) {
 function profileForUserContext_(context) {
   const catalog = catalogRows_();
   const links = objectAgentLinks_();
-  const photoAgent = agentRecordById_(context.telegramId);
+  const photoAgent = context.accountType === "Агент" ? profileAgentDetailsForContext_(context) : null;
+  const certificateNumber = context.accountType === "Агент" ? profileCertificateForContext_(context) : "";
   return {
     ok: true,
     user: {
@@ -2591,8 +2762,19 @@ function profileForUserContext_(context) {
       name: context.name,
       phone: context.phone || "",
       account_type: context.accountType || "Пользователь",
+      registration_role: context.registrationRole || "",
+      registration_purpose: context.registrationPurpose || "",
+      agent_application_status: context.agentApplicationStatus || "",
+      is_admin: context.isAdmin === true,
+      agency: context.accountType === "Агент" && photoAgent ? photoAgent.agency : "",
+      specialization: context.accountType === "Агент" && photoAgent ? photoAgent.specialization : "",
+      experience: context.accountType === "Агент" && photoAgent ? photoAgent.experience : "",
+      certificate_legal_name: context.accountType === "Агент" && photoAgent ? photoAgent.certificate_legal_name : "",
       avatar_url: photoAgent ? photoAgent.avatar_url : "",
       can_edit_photo: Boolean(photoAgent && ["approved", "pending"].indexOf(photoAgent.role) !== -1),
+      certificate_number: certificateNumber,
+      certificate_verification: context.accountType === "Агент"
+        ? profileCertificateVerificationForContext_(context, certificateNumber) : null,
     },
     own_object_count: ownObjectRecords_(context, catalog, links)
       .filter((record) => cleanText_(record.deal).toLowerCase() !== "запрос").length,
@@ -2610,6 +2792,118 @@ function getWebUserProfile_(payload) {
   const context = registeredUserContext_(payload);
   if (!context.ok) return context;
   return profileForUserContext_(context);
+}
+
+// A declared purpose is account metadata. It never grants agent permissions.
+function saveRegistrationRole_(payload) {
+  const context = registeredUserContext_(payload);
+  if (!context.ok || !context.webUserId) return { ok: false, error: "registration_required" };
+  const role = cleanText_(payload.registration_role).toLowerCase();
+  const purpose = cleanText_(payload.registration_purpose).toLowerCase();
+  const allowedPurpose = { client: ["buy", "rent", "browse"], owner: ["sell", "lease"], agent: [""] };
+  if (!allowedPurpose[role] || allowedPurpose[role].indexOf(purpose) === -1) return { ok: false, error: "invalid_registration_role" };
+  if ((context.accountType === "Агент" || ["pending", "approved"].indexOf(context.agentApplicationStatus) !== -1) && role !== "agent") return { ok: false, error: "agent_role_locked" };
+  const sheet = getUsersSheet_(), headers = ensureHeaders_(sheet, USER_HEADERS);
+  const row = findValueRow_(sheet, headers.web_user_id, context.webUserId);
+  if (!row) return { ok: false, error: "registration_required" };
+  sheet.getRange(row, headers["Цель регистрации"]).setValue(role);
+  sheet.getRange(row, headers["Цель использования"]).setValue(purpose);
+  return { ok: true, registration_role: role, registration_purpose: purpose };
+}
+
+function submitWebAgentApplication_(payload) {
+  const context = registeredUserContext_(payload);
+  if (!context.ok || !context.webUserId) return { ok: false, error: "registration_required" };
+  const name = cleanText_(payload.full_name).slice(0, 120);
+  const phone = cleanText_(payload.phone).slice(0, 40);
+  const privateAgent = payload.private_agent === true;
+  const agency = privateAgent ? "Частный агент" : cleanText_(payload.agency).slice(0, 120);
+  const specialization = normalizeAgentSpecialization_(payload.specialization);
+  const experienceText = cleanText_(payload.experience);
+  const experience = Number(experienceText);
+  const certificate = cleanText_(payload.certificate_number).slice(0, 80);
+  // Joint deals are the point of the platform, but sharing stays the agent's own choice.
+  const commissionSharing = payload.commission_sharing === true;
+  // Какую редакцию правил человек принял: без этого после правки текста непонятно, с чем он соглашался.
+  const rulesVersion = cleanText_(payload.rules_version).slice(0, 40);
+  if (name.length < 2 || !isValidWorkPhone_(phone) || !agency || !specialization || !/^\d{1,2}$/.test(experienceText) || !Number.isInteger(experience) || experience < 0 || experience > 70 || payload.rules_accepted !== true) return { ok: false, error: "invalid_application" };
+  const base64 = cleanText_(payload.photo_base64);
+  if (!base64 || base64.length > 200000 || !/^[A-Za-z0-9+/]+={0,2}$/.test(base64)) return { ok: false, error: "photo_required" };
+  let bytes;
+  try { bytes = Utilities.base64Decode(base64); } catch (_) { return { ok: false, error: "invalid_photo" }; }
+  if (!validAgentJpeg_(bytes)) return { ok: false, error: "invalid_photo" };
+  let certificateBytes = null;
+  const certificateBase64 = cleanText_(payload.document_photo_base64);
+  const certificateType = cleanText_(payload.document_photo_type).toLowerCase();
+  if (certificateBase64) {
+    if (["image/jpeg", "image/png", "image/webp", "application/pdf"].indexOf(certificateType) === -1 || certificateBase64.length > 4 * 1024 * 1024 || !/^[A-Za-z0-9+/]+={0,2}$/.test(certificateBase64)) return { ok: false, error: "invalid_certificate" };
+    try { certificateBytes = Utilities.base64Decode(certificateBase64); } catch (_) { return { ok: false, error: "invalid_certificate" }; }
+    if (certificateBytes.length > MAX_DOCUMENT_PHOTO_BYTES || certificateBytes.length < 12) return { ok: false, error: "invalid_certificate" };
+    const byte = (index) => certificateBytes[index] & 255;
+    const signatureValid = certificateType === "image/jpeg" ? byte(0) === 255 && byte(1) === 216
+      : certificateType === "image/png" ? byte(0) === 137 && byte(1) === 80 && byte(2) === 78 && byte(3) === 71
+      : certificateType === "application/pdf" ? byte(0) === 37 && byte(1) === 80 && byte(2) === 68 && byte(3) === 70 && byte(4) === 45
+      : byte(0) === 82 && byte(1) === 73 && byte(2) === 70 && byte(3) === 70 && byte(8) === 87 && byte(9) === 69 && byte(10) === 66 && byte(11) === 80;
+    if (!signatureValid) return { ok: false, error: "invalid_certificate" };
+  }
+  const lock = LockService.getScriptLock();
+  if (!lock.tryLock(10000)) return { ok: false, error: "application_busy" };
+  let photo = null;
+  let certificateFile = null;
+  let applicationAt = Date.now();
+  try {
+    const users = getUsersSheet_(), userHeaders = ensureHeaders_(users, USER_HEADERS);
+    const userRow = findValueRow_(users, userHeaders.web_user_id, context.webUserId);
+    if (!userRow || users.getRange(userRow, userHeaders["Цель регистрации"]).getDisplayValue() !== "agent") return { ok: false, error: "agent_role_required" };
+    const agents = getAgentsSheet_(), headers = ensureHeaders_(agents, AGENT_HEADERS);
+    if (findValueRow_(agents, headers.web_user_id, context.webUserId)) return { ok: false, error: "application_exists" };
+    const id = cleanText_(context.telegramId) || "web:" + context.webUserId;
+    const props = PropertiesService.getScriptProperties();
+    let folderId = props.getProperty("AGENT_AVATARS_FOLDER_ID");
+    if (!folderId) {
+      const folder = DriveApp.createFolder("Liberterra — public agent avatars");
+      folderId = folder.getId(); props.setProperty("AGENT_AVATARS_FOLDER_ID", folderId);
+    }
+    photo = DriveApp.getFolderById(folderId).createFile(Utilities.newBlob(bytes, "image/jpeg", Utilities.getUuid() + ".jpg"));
+    photo.setDescription("liberterra-avatar:" + id);
+    photo.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+    if (certificateBytes) {
+      const suffix = certificateType === "application/pdf" ? "pdf" : certificateType === "image/png" ? "png" : certificateType === "image/webp" ? "webp" : "jpg";
+      certificateFile = getAgentDocumentsFolder_().createFile(Utilities.newBlob(certificateBytes, certificateType, Utilities.getUuid() + "." + suffix));
+    }
+    const row = Math.max(agents.getLastRow() + 1, 2);
+    const values = new Array(agents.getLastColumn()).fill("");
+    const write = (header, value) => { values[headers[header] - 1] = safeSheetValue_(value); };
+    write("telegram_id", id); write("web_user_id", context.webUserId);
+    write("Email", cleanText_(payload.web_session_email)); write("Email подтверждён", new Date());
+    write("Имя", name); write("Телефон", phone); write("Агентство", agency);
+    write("Направление", agentSpecializationLabel_(specialization)); write("Опыт", experience);
+    write("Номер сертификата", certificate); write("Статус", "на проверке");
+    write("Делится комиссией", commissionSharing ? "да" : "нет");
+    write("Редакция правил", rulesVersion);
+    if (certificateFile) write("Документ", certificateFile.getUrl());
+    write("Дата", new Date(applicationAt)); write("Условия приняты", "да"); write("Дата согласия", new Date());
+    write("Публичное фото ID", photo.getId());
+    agents.getRange(row, 1, 1, values.length).setValues([values]);
+    try {
+      sendRegistrationNotice_("WEB_AGENT_" + context.webUserId, [
+        "🏠 Новая заявка агента Liberterra",
+        "Имя: " + name,
+        "Агентство: " + agency,
+        "Телефон: " + phone,
+        "Опыт: " + experience + " лет",
+        "Делится комиссией: " + (commissionSharing ? "да" : "нет"),
+        "Проверьте фото и данные в таблице «Агенты». До одобрения CRM недоступна.",
+        SpreadsheetApp.getActiveSpreadsheet().getUrl() + "#gid=" + agents.getSheetId()
+      ]);
+    } catch (noticeError) { console.error("web_agent_notice_failed: " + noticeError); }
+    return { ok: true, role: "pending", avatar_url: agentAvatarUrl_(photo.getId()) };
+  } catch (error) {
+    if (photo) { try { photo.setSharing(DriveApp.Access.PRIVATE, DriveApp.Permission.NONE); photo.setTrashed(true); } catch (_) {} }
+    if (certificateFile) { try { certificateFile.setTrashed(true); } catch (_) {} }
+    console.error("web_agent_application_failed: " + error);
+    return { ok: false, error: "application_save_failed" };
+  } finally { lock.releaseLock(); }
 }
 
 function agentAvatarUrl_(fileId) {
@@ -2662,7 +2956,9 @@ function setAgentPhoto_(payload) {
   try {
     const sheet = getAgentsSheet_();
     const headers = ensureHeaders_(sheet, AGENT_HEADERS);
-    const row = findAgentRow_(sheet, headers.telegram_id, targetId);
+    const row = context.webUserId && !payload.agent_id
+      ? findValueRow_(sheet, headers.web_user_id, context.webUserId)
+      : findAgentRow_(sheet, headers.telegram_id, targetId);
     if (!row) return { ok: false, error: "agent_not_found" };
     const role = roleFromStatus_(sheet.getRange(row, headers["Статус"]).getDisplayValue());
     if (!context.isAdmin && ["approved", "pending"].indexOf(role) === -1) return { ok: false, error: "photo_access_denied" };
@@ -2874,6 +3170,7 @@ function agentRecordById_(agentId) {
     avatar_url: agentAvatarUrl_(values[headerMap["Публичное фото ID"] - 1]),
     name: cleanText_(values[headerMap["Имя"] - 1]) || "Агент Liberterra",
     agency: cleanText_(values[headerMap["Агентство"] - 1]),
+    phone: cleanText_(values[headerMap["Телефон"] - 1]),
     specialization: normalizeAgentSpecialization_(values[headerMap["Направление"] - 1]),
     role: roleFromStatus_(values[headerMap["Статус"] - 1]),
     rating: normalizeAgentRating_(values[headerMap["Рейтинг"] - 1]),
@@ -5567,6 +5864,7 @@ function persistWebListing_(payload, actor, id, input, decoded) {
       return {ok:true,id:id};
     }
     const urls = storeWebListingPhotos_(id,decoded);
+    const actorAgent = agentRecordById_(actor.telegramId);
     const row = {id:id, city:"Бишкек", deal:input.deal, segment:input.object_type === "Коммерческая недвижимость" ? "Коммерция" : "Жильё",
       title:cleanText_(input.object_type).slice(0,80), district:cleanText_(input.district).slice(0,160),
       description:cleanText_(input.address).slice(0,160) + "\n" + cleanText_(input.description).slice(0,700),
@@ -5576,10 +5874,14 @@ function persistWebListing_(payload, actor, id, input, decoded) {
       photo_url:urls.join("|"),status:"на модерации",verified:false,
       created_at:new Date().toISOString(),updated_at:new Date().toISOString(),
       listing_agent_id:actor.telegramId,poster_type:input.poster_type,
-      contact_name:actor.name,public_contact_phone:actor.phone,listing_agent_phone:actor.phone,phone:""};
+      contact_name:actor.name,public_contact_phone:actor.phone,listing_agent_phone:actor.phone,phone:"",
+      listing_agent_name:actorAgent && actorAgent.role === "approved" ? cleanText_(actorAgent.name) : "",
+      listing_agent_agency:actorAgent && actorAgent.role === "approved" ? cleanText_(actorAgent.agency) : ""};
     upsertObjectAgentLink_(row);
     saveAgentPrivateListingSnapshot_(id,actor.telegramId, {owner_contact_name:input.owner_name,owner_contact_phone:input.phone});
     row.contact_privacy_mode = "agent_private_v1";
+    row.coop_share = cleanText_(input.coop_share).slice(0, 10);
+    row.coop_total = cleanText_(input.coop_total).slice(0, 10);
     upsertObjectFields_(row,PUBLIC_OBJECT_HEADERS);
     return {ok:true,id:id};
 }
@@ -5637,4 +5939,54 @@ function ownsListingKey_(actor, ownerKey) {
   if (!key || !actor) return false;
   if (typeof actor === "string") return key === actor;
   return key === cleanText_(actor.telegramId) || Boolean(actor.webUserId && key === "web:" + cleanText_(actor.webUserId));
+}
+
+
+/**
+ * Разовое дозаполнение: имя и агентство агента в объявлениях, размещённых до
+ * появления этих колонок, плюс телефон там, где он пустой. Запускается вручную.
+ */
+function backfillListingAgentColumns() {
+  const objectsSheet = getObjectsSheet_();
+  const objectHeaderMap = ensureHeaders_(objectsSheet, OBJECT_HEADERS);
+  const objectRows = sheetRowsAsObjects_(objectsSheet, OBJECT_HEADERS);
+  const links = objectAgentLinks_();
+  const agentCache = {};
+
+  let updated = 0;
+  let unlinked = 0;
+  objectRows.forEach((record) => {
+    const agentId = listingAgentIdForObject_(record.id, links);
+    if (!agentId) {
+      unlinked += 1;
+      return;
+    }
+    if (!Object.prototype.hasOwnProperty.call(agentCache, agentId)) {
+      agentCache[agentId] = agentRecordById_(agentId);
+    }
+    const agent = agentCache[agentId];
+    if (!agent || agent.role !== "approved") {
+      unlinked += 1;
+      return;
+    }
+    let touched = false;
+    if (objectHeaderMap.listing_agent_name && cleanText_(record.listing_agent_name) !== cleanText_(agent.name)) {
+      objectsSheet.getRange(record._row, objectHeaderMap.listing_agent_name).setValue(safeSheetValue_(agent.name));
+      touched = true;
+    }
+    if (objectHeaderMap.listing_agent_agency && cleanText_(record.listing_agent_agency) !== cleanText_(agent.agency)) {
+      objectsSheet.getRange(record._row, objectHeaderMap.listing_agent_agency).setValue(safeSheetValue_(agent.agency));
+      touched = true;
+    }
+    if (objectHeaderMap.listing_agent_phone && !cleanText_(record.listing_agent_phone) && isValidWorkPhone_(agent.phone)) {
+      objectsSheet.getRange(record._row, objectHeaderMap.listing_agent_phone).setValue(safeSheetValue_(agent.phone));
+      touched = true;
+    }
+    if (touched) updated += 1;
+  });
+
+  SpreadsheetApp.flush();
+  const result = { ok: true, updated: updated, unlinked: unlinked };
+  console.log(JSON.stringify(result));
+  return result;
 }
