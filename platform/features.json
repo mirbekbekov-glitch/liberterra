@@ -1,4 +1,5 @@
 {
   "backend/crmWorkflowAssets/crm-workflow.js": ["features/deals.js"],
-  "backend/crmWorkflowAssets/crm-workspace.css": ["features/deals.css"]
+  "backend/crmWorkflowAssets/crm-workspace.css": ["features/deals.css"],
+  "backend/crmWorkflowAssets/crm-workspace.js": ["features/desk.js"]
 }
