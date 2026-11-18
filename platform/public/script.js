@@ -281,14 +281,14 @@ const state = {
   requests: [],
   favoritesOnly: false,
   source: [],
-  sourceStaff: "all",
+  sourceStaff: [],
 };
 
 const CATALOG_FILTERS_KEY = "liberterra_catalog_filters_v1";
 const CATALOG_FILTER_KEYS = [
   "city", "rentTerm", "segment", "propertyType", "occupancy", "rooms", "district",
   "priceCurrency", "query", "priceMin", "priceMax", "areaMin", "areaMax", "floorMin",
-  "floorMax", "requestDeal", "sourceStaff",
+  "floorMax", "requestDeal",
 ];
 
 const DEALS = ["продажа", "аренда"];
@@ -319,6 +319,10 @@ function restoreCatalogFilters() {
   const savedSource = Array.isArray(saved.source) ? saved.source.join(",") : saved.source;
   const sourceValue = params.has("source") ? params.get("source") : savedSource;
   state.source = String(sourceValue || "").split(",").map((part) => part.trim()).filter((part) => SOURCE_GROUPS.includes(part));
+  const savedStaff = Array.isArray(saved.sourceStaff) ? saved.sourceStaff.join(",") : saved.sourceStaff;
+  const staffValue = params.has("staff") ? params.get("staff") : savedStaff;
+  state.sourceStaff = String(staffValue || "").split(",")
+    .map((part) => normalizeSearch(part)).filter((part) => part && part !== "all");
   const favoriteValue = params.has("favoritesOnly") ? params.get("favoritesOnly") : saved.favoritesOnly;
   state.favoritesOnly = favoriteValue === true || favoriteValue === "1" || favoriteValue === "true";
   if (!state.deals.length) state.deals = ["аренда"];
@@ -331,6 +335,7 @@ function catalogFilterParams() {
   CATALOG_FILTER_KEYS.forEach((key) => params.set(key, String(state[key] ?? "")));
   params.set("deal", state.deals.join(","));
   if (state.source.length) params.set("source", state.source.join(","));
+  if (state.sourceStaff.length) params.set("staff", state.sourceStaff.join(","));
   if (state.favoritesOnly) params.set("favoritesOnly", "1");
   return params;
 }
@@ -398,9 +403,9 @@ function applyViewerProfile(profile) {
   const phone = digitsOnly(user.phone).slice(-9);
   viewer = isAgent && (name || agency || phone) ? { name, agency, phone } : null;
   if (viewer) loadAgencyRegistry();
-  if (!viewer && (state.source.length || state.sourceStaff !== "all")) {
+  if (!viewer && (state.source.length || state.sourceStaff.length)) {
     state.source = [];
-    state.sourceStaff = "all";
+    state.sourceStaff = [];
   }
   render();
 }
@@ -439,6 +444,7 @@ async function resolveViewer() {
 
 // Реестр агентов: имя → агентство. Нужен, пока фид не отдаёт агентство строкой.
 let agencyByAgent = new Map();
+let agentDirectory = new Map();
 let agencyRegistryRequested = false;
 async function loadAgencyRegistry() {
   if (agencyRegistryRequested) return;
@@ -450,6 +456,13 @@ async function loadAgencyRegistry() {
     agencyByAgent = new Map(body.agents
       .filter(agent => normalize(agent?.name) && normalize(agent?.agency))
       .map(agent => [normalizeSearch(agent.name), normalize(agent.agency)]));
+    agentDirectory = new Map(body.agents
+      .filter(agent => normalize(agent?.name))
+      .map(agent => [normalizeSearch(agent.name), {
+        name: normalize(agent.name),
+        agency: normalize(agent.agency),
+        avatar: normalize(agent.avatar_url),
+      }]));
     render();
   } catch (_) {
     agencyRegistryRequested = false;
@@ -471,28 +484,34 @@ function sourceGroupOf(item) {
   return "other";
 }
 
+// Выбранные группы и сотрудники складываются: объект подходит, если попал хотя бы в одну отметку.
 function sourceMatches(item) {
   if (!viewer) return true;
-  if (state.source.length) {
-    // «Моей организации» — вся компания, включая собственные объявления агента.
-    const groups = new Set(state.source);
-    if (groups.has("agency")) groups.add("mine");
-    if (!groups.has(sourceGroupOf(item))) return false;
-  }
-  if (state.sourceStaff !== "all" && normalizeSearch(item.sourceAgentName) !== state.sourceStaff) return false;
-  return true;
+  if (!state.source.length && !state.sourceStaff.length) return true;
+  // «Моей организации» — вся компания, включая собственные объявления агента.
+  const groups = new Set(state.source);
+  if (groups.has("agency")) groups.add("mine");
+  if (groups.has(sourceGroupOf(item))) return true;
+  return state.sourceStaff.includes(normalizeSearch(item.sourceAgentName));
 }
 
 function sourceFilterActive() {
-  return Boolean(viewer) && (state.source.length > 0 || state.sourceStaff !== "all");
+  return Boolean(viewer) && (state.source.length > 0 || state.sourceStaff.length > 0);
+}
+
+// Имена выбранных сотрудников: сначала реестр, затем то, что встретилось в выдаче.
+function sourceStaffNames() {
+  const byKey = new Map();
+  agentDirectory.forEach((agent, key) => { if (agent.name) byKey.set(key, agent.name); });
+  state.objects.forEach((item) => {
+    const key = normalizeSearch(item.sourceAgentName);
+    if (key && !byKey.has(key)) byKey.set(key, normalize(item.sourceAgentName));
+  });
+  return state.sourceStaff.map((key) => byKey.get(key) || "выбранный сотрудник");
 }
 
 function sourceFilterSummary() {
-  if (state.sourceStaff !== "all") {
-    const match = state.objects.find((item) => normalizeSearch(item.sourceAgentName) === state.sourceStaff);
-    return normalize(match?.sourceAgentName) || "выбранный сотрудник";
-  }
-  return state.source.map((group) => SOURCE_LABELS[group]).join(", ");
+  return [...state.source.map((group) => SOURCE_LABELS[group]), ...sourceStaffNames()].join(", ");
 }
 
 const grid = document.querySelector("#catalogGrid");
@@ -1802,56 +1821,179 @@ document.addEventListener("keydown", (event) => {
   }
 });
 
+const PERSON_ICON = '<svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm0 2c-3.3 0-8 1.7-8 4v2h16v-2c0-2.3-4.7-4-8-4Z"/></svg>';
+let sourceStaffQuery = "";
+
+function sourceInitials(value) {
+  return normalize(value).split(/\s+/).filter(Boolean).slice(0, 2)
+    .map((part) => part.slice(0, 1).toUpperCase()).join("");
+}
+
+// Сотрудники в списке: весь публичный реестр плюс имена, встреченные в выдаче.
+function sourceStaffEntries() {
+  const entries = new Map();
+  const add = (name, agency, avatar) => {
+    const key = normalizeSearch(name);
+    if (!key) return null;
+    if (!entries.has(key)) {
+      entries.set(key, { key, name: normalize(name), agency: "", avatar: "", count: 0 });
+    }
+    const entry = entries.get(key);
+    if (!entry.agency && normalize(agency)) entry.agency = normalize(agency);
+    if (!entry.avatar && normalize(avatar)) entry.avatar = normalize(avatar);
+    return entry;
+  };
+  agentDirectory.forEach((agent) => add(agent.name, agent.agency, agent.avatar));
+  state.objects.forEach((item) => {
+    if (!dealMatches(item)) return;
+    const entry = add(item.sourceAgentName, agentAgencyOf(item), "");
+    if (entry) entry.count += 1;
+  });
+  return [...entries.values()]
+    .sort((a, b) => (b.count - a.count) || a.name.localeCompare(b.name, "ru"));
+}
+
+function sourceGroupRowHtml(group) {
+  return `<label class="v20-source-row" data-kind="group">`
+    + `<span class="v20-source-ava">${PERSON_ICON}</span>`
+    + `<span class="v20-source-text"><span class="v20-source-name">${escapeHtml(SOURCE_LABELS[group])}</span></span>`
+    + `<input type="checkbox" data-source="${escapeHtml(group)}">`
+    + `</label>`;
+}
+
+function sourceStaffRowHtml(entry) {
+  const photo = entry.avatar
+    ? `<img class="v20-source-photo" src="${escapeHtml(entry.avatar)}" alt="" loading="lazy" referrerpolicy="no-referrer">`
+    : "";
+  const meta = entry.agency ? `<span class="v20-source-meta">${escapeHtml(entry.agency)}</span>` : "";
+  return `<label class="v20-source-row" data-kind="staff">`
+    + `<span class="v20-source-ava">${photo}<span class="v20-source-initials">${escapeHtml(sourceInitials(entry.name))}</span></span>`
+    + `<span class="v20-source-text"><span class="v20-source-name">${escapeHtml(entry.name)}</span>${meta}</span>`
+    + `<span class="v20-source-num" title="Объектов в выдаче">${entry.count}</span>`
+    + `<input type="checkbox" data-staff="${escapeHtml(entry.key)}">`
+    + `</label>`;
+}
+
+function renderSourceList() {
+  const list = document.querySelector("#heroSourceList");
+  if (!list) return;
+  const query = normalizeSearch(sourceStaffQuery);
+  const staff = sourceStaffEntries().filter((entry) => !query
+    || normalizeSearch(entry.name).includes(query)
+    || normalizeSearch(entry.agency).includes(query));
+  const signature = `${query}|${staff.map((entry) => `${entry.key}:${entry.count}`).join(",")}`;
+  if (list.dataset.signature !== signature) {
+    list.dataset.signature = signature;
+    const groups = query ? "" : SOURCE_GROUPS.map(sourceGroupRowHtml).join("");
+    const rows = staff.map(sourceStaffRowHtml).join("");
+    const divider = groups && rows ? `<span class="v20-source-sep">Сотрудники</span>` : "";
+    const empty = staff.length
+      ? ""
+      : `<p class="v20-source-empty">${query ? "Никого не нашли" : "В выдаче пока нет объявлений с указанным агентом"}</p>`;
+    list.innerHTML = `${groups}${divider}${rows}${empty}`;
+    list.querySelectorAll("img.v20-source-photo").forEach((img) => {
+      img.addEventListener("error", () => img.remove(), { once: true });
+    });
+  }
+  list.querySelectorAll("[data-source]").forEach((input) => {
+    input.checked = state.source.includes(input.dataset.source);
+  });
+  list.querySelectorAll("[data-staff]").forEach((input) => {
+    input.checked = state.sourceStaff.includes(input.dataset.staff);
+  });
+}
+
+function closeSourcePanel() {
+  const panel = document.querySelector("#heroSourcePanel");
+  const toggle = document.querySelector("#heroSourceToggle");
+  if (!panel || panel.hidden) return;
+  panel.hidden = true;
+  if (toggle) toggle.setAttribute("aria-expanded", "false");
+}
+
+function openSourcePanel() {
+  const panel = document.querySelector("#heroSourcePanel");
+  const toggle = document.querySelector("#heroSourceToggle");
+  if (!panel) return;
+  panel.hidden = false;
+  if (toggle) toggle.setAttribute("aria-expanded", "true");
+  const search = panel.querySelector("#heroSourceSearch");
+  if (search) search.focus();
+}
+
 function updateSourceUi() {
   const box = document.querySelector("#heroSource");
   if (!box) return;
   box.hidden = !viewer;
-  if (!viewer) return;
-  box.querySelectorAll("[data-source]").forEach((input) => {
-    input.checked = state.source.includes(input.dataset.source);
-  });
-  const staff = box.querySelector("#heroSourceStaff");
-  if (!staff) return;
-  const names = new Map();
-  state.objects.forEach((item) => {
-    if (!dealMatches(item)) return;
-    const name = normalize(item.sourceAgentName);
-    if (name) names.set(normalizeSearch(name), name);
-  });
-  const options = [...names.entries()].sort((a, b) => a[1].localeCompare(b[1], "ru"));
-  const signature = options.map(([key]) => key).join("|");
-  if (staff.dataset.signature !== signature) {
-    staff.dataset.signature = signature;
-    staff.innerHTML = `<option value="all">Любой сотрудник</option>${options
-      .map(([key, name]) => `<option value="${escapeHtml(key)}">${escapeHtml(name)}</option>`).join("")}`;
+  if (!viewer) {
+    closeSourcePanel();
+    return;
   }
-  if (state.sourceStaff !== "all" && !names.has(state.sourceStaff)) state.sourceStaff = "all";
-  if (staff.value !== state.sourceStaff) staff.value = state.sourceStaff;
+  renderSourceList();
+  const picked = state.source.length + state.sourceStaff.length;
+  const value = box.querySelector("#heroSourceValue");
+  const badge = box.querySelector("#heroSourceBadge");
+  const toggle = box.querySelector("#heroSourceToggle");
+  if (value) value.textContent = picked ? sourceFilterSummary() : "Любой источник";
+  if (badge) {
+    badge.hidden = picked === 0;
+    badge.textContent = String(picked);
+  }
+  if (toggle) toggle.classList.toggle("is-active", picked > 0);
 }
 
 function initSourceFilter() {
   const box = document.querySelector("#heroSource");
   if (!box) return;
+  const toggle = box.querySelector("#heroSourceToggle");
+  const search = box.querySelector("#heroSourceSearch");
+  if (toggle) {
+    toggle.addEventListener("click", () => {
+      const panel = box.querySelector("#heroSourcePanel");
+      if (panel && panel.hidden) openSourcePanel();
+      else closeSourcePanel();
+    });
+  }
+  if (search) {
+    search.addEventListener("input", () => {
+      sourceStaffQuery = search.value || "";
+      renderSourceList();
+    });
+  }
   box.addEventListener("change", (event) => {
-    const checkbox = event.target.closest("[data-source]");
-    if (checkbox) {
-      const group = checkbox.dataset.source;
-      state.source = checkbox.checked
-        ? [...new Set([...state.source, group])]
-        : state.source.filter((value) => value !== group);
+    const group = event.target.closest("[data-source]");
+    if (group) {
+      const name = group.dataset.source;
+      state.source = group.checked
+        ? [...new Set([...state.source, name])]
+        : state.source.filter((value) => value !== name);
       render();
       return;
     }
-    if (event.target.id === "heroSourceStaff") {
-      state.sourceStaff = event.target.value || "all";
+    const staff = event.target.closest("[data-staff]");
+    if (staff) {
+      const key = staff.dataset.staff;
+      state.sourceStaff = staff.checked
+        ? [...new Set([...state.sourceStaff, key])]
+        : state.sourceStaff.filter((value) => value !== key);
       render();
     }
   });
+  box.addEventListener("keydown", (event) => {
+    if (event.key !== "Escape") return;
+    closeSourcePanel();
+    if (toggle) toggle.focus();
+  });
   document.addEventListener("click", (event) => {
-    if (!event.target.closest("[data-source-reset]")) return;
-    state.source = [];
-    state.sourceStaff = "all";
-    render();
+    if (event.target.closest("[data-source-reset]")) {
+      state.source = [];
+      state.sourceStaff = [];
+      sourceStaffQuery = "";
+      if (search) search.value = "";
+      render();
+      return;
+    }
+    if (!event.target.closest("#heroSource")) closeSourcePanel();
   });
 }
 
@@ -2059,7 +2201,7 @@ function initFieldFilters() {
     state.floorMin = "";
     state.floorMax = "";
     state.source = [];
-    state.sourceStaff = "all";
+    state.sourceStaff = [];
 
     if (catalogSearch) catalogSearch.value = "";
     if (districtFilter) districtFilter.value = "all";

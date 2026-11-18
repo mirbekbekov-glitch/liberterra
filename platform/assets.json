@@ -704,7 +704,7 @@
             {
               "key": "/script.js",
               "file": "assets/site/files/script.js",
-              "sha256": "24fcbb9e938849cbc5a2c07812a417c9a1ea7b541b5b625afd9c628c1a66eb19",
+              "sha256": "46aea331f92444d7d788feb48c11f3aac801bee3e13d3b0d2ed7a96b7313e67c",
               "append": []
             },
             {
@@ -752,7 +752,7 @@
             {
               "key": "/index.html",
               "file": "assets/site/files/index.html",
-              "sha256": "5b2e96145dbb1b0954cca8e787fd66b2c9ad4601dcf5bd6aa603c44f6bfe3abf",
+              "sha256": "0d0bb8ae6811b3f4fdc95a5467f5c29a2823f850f3601f4455b563d63208c39b",
               "append": []
             },
             {
@@ -788,7 +788,7 @@
             {
               "key": "/catalog.html",
               "file": "assets/site/files/catalog.html",
-              "sha256": "2ac05656bff1a7a6c6f92a9452220253ea106779dc587a1cdedf3ba913565693",
+              "sha256": "13b4ec7b759e241446270d6aefe4ef008e3875b37ccfd436cac8a63a7c3847c9",
               "append": []
             },
             {
@@ -1004,7 +1004,7 @@
             {
               "key": "/v20-global.css",
               "file": "assets/site/files/v20-global.css",
-              "sha256": "90f1da34332e41687b2facc46a32dd8d56faa34077a300a60014b2eaa23c1304",
+              "sha256": "6cb0e00fe981d47e8062609d143ceda5451b9144a872413a44c315b5d56994bc",
               "append": []
             },
             {
