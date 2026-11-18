@@ -64,13 +64,44 @@ test('правка вынесенного файла доходит до соб�
   } finally { fs.rmSync(dir, { recursive: true, force: true }); }
 });
 
-test('дописанное из features.json попадает в отдаваемое значение', () => {
+test('дописанное из features.json попадает в отдаваемое значение ровно один раз', () => {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'lt-feature-'));
   try {
     build(path.join(dir, 'out'));
-    const table = served(fs.readFileSync(path.join(dir, 'out/workers/backend.mjs'), 'utf8'));
-    const value = table.get('crmWorkflowAssets\u0000crm-workflow.js');
-    assert.equal(value.from, 'assignment');
-    assert.match(value.value, /Воронка сделок/, 'фича дописана к тому значению, которое отдаётся');
+    for (const [key, extras] of Object.entries(features)) {
+      const [bundleName, mapName, entryKey] = key.split('/');
+      const table = served(fs.readFileSync(path.join(dir, 'out/workers', bundleName + '.mjs'), 'utf8'));
+      const value = table.get(mapName + '\u0000' + entryKey);
+      assert.ok(value, `в сборке нет ключа ${mapName}[${entryKey}]`);
+      for (const extra of extras) {
+        const text = fs.readFileSync(path.join(root, extra), 'utf8').replace(/\r\n/g, '\n');
+        const mark = text.trim().slice(0, 400);
+        const count = value.value.split(mark).length - 1;
+        assert.equal(count, 1, `${extra} встречается в ${entryKey} ${count} раз, а должен один`);
+      }
+    }
   } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
+// Фичу могли дописать прямо в Worker до того, как её положили в features.json.
+// Тогда append сдублировал бы её молча, поэтому сборка обязана остановиться.
+test('сборка падает, если фича уже внутри отдаваемого значения', () => {
+  const key = 'backend/crmWorkflowAssets/crm-workflow.js';
+  const file = manifest.bundles.find(b => b.name === 'backend').entries
+    .find(e => e.map === 'crmWorkflowAssets' && e.key === 'crm-workflow.js').file;
+  const value = fs.readFileSync(path.join(root, file), 'utf8');
+  const deals = fs.readFileSync(path.join(root, 'features/deals.js'), 'utf8').replace(/\r\n/g, '\n');
+  assert.ok(value.includes(deals.trim().slice(0, 400)),
+    'воронка сделок уже внутри снимка: если это перестало быть правдой, тест надо переписать');
+  const backup = fs.readFileSync(path.join(root, 'features.json'), 'utf8');
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'lt-guard-'));
+  try {
+    fs.writeFileSync(path.join(root, 'features.json'),
+      JSON.stringify({ ...JSON.parse(backup), [key]: ['features/deals.js'] }, null, 2) + '\n');
+    assert.throws(() => build(path.join(dir, 'out')), /уже внутри/);
+    assert.ok(!fs.existsSync(path.join(dir, 'out')), 'проверка идёт до записи: каталог сборки не создан');
+  } finally {
+    fs.writeFileSync(path.join(root, 'features.json'), backup);
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
 });

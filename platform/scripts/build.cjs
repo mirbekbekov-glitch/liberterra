@@ -1,8 +1,30 @@
 const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict');
 const {maps,assignments,sha}=require('./asset-maps.cjs');
 const root=path.resolve(__dirname,'..');
+// Фича может быть уже внутри отдаваемого значения: её когда-то дописали прямо в
+// Worker, а снимок снят с него. Тогда append сдублировал бы её молча — две доски
+// сделок, два слушателя. Проверяется до того, как сборка начнёт писать, иначе
+// падение оставило бы каталог в половинчатом виде.
+function checkFeatures(){
+ const config=JSON.parse(fs.readFileSync(path.join(root,'assets.json'),'utf8'));
+ const features=fs.existsSync(path.join(root,'features.json'))?JSON.parse(fs.readFileSync(path.join(root,'features.json'),'utf8')):{};
+ const assignConfig=fs.existsSync(path.join(root,'assignments.json'))?JSON.parse(fs.readFileSync(path.join(root,'assignments.json'),'utf8')):{bundles:[]};
+ for(const [key,extras] of Object.entries(features)){
+  const [bundleName,mapName,entryKey]=key.split('/');
+  const bundle=config.bundles.find(item=>item.name===bundleName);if(!bundle)continue;
+  const assignEntry=assignConfig.bundles.find(item=>item.name===bundleName)?.entries.find(item=>item.map===mapName&&item.key===entryKey);
+  const mapEntry=bundle.maps.find(item=>item.name===mapName)?.entries.find(item=>item.key===entryKey);
+  const file=assignEntry?.file||mapEntry?.file;if(!file)continue;
+  const value=fs.readFileSync(path.join(root,file),'utf8');
+  for(const extra of extras){
+   const mark=fs.readFileSync(path.join(root,extra),'utf8').replace(/\r\n/g,'\n').trim().slice(0,400);
+   assert.ok(!(mark&&value.includes(mark)),`${extra} уже внутри ${file}: append из features.json сдублировал бы фичу. Уберите запись либо снимите снимок без неё`);
+  }
+ }
+}
 function build(out=path.join(root,'dist')){
  out=path.resolve(out);
+ checkFeatures();
  // Only remove an owned build directory; never clean arbitrary caller paths.
  if(fs.existsSync(out)&&fs.readdirSync(out).length){
   const marker=path.join(out,'build-manifest.json');
