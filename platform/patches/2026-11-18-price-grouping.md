@@ -8,7 +8,16 @@
 
 Не в `/listing-format.js`. Этот файл отдаётся из карты, он уже исправлен в `assets/*/files/listing-format.js`, но на каталог и главную не подключается: тега со ссылкой на него там нет.
 
-Форматтер приходит инлайновым блоком `<script data-lt-catalog-critical>`, который Worker вставляет при выдаче страницы, под условием «если window.LiberterraListingFormat ещё не определён». Блок есть на `/catalog.html` и на `/`; на `/object.html`, `/agents.html`, `/mortgage.html`, `/newbuildings.html`, `/requests.html` и `/district-map.html` его нет. В репозитории этот текст встречается только в `workers/site.mjs` и `workers/backend.mjs`, то есть в замороженных шаблонах — из `assets/` правка туда не дойдёт.
+Форматтер приходит инлайновым блоком, который Worker вставляет при выдаче страницы, под условием «если window.LiberterraListingFormat ещё не определён». Имя маркера у блока разное, и искать надо по телу функции, а не по маркеру — я на этом уже ошибся один раз:
+
+| страница | маркер | Worker |
+| --- | --- | --- |
+| `/` и `/catalog.html` | `data-lt-catalog-critical` | site |
+| `/object.html` | `data-lt-object-critical` | backend |
+
+Проверено обходом двенадцати публичных страниц поиском самого тела `price()`: больше нигде его нет — ни на `/agents.html`, ни на `/mortgage.html`, `/newbuildings.html`, `/newbuilding.html`, `/requests.html`, `/district-map.html`, `/calculator.html`, `/partners.html`, `/owners.html`.
+
+Отсюда: править надо оба Worker. Одной правки site мало — на странице объекта цена останется без разрядов. В репозитории этот текст встречается только в `workers/site.mjs` и `workers/backend.mjs`, то есть в замороженных шаблонах — из `assets/` правка туда не дойдёт.
 
 ## Правка
 
