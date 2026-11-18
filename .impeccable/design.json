@@ -109,6 +109,12 @@
         "role": "neutral",
         "displayName": "Карточка",
         "canonical": "#FFFFFF"
+      },
+      "brand-red-on-dark": {
+        "role": "primary",
+        "displayName": "Красный на тёмном",
+        "canonical": "#FFA89B",
+        "purpose": "Акцент в блоках @media(prefers-color-scheme:dark): марочный #BE2C28 на тёмном фоне даёт 2.79:1."
       }
     },
     "typographyMeta": {
@@ -179,7 +185,9 @@
       "mute-on-paper": 4.57,
       "retired-F5333A-white-on": 3.88,
       "footer-C3C9D1-on-ink": 8.66,
-      "live-placeholder-5B636E-on-white": 6.08
+      "live-placeholder-5B636E-on-white": 6.08,
+      "brand-red-on-dark-241e21": 8.83,
+      "brand-red-BE2C28-on-241e21": 2.79
     }
   },
   "components": [
