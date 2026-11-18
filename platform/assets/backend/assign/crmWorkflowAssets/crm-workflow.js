@@ -386,27 +386,7 @@
  function syncStageChoices(){stageChoices.replaceChildren();for(const option of inputs.stage.options){const choice=button(option.textContent,()=>{},'crm-deal-stage-choice');choice.type='button';choice.dataset.stage=option.value;choice.setAttribute('aria-pressed',String(option.value===inputs.stage.value));stageChoices.append(choice);}}
  const submit=el('button','Сохранить сделку','crm-primary-button');submit.type='submit';
  const result=el('p','','crm-deal-result');result.setAttribute('role','status');const footer=el('div',undefined,'crm-deal-footer');footer.append(el('p','Плановая комиссия — ожидаемая сумма, не полученный доход.','crm-deal-muted'),submit,result);form.append(footer);dialog.append(form);
- const history=el('section',undefined,'crm-deal-history');dialog.append(history);
- // Звонки клиента из телефонии. Запрос идёт через сервер CRM: он проверяет, что клиент принадлежит агенту.
- const callsBox=el('section',undefined,'crm-deal-history crm-deal-calls');dialog.append(callsBox);document.body.append(dialog);
- let callsToken=0;
- const callNotes={not_configured:'Телефония не подключена.',no_phone:'У клиента не указан телефон.',no_agent_email:'В профиле нет email, поэтому звонки не найти.',unavailable:'Звонки временно недоступны. Закройте и снова откройте карточку.'};
- const talk=seconds=>seconds>=60?`${Math.floor(seconds/60)} мин ${seconds%60} с`:`${seconds} с`;
- async function loadCalls(clientId){
-  const mine=++callsToken,fresh=()=>mine===callsToken&&dialog.open;
-  callsBox.replaceChildren(el('h3','Звонки'),el('p','Загружаем звонки…','crm-deal-muted'));
-  try{
-   const response=await window.LiberterraAgentAccess.request('list_crm_workflow',{data:{calls:{client_id:clientId}}});
-   if(!fresh())return;
-   const callsPage=response.calls_page||{status:'unavailable',items:[]};callsBox.replaceChildren(el('h3','Звонки'));
-   if(callsPage.status!=='ok'){callsBox.append(el('p',callNotes[callsPage.status]||callNotes.unavailable,'crm-deal-muted'));return;}
-   if(!callsPage.items.length){callsBox.append(el('p','Звонков с этим клиентом пока нет.','crm-deal-muted'));return;}
-   const list=el('ol');
-   for(const call of callsPage.items){const row=el('li');row.append(el('strong',(call.direction==='out'?'Исходящий':'Входящий')+(call.answered?'':', без ответа')),el('small',`${date(call.started_at)} · ${call.answered?talk(call.duration):'не отвечен'}${call.has_recording?' · есть запись':''}`));list.append(row);}
-   callsBox.append(list);
-  }catch(error){if(fresh())callsBox.replaceChildren(el('h3','Звонки'),el('p',errors[error.code]||callNotes.unavailable,'crm-deal-muted'));}
- }
- dialog.addEventListener('close',()=>{callsToken++;});
+ const history=el('section',undefined,'crm-deal-history');dialog.append(history);document.body.append(dialog);
  function terminalFields(){const stage=inputs.stage.value,lost=stage==='lost',order=['new','qualification','selection','viewing_scheduled','viewing_done','negotiation','agreement','documents','won'],index=order.indexOf(stage),sale=inputs.deal_type.value==='sell';fieldLabels.lost_reason.hidden=!lost;inputs.lost_reason.required=lost;inputs.object_id.required=stage==='won'||index>=3||sale&&index>=2;inputs.viewing_at.required=index>=3;inputs.viewing_result.required=index>=4;inputs.agreed_price.required=index>=6;inputs.deposit_amount.required=index>=7;inputs.deposit_at.required=index>=7;inputs.documents_confirmed.required=stage==='won';inputs.next_action_at.required=!lost&&stage!=='won'&&Boolean(editing);inputs.amount.required=stage==='won';for(const [name,show]of [['viewing_at',index>=3],['viewing_result',index>=4],['agreed_price',index>=6],['deposit_amount',index>=7],['deposit_at',index>=7],['documents_confirmed',stage==='won']])fieldLabels[name].hidden=!show;stageDetails.hidden=![...stageDetails.querySelectorAll('label')].some(label=>!label.hidden);datePresets.hidden=lost||stage==='won';for(const choice of stageChoices.querySelectorAll('button[data-stage]'))choice.setAttribute('aria-pressed',String(choice.dataset.stage===stage));}
  inputs.stage.addEventListener('change',terminalFields);form.addEventListener('input',()=>{pendingId='';});
  inputs.deal_type.addEventListener('change',terminalFields);
@@ -424,9 +404,7 @@
   terminalFields();dialogTitle.textContent=record?'Карточка сделки':'Новая сделка';history.replaceChildren();
   if(record){history.append(el('h3','История изменений'));const list=el('ol');for(const event of [...(record.history||[])].reverse()){const row=el('li');row.append(el('strong',event.type==='created'?'Сделка создана':event.type==='stage_changed'?`${stageLabel(event.from)} → ${stageLabel(event.to)}`:'Карточка обновлена'),el('small',`${date(event.at)} · Автор: ${event.author_id}`));list.append(row);}history.append(list);}
   if(!records('client').length)result.textContent='Сначала добавьте клиента в разделе «Клиенты».';
-  callsBox.replaceChildren();callsToken++;
   submit.disabled=false;dialog.showModal();inputs.title.focus();
-  if(record?.client_id)loadCalls(record.client_id);
  }
  window.addEventListener('liberterra:new-deal-for-client',event=>{if(!state.ready||content.hidden)return;const client=records('client').find(item=>String(item.id)===String(event.detail?.client_id)&&item.role!=='owner');if(!client)return;tab.click();openForm(null);inputs.client_id.value=client.id;inputs.title.value=`Сделка: ${client.name}`;inputs.title.focus();});
  async function persist(record,data,id,mutation){
@@ -1249,12 +1227,12 @@ if(typeof module==='object'&&module.exports)module.exports={report,activityRepor
     }catch(_){if(active&&version===detailVersion)detail.replaceChildren(element('h4',names[kind]),element('p','Не удалось загрузить обращения. Повторите выбор показателя.'));}
   }
   async function load(){
-    if(!active||loading)return;const version=++loadVersion;loading=true;period.disabled=true;refresh.disabled=true;refresh.textContent='Обновляем…';status.textContent='Обновляем сводку…';detailVersion++;
+    if(!active||loading)return;const version=++loadVersion;loading=true;period.disabled=true;refresh.disabled=true;status.textContent='Обновляем сводку…';detailVersion++;
     try{const result=await window.LiberterraAgentAccess.request('get_team_first_response',{period_days:Number(period.value)});if(!active||version!==loadVersion)return;render(result.first_response);lastLoaded=Date.now();status.textContent='Сводка обновлена.';}
     catch(_){if(active&&version===loadVersion)status.textContent='Не удалось загрузить командную сводку. Повторите обновление.';}
-    finally{if(version===loadVersion){loading=false;period.disabled=false;refresh.disabled=false;refresh.textContent='Обновить сводку';}}
+    finally{if(version===loadVersion){loading=false;period.disabled=false;refresh.disabled=false;}}
   }
   period.addEventListener('change',()=>{activeDetail=null;load();});refresh.addEventListener('click',load);
   window.addEventListener('liberterra:crm-data',event=>{active=event.detail?.ready===true&&event.detail?.canManageResources===true;section.hidden=!active;if(active&&Date.now()-lastLoaded>60000)load();});
-  window.addEventListener('liberterra:crm-loading',()=>{active=false;section.hidden=true;content.replaceChildren();detail.replaceChildren();detailVersion++;loadVersion++;loading=false;period.disabled=false;refresh.disabled=false;refresh.textContent='Обновить сводку';lastLoaded=0;status.textContent='Ожидаем данные CRM…';});
+  window.addEventListener('liberterra:crm-loading',()=>{active=false;section.hidden=true;content.replaceChildren();detail.replaceChildren();detailVersion++;loadVersion++;loading=false;period.disabled=false;refresh.disabled=false;lastLoaded=0;status.textContent='Ожидаем данные CRM…';});
 })();
