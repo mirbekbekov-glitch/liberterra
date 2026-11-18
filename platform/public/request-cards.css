@@ -1,0 +1,64 @@
+/* Request cards are text-first. Object cards and request data stay unchanged. */
+.card.request-card {
+  background: #fff;
+  border: 1px solid #e3e6e2;
+  border-top: 3px solid #2f5d50;
+  border-radius: 20px;
+  overflow: hidden;
+}
+.card.request-card-buy { border-top-color: #ab7d28; }
+.card.request-card .photo {
+  height: auto;
+  min-height: 0;
+  aspect-ratio: auto;
+  padding: 18px 20px 0;
+  background: transparent;
+}
+.card.request-card .request-cover { display: none; }
+.card.request-card .badge-row {
+  position: static;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  gap: 6px;
+}
+.card.request-card .deal-tag {
+  margin: 0;
+  background: #eaf3ee;
+  color: #2f5d50;
+  font-size: 13px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  backdrop-filter: none;
+}
+.card.request-card-buy .deal-tag { background: #fbf2df; color: #805b16; }
+.card.request-card .card-body { padding: 14px 20px 20px; gap: 12px; }
+.card.request-card .title {
+  order: -2;
+  font-size: 21px;
+  line-height: 1.3;
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+.card.request-card .price {
+  order: -1;
+  font-size: 23px;
+  line-height: 1.35;
+  color: #202722;
+  flex-wrap: wrap;
+  overflow-wrap: anywhere;
+}
+.card.request-card .district { font-size: 14px; line-height: 1.5; align-items: flex-start; }
+.card.request-card .district span { overflow-wrap: anywhere; }
+.card.request-card .request-submitted { color: #6b736c; font-size: 12px; font-weight: 500; flex-wrap: wrap; }
+.card.request-card .specs { flex-wrap: wrap; gap: 6px; }
+.card.request-card .spec { background: #f3f5f2; font-size: 12px; }
+.card.request-card .card-actions { margin-top: auto; padding-top: 12px; }
+.card.request-card .card-action { min-height: 44px; }
+.card.request-card:focus-visible { outline: 3px solid #2f5d50; outline-offset: 3px; }
+@media (max-width: 680px) {
+  .card.request-card .photo { padding: 16px 16px 0; }
+  .card.request-card .card-body { padding: 12px 16px 16px; }
+  .card.request-card .title { font-size: 19px; }
+  .card.request-card .price { font-size: 21px; }
+}

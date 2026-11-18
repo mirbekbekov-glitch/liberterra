@@ -1,0 +1,63 @@
+--- a/platform/public/api/crm-workflow/crm-workspace.js
++++ b/platform/public/api/crm-workflow/crm-workspace.js
+@@ -150,6 +150,7 @@
+     const objects = Array.isArray(input?.objects) ? input.objects : [];
+     const tasks = Array.isArray(input?.tasks) ? input.tasks : [];
+     const tasksReady = input?.tasksReady === true;
++    const requests = Number.isFinite(input?.requests) ? input.requests : 0;
+     const now = Number.isFinite(nowValue) ? nowValue : Date.now();
+     const clients = records.filter((item) => item.kind === "client" && item.role !== "owner");
+     const owners = records.filter((item) => item.kind === "client" && item.role === "owner");
+@@ -182,9 +183,11 @@
+       tasksReady,
+       primary: attention > 0
+         ? { kind: "attention", target: overdueTasks.length ? "tasks" : "deals", label: `Разобрать просроченное · ${attention}` }
+-        : activeClients.length === 0
+-          ? { kind: "client", target: "clients", label: "Добавить первого клиента" }
+-          : { kind: "deal", target: "deals", label: "Открыть воронку сделок" },
++        : requests > 0
++          ? { kind: "requests", target: "requests", label: `Принять заявки · ${requests}` }
++          : activeClients.length === 0
++            ? { kind: "client", target: "clients", label: "Добавить первого клиента" }
++            : { kind: "deal", target: "deals", label: "Открыть воронку сделок" },
+     };
+   }
+ 
+@@ -286,6 +289,10 @@
+       selectTab(target === "tasks" ? "tasks" : "deals");
+       return;
+     }
++    if (kind === "requests") {
++      selectTab("requests");
++      return;
++    }
+     if (kind === "client") {
+       if (selectTab("clients")) root.querySelector('[data-crm-panel="clients"] input[name="name"]')?.focus();
+       return;
+@@ -308,7 +315,7 @@
+     if (state.loading) finding.textContent = "Загружаем клиентов, сделки и задачи…";
+     else if (!state.ready) finding.textContent = "CRM недоступна. Обновите данные и повторите попытку.";
+     else if (overdue) finding.textContent = `Нужно проверить просроченные задачи и действия по сделкам: ${overdue}.`;
+-    else if (state.requests) finding.textContent = `Заявок без первого ответа: ${state.requests}. Откройте «Заявки» и примите их в работу.`;
++    else if (state.requests) finding.textContent = "Заявки ждут первого ответа. Примите их в работу — счёт на кнопке справа.";
+     else if (!summary.tasksReady) finding.textContent = "Сделки загружены. Ждём задачи, чтобы завершить сводку дня.";
+     else if (!summary.counts.activeClients) finding.textContent = "Клиентов пока нет. Примите заявку или добавьте клиента — здесь появится сводка по работе.";
+     else finding.textContent = "Просроченных действий нет. Можно продолжать работу.";
+--- a/platform/public/api/crm-workflow/crm-workflow.js
++++ b/platform/public/api/crm-workflow/crm-workflow.js
+@@ -1227,12 +1227,12 @@
+     }catch(_){if(active&&version===detailVersion)detail.replaceChildren(element('h4',names[kind]),element('p','Не удалось загрузить обращения. Повторите выбор показателя.'));}
+   }
+   async function load(){
+-    if(!active||loading)return;const version=++loadVersion;loading=true;period.disabled=true;refresh.disabled=true;status.textContent='Обновляем сводку…';detailVersion++;
++    if(!active||loading)return;const version=++loadVersion;loading=true;period.disabled=true;refresh.disabled=true;refresh.textContent='Обновляем…';status.textContent='Обновляем сводку…';detailVersion++;
+     try{const result=await window.LiberterraAgentAccess.request('get_team_first_response',{period_days:Number(period.value)});if(!active||version!==loadVersion)return;render(result.first_response);lastLoaded=Date.now();status.textContent='Сводка обновлена.';}
+     catch(_){if(active&&version===loadVersion)status.textContent='Не удалось загрузить командную сводку. Повторите обновление.';}
+-    finally{if(version===loadVersion){loading=false;period.disabled=false;refresh.disabled=false;}}
++    finally{if(version===loadVersion){loading=false;period.disabled=false;refresh.disabled=false;refresh.textContent='Обновить сводку';}}
+   }
+   period.addEventListener('change',()=>{activeDetail=null;load();});refresh.addEventListener('click',load);
+   window.addEventListener('liberterra:crm-data',event=>{active=event.detail?.ready===true&&event.detail?.canManageResources===true;section.hidden=!active;if(active&&Date.now()-lastLoaded>60000)load();});
+-  window.addEventListener('liberterra:crm-loading',()=>{active=false;section.hidden=true;content.replaceChildren();detail.replaceChildren();detailVersion++;loadVersion++;loading=false;period.disabled=false;refresh.disabled=false;lastLoaded=0;status.textContent='Ожидаем данные CRM…';});
++  window.addEventListener('liberterra:crm-loading',()=>{active=false;section.hidden=true;content.replaceChildren();detail.replaceChildren();detailVersion++;loadVersion++;loading=false;period.disabled=false;refresh.disabled=false;refresh.textContent='Обновить сводку';lastLoaded=0;status.textContent='Ожидаем данные CRM…';});
+ })();

@@ -1,0 +1,404 @@
+/* add-object-v2 — Redesigned Step 1 layout.
+   Scoped to .add-object-page. Works with v20-global.css variables. */
+
+/* ── Page: single-column centered ── */
+body.v20.add-object-page main.submission-main {
+  display: block;
+  box-sizing: border-box;
+  width: calc(100% - 32px);
+  max-width: 680px;
+  margin: 0 auto;
+  padding-top: 32px;
+  padding-bottom: 72px;
+}
+
+/* ── Intro: compact, centered ── */
+.add-object-page .submission-intro {
+  position: static;
+  text-align: center;
+  margin-bottom: 28px;
+}
+.add-object-page .submission-eyebrow {
+  display: inline-block;
+  padding: 4px 12px;
+  background: var(--v20-accent-soft);
+  color: var(--v20-accent);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  border-radius: 999px;
+}
+.add-object-page .submission-intro h1 {
+  margin: 12px 0 6px;
+  font-size: clamp(22px, 2.2vw, 30px);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -.02em;
+  color: var(--v20-ink);
+}
+.add-object-page .submission-intro > p {
+  margin: 0 auto;
+  max-width: 400px;
+  color: var(--v20-muted);
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+/* ── Options grid: two equal cards ── */
+.add-object-page .public-add-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin: 0;
+}
+.add-object-page .public-add-options .panel {
+  display: flex;
+  flex-direction: column;
+  padding: 22px;
+  background: white;
+  border: 1px solid var(--v20-line);
+  border-radius: 14px;
+  transition: border-color .15s, box-shadow .15s;
+}
+.add-object-page .public-add-options .panel:hover {
+  border-color: var(--v20-accent);
+  box-shadow: 0 4px 16px rgba(123, 35, 63, .08);
+}
+body.v20.add-object-page[data-public-theme="dark"] .public-add-options .panel {
+  background: #282321;
+}
+.add-object-page .public-add-options h2 {
+  margin: 0 0 4px;
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--v20-ink);
+}
+.add-object-page .public-add-options .panel > p {
+  margin: 0 0 12px;
+  color: var(--v20-muted);
+  font-size: 13px;
+  line-height: 1.5;
+  flex: 1;
+}
+
+/* URL input */
+.add-object-page .public-add-options label[for="lalafoImportUrl"] {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--v20-muted);
+  margin-bottom: 10px;
+}
+.add-object-page .public-add-options label[for="lalafoImportUrl"] input {
+  display: block;
+  width: 100%;
+  margin-top: 4px;
+  padding: 9px 11px;
+  min-height: 40px;
+  font-size: 13px;
+  border: 1px solid var(--v20-line);
+  border-radius: 8px;
+  background: var(--v20-paper);
+  color: var(--v20-ink);
+}
+.add-object-page .public-add-options label[for="lalafoImportUrl"] input:focus {
+  border-color: var(--v20-accent);
+  box-shadow: 0 0 0 3px rgba(123, 35, 63, .12);
+  outline: none;
+}
+
+/* Buttons */
+.add-object-page .public-add-options button {
+  padding: 9px 14px;
+  min-height: 38px;
+  border: 1px solid var(--v20-line);
+  border-radius: 8px;
+  background: white;
+  color: var(--v20-ink);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background .12s, border-color .12s;
+  margin: 4px 6px 0 0;
+}
+.add-object-page .public-add-options button:hover {
+  border-color: var(--v20-accent);
+}
+.add-object-page .public-add-options #lalafoImportButton {
+  background: var(--v20-accent);
+  color: #fff;
+  border-color: var(--v20-accent);
+}
+.add-object-page .public-add-options #lalafoImportButton:hover {
+  background: var(--v20-accent-hover);
+  border-color: var(--v20-accent-hover);
+}
+.add-object-page .public-add-options #placementImportChoice {
+  display: none;
+}
+.add-object-page .public-add-options #placementManualChoice {
+  width: 100%;
+  margin: 0;
+  min-height: 42px;
+  font-size: 14px;
+  font-weight: 650;
+  border: 2px solid var(--v20-line);
+  border-radius: 10px;
+}
+.add-object-page .public-add-options #placementManualChoice:hover {
+  background: var(--v20-accent-soft);
+  border-color: var(--v20-accent);
+  color: var(--v20-accent);
+}
+body.v20.add-object-page[data-public-theme="dark"] .public-add-options button {
+  background: #282321;
+  color: var(--v20-ink);
+  border-color: var(--v20-field-line);
+}
+body.v20.add-object-page[data-public-theme="dark"] .public-add-options #lalafoImportButton {
+  background: var(--v20-accent);
+  color: #24171c;
+  border-color: var(--v20-accent);
+}
+body.v20.add-object-page[data-public-theme="dark"] .public-add-options #placementManualChoice {
+  border-color: var(--v20-field-line);
+}
+body.v20.add-object-page[data-public-theme="dark"] .public-add-options #placementManualChoice:hover {
+  background: var(--v20-accent-soft);
+  border-color: var(--v20-accent);
+  color: var(--v20-accent);
+}
+
+/* Import status */
+.add-object-page .lalafo-import-status {
+  margin-top: 8px;
+  font-size: 11px;
+  color: var(--v20-muted);
+  line-height: 1.4;
+}
+.add-object-page .lalafo-import-status.is-success { color: #2e7d32; }
+.add-object-page .lalafo-import-status.is-error { color: #c62828; }
+
+/* Privacy note in manual panel */
+.add-object-page .public-add-options .panel:last-child > p:last-child {
+  margin-top: auto;
+  padding-top: 10px;
+  font-size: 11px;
+  color: var(--v20-muted);
+  border-top: 1px solid var(--v20-line);
+  flex: 0;
+}
+
+/* ── Form (after choice) ── */
+.add-object-page .submission-form {
+  margin-top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.add-object-page .submission-form fieldset {
+  border: 1px solid var(--v20-line);
+  border-radius: 14px;
+  background: white;
+  padding: 22px;
+  margin: 0;
+}
+body.v20.add-object-page[data-public-theme="dark"] .submission-form fieldset {
+  background: #282321;
+}
+.add-object-page .submission-form legend {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--v20-ink);
+  margin-bottom: 14px;
+  padding: 0;
+}
+.add-object-page .submission-form label > span {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--v20-muted);
+  margin-bottom: 3px;
+}
+.add-object-page .submission-form input,
+.add-object-page .submission-form select,
+.add-object-page .submission-form textarea {
+  width: 100%;
+  min-height: 40px;
+  padding: 9px 11px;
+  font-size: 13px;
+  border: 1px solid var(--v20-line);
+  border-radius: 8px;
+  background: var(--v20-paper);
+  color: var(--v20-ink);
+}
+.add-object-page .submission-form textarea {
+  min-height: 90px;
+  resize: vertical;
+}
+.add-object-page .submission-form input:focus,
+.add-object-page .submission-form select:focus,
+.add-object-page .submission-form textarea:focus {
+  border-color: var(--v20-accent);
+  box-shadow: 0 0 0 3px rgba(123, 35, 63, .12);
+  outline: none;
+}
+
+/* Grids */
+.add-object-page .submission-grid { display: grid; gap: 12px; }
+.add-object-page .submission-grid.two { grid-template-columns: 1fr 1fr; }
+.add-object-page .submission-grid.four { grid-template-columns: repeat(4, 1fr); margin-top: 12px; }
+.add-object-page .submission-price-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+/* Location */
+.add-object-page .submission-location {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--v20-line);
+}
+.add-object-page .submission-location-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  margin-bottom: 8px;
+}
+.add-object-page .submission-location-heading strong { font-size: 13px; font-weight: 700; }
+.add-object-page .submission-location-heading span { display: block; font-size: 11px; color: var(--v20-muted); }
+.add-object-page .submission-location-map {
+  min-height: 220px;
+  border: 1px solid var(--v20-line);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+/* Photos */
+.add-object-page .photo-picker {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  border: 2px dashed var(--v20-line);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: border-color .15s, background .15s;
+}
+.add-object-page .photo-picker:hover {
+  border-color: var(--v20-accent);
+  background: var(--v20-accent-soft);
+}
+.add-object-page .photo-picker strong { font-size: 13px; color: var(--v20-accent); }
+.add-object-page .photo-input {
+  position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0);
+}
+.add-object-page .photo-preview {
+  display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px;
+}
+.add-object-page .photo-preview > div {
+  position: relative; width: 72px; height: 72px; border-radius: 8px; overflow: hidden;
+}
+.add-object-page .photo-preview img { width: 100%; height: 100%; object-fit: cover; }
+.add-object-page .photo-remove {
+  position: absolute; top: 3px; right: 3px;
+  width: 20px; height: 20px; border-radius: 50%;
+  background: rgba(0,0,0,.6); color: #fff;
+  font-size: 12px; line-height: 20px; text-align: center;
+  border: 0; padding: 0; min-height: 0; cursor: pointer;
+}
+
+/* Consent */
+.add-object-page .consent-row {
+  display: flex; gap: 8px; align-items: start;
+  font-size: 12px; line-height: 1.5; color: var(--v20-muted);
+}
+.add-object-page .consent-row input[type="checkbox"] {
+  flex-shrink: 0; width: 16px; height: 16px; min-height: 0; margin-top: 2px;
+}
+
+/* Help / honeypot */
+.add-object-page .submission-help { font-size: 12px; color: var(--v20-muted); margin: 3px 0 10px; }
+.add-object-page .submission-honeypot {
+  position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden;
+}
+
+/* Result alert */
+.add-object-page .submission-result {
+  padding: 12px 16px; border-radius: 10px;
+  background: #fef2f2; color: #c62828; font-size: 13px;
+}
+.add-object-page .submission-result.is-success {
+  background: #f0fdf4; color: #2e7d32;
+}
+body.v20.add-object-page[data-public-theme="dark"] .submission-result {
+  background: #3a2020; color: #f5a3a3;
+}
+body.v20.add-object-page[data-public-theme="dark"] .submission-result.is-success {
+  background: #1a3a20; color: #a3d9a5;
+}
+
+/* Review button */
+.add-object-page #placementReviewButton {
+  width: 100%; min-height: 42px; margin: 0;
+  font-weight: 650; font-size: 13px;
+  border: 2px solid var(--v20-line); border-radius: 10px;
+  background: white; color: var(--v20-ink); cursor: pointer;
+}
+.add-object-page #placementReviewButton:hover {
+  border-color: var(--v20-accent); background: var(--v20-accent-soft);
+}
+body.v20.add-object-page[data-public-theme="dark"] #placementReviewButton {
+  background: #282321;
+}
+
+/* Placement review */
+.add-object-page .placement-review {
+  border: 1px solid var(--v20-line); border-radius: 14px;
+  padding: 22px; background: white;
+}
+body.v20.add-object-page[data-public-theme="dark"] .placement-review {
+  background: #282321;
+}
+.add-object-page .placement-review ul {
+  padding-left: 16px; font-size: 13px; line-height: 1.7;
+}
+
+/* Submit */
+.add-object-page .submission-submit {
+  width: 100%; min-height: 46px; border-radius: 10px;
+  background: var(--v20-accent); color: #fff; border-color: var(--v20-accent);
+  font-size: 14px; font-weight: 700; cursor: pointer;
+  box-shadow: 0 4px 16px rgba(123, 35, 63, .18);
+}
+.add-object-page .submission-submit:hover { background: var(--v20-accent-hover); }
+.add-object-page .submission-alternative {
+  text-align: center; margin-top: 14px; font-size: 12px; color: var(--v20-muted);
+}
+
+/* ── Responsive ── */
+@media (max-width: 600px) {
+  body.v20.add-object-page main.submission-main { padding-top: 24px; padding-bottom: 56px; }
+  .add-object-page .public-add-options { grid-template-columns: 1fr; }
+  .add-object-page .submission-grid.two { grid-template-columns: 1fr; }
+  .add-object-page .submission-grid.four { grid-template-columns: 1fr 1fr; }
+  .add-object-page .submission-price-row { grid-template-columns: 1fr; }
+  .add-object-page .submission-form fieldset,
+  .add-object-page .public-add-options .panel { padding: 16px; }
+}
+@media (min-width: 601px) and (max-width: 768px) {
+  .add-object-page .submission-grid.four { grid-template-columns: 1fr 1fr; }
+}
+
+/* Cancel the legacy card placement inside the new two-card grid. */
+.add-object-page .public-add-options .lalafo-import { grid-column: auto; gap: 0; margin-bottom: 0; }
+/* Keep both choice actions on the same baseline, above equal-height footnotes. */
+.add-object-page .public-add-options #lalafoImportButton,
+.add-object-page .public-add-options #placementManualChoice { box-sizing: border-box; width: 100%; height: 44px; min-height: 44px; margin: 0; }
+.add-object-page .public-add-options #lalafoImportStatus,
+.add-object-page .public-add-options .panel:last-child > p:last-child { box-sizing: border-box; flex: 0 0 auto; min-height: 60px; margin: 8px 0 0; }
+/* The legacy site theme paints the form white; remove that surface in both themes. */
+.add-object-page .submission-form { background: transparent; border: 0; box-shadow: none; padding: 0; }

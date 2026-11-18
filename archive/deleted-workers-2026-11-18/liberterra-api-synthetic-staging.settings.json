@@ -1,0 +1,30 @@
+{
+  "placement": {},
+  "compatibility_date": "2026-07-03",
+  "compatibility_flags": [],
+  "usage_model": "standard",
+  "tags": [],
+  "tail_consumers": [],
+  "logpush": false,
+  "annotations": {
+    "workers/triggered_by": "upload"
+  },
+  "bindings": [
+    {
+      "name": "GUEST_REQUEST_HASH_KEY",
+      "text": "synthetic-test-only-key-at-least-32-characters",
+      "type": "plain_text"
+    },
+    {
+      "class_name": "GuestRequestLimiter",
+      "name": "GUEST_REQUEST_LIMITER",
+      "namespace_id": "f4497f3e58614afbab2ea0b55f7b0565",
+      "type": "durable_object_namespace"
+    },
+    {
+      "name": "SHEETS_WRITE_SECRET",
+      "text": "synthetic-test-only-not-a-secret",
+      "type": "plain_text"
+    }
+  ]
+}

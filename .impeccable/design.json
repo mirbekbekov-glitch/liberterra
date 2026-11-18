@@ -1,0 +1,321 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-18T15:26:04Z",
+  "title": "Design System: Liberterra",
+  "extensions": {
+    "source": "Снято с рендера https://liberterra.kg (вычисленные стили), ветка crm/production-baseline-20261027, platform/public/index.html",
+    "colorMeta": {
+      "brand-red": {
+        "role": "primary",
+        "displayName": "Красный флажок",
+        "canonical": "#BE2C28",
+        "tonalRamp": [
+          "#350000",
+          "#620000",
+          "#8F0002",
+          "#B92724",
+          "#E05147",
+          "#FF7B6E",
+          "#FFA89B",
+          "#FFD9CD"
+        ]
+      },
+      "brand-red-deep": {
+        "role": "primary",
+        "displayName": "Красный глубокий",
+        "canonical": "#8F1918"
+      },
+      "brand-red-soft": {
+        "role": "primary",
+        "displayName": "Красный мягкий",
+        "canonical": "#FBEFEF"
+      },
+      "brand-red-line": {
+        "role": "primary",
+        "displayName": "Красная линия",
+        "canonical": "#EBD2D1"
+      },
+      "wine": {
+        "role": "secondary",
+        "displayName": "Вино",
+        "canonical": "#800020",
+        "tonalRamp": [
+          "#300002",
+          "#5A0011",
+          "#851728",
+          "#AD3844",
+          "#D35C64",
+          "#F48388",
+          "#FFAEB0",
+          "#FFDCDC"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Графит",
+        "canonical": "#252A31",
+        "tonalRamp": [
+          "#0F1216",
+          "#282C32",
+          "#444950",
+          "#626870",
+          "#828891",
+          "#A5AAB2",
+          "#C9CED5",
+          "#EEF2F7"
+        ]
+      },
+      "ink-soft": {
+        "role": "neutral",
+        "displayName": "Графит мягкий",
+        "canonical": "#5B636E"
+      },
+      "mute": {
+        "role": "neutral",
+        "displayName": "Приглушённый",
+        "canonical": "#6B7480"
+      },
+      "line": {
+        "role": "neutral",
+        "displayName": "Линия",
+        "canonical": "#DDE3EA"
+      },
+      "line-strong": {
+        "role": "neutral",
+        "displayName": "Линия плотная",
+        "canonical": "#D7DEE6"
+      },
+      "paper": {
+        "role": "neutral",
+        "displayName": "Бумага",
+        "canonical": "#FAFBFC",
+        "tonalRamp": [
+          "#111212",
+          "#2B2C2C",
+          "#484849",
+          "#666768",
+          "#878889",
+          "#A9AAAB",
+          "#CCCDCE",
+          "#F1F2F2"
+        ]
+      },
+      "surface-alt": {
+        "role": "neutral",
+        "displayName": "Подложка",
+        "canonical": "#F1F4F7"
+      },
+      "card": {
+        "role": "neutral",
+        "displayName": "Карточка",
+        "canonical": "#FFFFFF"
+      },
+      "brand-red-on-dark": {
+        "role": "primary",
+        "displayName": "Красный на тёмном",
+        "canonical": "#FFA89B",
+        "purpose": "Акцент в блоках @media(prefers-color-scheme:dark): марочный #BE2C28 на тёмном фоне даёт 2.79:1."
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Заголовок первого экрана, один на страницу."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Заголовки разделов."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Заголовки карточек и блоков."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Весь текст; база 18 px."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Прописная микро-подпись и подписи полей, трекинг 0.12em."
+      }
+    },
+    "shadows": [
+      {
+        "name": "rest",
+        "value": "0 1px 2px rgba(37,42,49,.04)",
+        "purpose": "Карточки и панели в потоке."
+      },
+      {
+        "name": "layer",
+        "value": "0 18px 44px rgba(37,42,49,.09)",
+        "purpose": "Выпадающие меню, модальные окна, подсказки."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease-ui",
+        "value": "all .15s ease",
+        "purpose": "Смена фона кнопки и подложки раздела."
+      },
+      {
+        "name": "focus-ring",
+        "value": "0 0 0 3px rgba(190,44,40,.12)",
+        "purpose": "Кольцо фокуса на полях и кнопках."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "sm",
+        "value": "640px"
+      },
+      {
+        "name": "lg",
+        "value": "1020px"
+      },
+      {
+        "name": "container",
+        "value": "1150px"
+      }
+    ],
+    "contrast": {
+      "white-on-brand-red": 5.87,
+      "brand-red-on-paper": 5.66,
+      "ink-on-paper": 13.94,
+      "ink-soft-on-paper": 5.87,
+      "mute-on-paper": 4.57,
+      "retired-F5333A-white-on": 3.88,
+      "footer-C3C9D1-on-ink": 8.66,
+      "live-placeholder-5B636E-on-white": 6.08,
+      "brand-red-on-dark-241e21": 8.83,
+      "brand-red-BE2C28-on-241e21": 2.79
+    }
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Главное действие: «Войти», «Найти объекты».",
+      "html": "<button class=\"ds-btn-primary\">Найти объекты →</button>",
+      "css": ".ds-btn-primary{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:11px 16px;border:1px solid #BE2C28;border-radius:10px;background:#BE2C28;color:#fff;font:600 17px/1.5 Onest,'Segoe UI',sans-serif}.ds-btn-primary:hover{background:#8F1918;border-color:#8F1918}.ds-btn-primary:focus-visible{outline:none;box-shadow:0 0 0 3px rgba(190,44,40,.12)}"
+    },
+    {
+      "name": "Soft Button",
+      "kind": "button",
+      "refersTo": "button-soft",
+      "description": "Второе по важности действие рядом с главным.",
+      "html": "<button class=\"ds-btn-soft\">Загрузить объект</button>",
+      "css": ".ds-btn-soft{display:inline-flex;align-items:center;min-height:44px;padding:10px 14px;border:1px solid #EBD2D1;border-radius:10px;background:#FBEFEF;color:#252A31;font:700 16px/1.5 Onest,'Segoe UI',sans-serif}.ds-btn-soft:hover{background:#F6E2E2}"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Нейтральное действие: «На карте», «Разместить объект».",
+      "html": "<button class=\"ds-btn-secondary\">На карте</button>",
+      "css": ".ds-btn-secondary{display:inline-flex;align-items:center;min-height:44px;padding:11px 16px;border:1px solid #D7DEE6;border-radius:10px;background:#fff;color:#252A31;font:600 17px/1.5 Onest,'Segoe UI',sans-serif}.ds-btn-secondary:hover{border-color:#BBC4CF}"
+    },
+    {
+      "name": "Micro Label",
+      "kind": "custom",
+      "refersTo": "micro-label",
+      "description": "Прописная красная подпись со знаком-флажком над заголовком раздела — главный опознавательный приём.",
+      "html": "<p class=\"ds-micro\"><svg viewBox=\"0 0 24 10\" width=\"24\" height=\"10\" aria-hidden=\"true\"><path d=\"M2 9 6 1h3L5 9zM9 9 13 1h3l-4 8zM16 9 20 1h3l-4 8z\" fill=\"#BE2C28\"/></svg>ПРЕДЛОЖЕНИЕ / ОБЪЕКТЫ</p>",
+      "css": ".ds-micro{display:flex;align-items:center;gap:10px;margin:0 0 10px;color:#BE2C28;font:700 16px/1.5 Onest,'Segoe UI',sans-serif;letter-spacing:.12em;text-transform:uppercase}"
+    },
+    {
+      "name": "Listing Card",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "Карточка объекта: фото, цена, пересчёт валюты, тип сделки, заголовок, характеристики, действия.",
+      "html": "<article class=\"ds-card\"><div class=\"ds-card-art\"></div><div class=\"ds-card-body\"><div class=\"ds-price\">150 000 сом <small>/ мес</small></div><div class=\"ds-price-alt\">≈ $1 715,28 / мес</div><span class=\"ds-deal\">Аренда</span><h3 class=\"ds-card-title\">5-комн., дом</h3><p class=\"ds-card-meta\">5 комнат · 156 м² · Бишкек · Азия Молл</p><div class=\"ds-card-foot\"><a class=\"ds-more\" href=\"#\">Подробнее ↗</a></div></div></article>",
+      "css": ".ds-card{max-width:382px;background:#fff;border:1px solid #DDE3EA;border-radius:14px;box-shadow:0 1px 2px rgba(37,42,49,.04);overflow:hidden;font-family:Onest,'Segoe UI',sans-serif;color:#252A31}.ds-card-art{aspect-ratio:16/11;background:#F1F4F7}.ds-card-body{padding:16px}.ds-price{font:800 26px/1.2 Onest,'Segoe UI',sans-serif}.ds-price small{font:400 18px/1 Onest,'Segoe UI',sans-serif;color:#5B636E}.ds-price-alt{margin-top:2px;font:400 16px/1.5 Onest,'Segoe UI',sans-serif;color:#5B636E}.ds-deal{display:inline-block;margin:12px 0;padding:6px 12px;border-radius:8px;background:#F1F4F7;font:600 16px/1 Onest,'Segoe UI',sans-serif}.ds-card-title{margin:0;font:650 18px/1.25 Onest,'Segoe UI',sans-serif}.ds-card-meta{margin:4px 0 0;font:400 16px/1.5 Onest,'Segoe UI',sans-serif;color:#5B636E}.ds-card-foot{margin-top:16px}.ds-more{display:inline-flex;align-items:center;min-height:44px;padding:11px 16px;border:1px solid #D7DEE6;border-radius:10px;color:#252A31;text-decoration:none;font:600 17px/1 Onest,'Segoe UI',sans-serif}.ds-more:hover{border-color:#BBC4CF}"
+    },
+    {
+      "name": "Text Field",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Поле формы поиска с прописной подписью.",
+      "html": "<label class=\"ds-field\"><span class=\"ds-lbl\">БЮДЖЕТ ДО</span><input class=\"ds-input\" placeholder=\"Без ограничений\"></label>",
+      "css": ".ds-field{display:block;font-family:Onest,'Segoe UI',sans-serif}.ds-lbl{display:block;margin-bottom:8px;color:#5B636E;font:700 16px/1.5 Onest,'Segoe UI',sans-serif;letter-spacing:.12em}.ds-input{width:100%;min-height:44px;padding:11px 13px;border:1px solid #D7DEE6;border-radius:10px;background:#fff;color:#252A31;font:500 18px/1.5 Onest,'Segoe UI',sans-serif}.ds-input::placeholder{color:#6B7480}.ds-input:focus{outline:none;border-color:#BE2C28;box-shadow:0 0 0 3px rgba(190,44,40,.12)}"
+    },
+    {
+      "name": "Form Tabs",
+      "kind": "nav",
+      "description": "Вкладки «Купить / Арендовать» над формой поиска; активная подчёркнута красным.",
+      "html": "<div class=\"ds-tabs\"><button class=\"ds-tab\">Купить</button><button class=\"ds-tab ds-tab-on\" aria-selected=\"true\">Арендовать</button></div>",
+      "css": ".ds-tabs{display:flex;gap:24px;border-bottom:1px solid #DDE3EA}.ds-tab{padding:0 0 12px;border:0;background:none;color:#5B636E;font:800 18px/1.3 Onest,'Segoe UI',sans-serif;border-bottom:2px solid transparent;margin-bottom:-1px}.ds-tab-on{color:#252A31;border-bottom-color:#BE2C28}.ds-tab:focus-visible{outline:none;box-shadow:0 0 0 3px rgba(190,44,40,.12)}"
+    },
+    {
+      "name": "Deal Chip",
+      "kind": "chip",
+      "refersTo": "chip-deal",
+      "description": "Тип сделки в карточке.",
+      "html": "<span class=\"ds-deal-chip\">Аренда</span>",
+      "css": ".ds-deal-chip{display:inline-block;padding:6px 12px;border-radius:8px;background:#F1F4F7;color:#252A31;font:600 16px/1 Onest,'Segoe UI',sans-serif}"
+    }
+  ],
+  "narrative": {
+    "northStar": "«Красный флажок на белом поле»",
+    "overview": "Система снята с работающего liberterra.kg. Поверхность — почти белая бумага, по ней идёт очень крупный графитовый заголовок, и единственный цвет, который позволяет себе голос, — красный: знак-флажок, прописная микро-подпись и заливка главного действия.\n\nХарактер плакатный, но сдержанный по средствам: глубины почти нет, формы держат волосяные границы, тени две на весь сайт. Вес берётся размером, а не тенью.\n\nТекст крупный: база 18 px, интерлиньяж 1.5 — решение в пользу чтения с телефона.",
+    "keyCharacteristics": [
+      "Один красный #BE2C28 на действия, знак и микро-подписи; остальное — графит и бумага.",
+      "Почти плоско: волосяная граница #DDE3EA и тень 0 1px 2px rgba(37,42,49,.04).",
+      "База 18 px, дисплей до 59 px весом 800 с трекингом −0.032em.",
+      "Прописные микро-подписи красным, трекинг 0.12em, над заголовком раздела.",
+      "Onest и больше ничего."
+    ],
+    "rules": [
+      {
+        "name": "Правило одного красного",
+        "body": "В системе один красный — #BE2C28. #F5333A, #C8242B и #C0392B выведены из употребления: первый не проходит AA с белым текстом (3.88:1), остальные — его двойники.",
+        "section": "colors"
+      },
+      {
+        "name": "Правило вина",
+        "body": "#800020 — только поверхность. Если на нём появилась кнопка или ссылка, выбран не тот красный.",
+        "section": "colors"
+      },
+      {
+        "name": "Правило малой доли",
+        "body": "Красное на экране — знак, одна микро-подпись на раздел и главное действие.",
+        "section": "colors"
+      },
+      {
+        "name": "Правило 18",
+        "body": "База — 18 px. Текст мельче 16 px не появляется; 14 px — только служебные подписи.",
+        "section": "typography"
+      },
+      {
+        "name": "Правило одной гарнитуры",
+        "body": "Второй шрифт не вводится. Нужен контраст — меняется вес или размер.",
+        "section": "typography"
+      },
+      {
+        "name": "Правило ширины",
+        "body": "Панель поиска и список результатов живут в одной колонке и по одной левой кромке.",
+        "section": "layout"
+      },
+      {
+        "name": "Правило границы",
+        "body": "Новая поверхность получает границу #DDE3EA и тень покоя. Тень сильнее — это слой поверх страницы, а не карточка в потоке.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do держать красный на знаке, одной микро-подписи и главном действии — и больше нигде.",
+      "Do строить поверхность на белой карточке с границей #DDE3EA и тенью покоя.",
+      "Do набирать базовый текст 18 px и не опускаться ниже 16 px.",
+      "Do показывать цену крупно и сразу под ней пересчёт во вторую валюту.",
+      "Do ставить панель поиска и результаты по одной левой кромке."
+    ],
+    "donts": [
+      "Don't вводить второй красный: #F5333A (3.88:1 с белым), #C8242B и #C0392B — двойники #BE2C28. На живых страницах ни один из них не красит ничего: это мёртвый код.",
+      "Don't оставлять переменные --lt-brand-blue:#BE2C28 и --lt-brand-blue-dark:#8F1918 с именами от синей версии.",
+      "Don't объявлять --red по третьему разу: сейчас это #F5333A, #800020 и перекрытие дальше.",
+      "Don't судить о применяемом стиле по файлу: страницы применяют инлайновые копии criticalStyles, ссылки на листы переведены в media=print. Проверка — только computed style на живой странице.",
+      "Don't печатать цену без разделителя разрядов.",
+      "Don't добавлять подъём карточки при наведении и вторую тень."
+    ]
+  }
+}

@@ -1,0 +1,13 @@
+.placement-choices { display:flex; flex-wrap:wrap; gap:12px; margin:20px 0; }
+.placement-choices button, #placementReviewButton { padding:14px 18px; border:1px solid #526b54; border-radius:12px; background:#f5f8f2; color:#173e2b; font:inherit; cursor:pointer; }
+.placement-choices button:focus-visible, #placementReviewButton:focus-visible { outline:3px solid #b28a40; outline-offset:3px; }
+.placement-review { padding:20px; margin:18px 0; border:1px solid #b5c5b5; border-radius:16px; background:#f5f8f2; color:#173e2b; }
+.placement-review[hidden] { display:none; }
+.placement-review ul { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:8px 24px; padding-left:20px; overflow-wrap:anywhere; }
+.placement-review label { display:flex; align-items:flex-start; gap:10px; }
+.placement-review input { flex:0 0 auto; width:20px; height:20px; }
+.placement-issue-links[hidden] { display:none; }
+.placement-review .placement-issue-links { display:flex; flex-wrap:wrap; gap:8px; list-style:none; padding:0; }
+.placement-review .placement-issue-links button { min-height:44px; border:1px solid currentColor; border-radius:10px; padding:8px 12px; background:transparent; color:inherit; font:inherit; cursor:pointer; }
+.placement-review .placement-issue-links button:focus-visible { outline:3px solid currentColor; outline-offset:2px; }
+@media(max-width:540px) { .placement-choices button { width:100%; text-align:left; } .placement-review { padding:14px; } }
