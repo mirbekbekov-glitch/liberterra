@@ -70,6 +70,13 @@ html[data-theme="dark"] #workspace-overview .lt-deal .lt-bar i{background:#F08A8
 
   const state = { records: [], objects: [], tasks: [], tasksReady: false, ready: false, loading: true, requests: null, requestsAll: null, stages: [] };
 
+  // Блок «Рабочий день» из features/deals.js показывает те же числа в более бедном виде.
+  // Прячем его только после первой удачной отрисовки, чтобы при ошибке остался хоть один.
+  function hideLegacyDay() {
+    const day = overview.querySelector(".crm-day");
+    if (day && !day.hidden) day.hidden = true;
+  }
+
   function selectTab(key) {
     const tab = nav.querySelector(`[data-crm-tab="${key}"]`);
     if (!tab) return false;
@@ -125,12 +132,12 @@ html[data-theme="dark"] #workspace-overview .lt-deal .lt-bar i{background:#F08A8
     head.append(copy, link);
     const body = document.createElement("div");
     box.append(head, body);
-    return { box, body };
+    return { box, body, subtitle: p };
   }
 
   const grid = document.createElement("div");
   grid.className = "lt-desk-grid";
-  const dealsPanel = panel("Сделки", "В работе, ближайшее действие сверху", "Все сделки →", "deals");
+  const dealsPanel = panel("Сделки", "Ближайшее действие сверху", "Все сделки →", "deals");
   const todayPanel = panel("Задачи", "Со сроком на сегодня и раньше", "Все задачи →", "tasks");
   grid.append(dealsPanel.box, todayPanel.box);
   (home.querySelector(".crm-home-actions") || metrics).after(grid);
@@ -158,6 +165,10 @@ html[data-theme="dark"] #workspace-overview .lt-deal .lt-bar i{background:#F08A8
     const place = open.findIndex((item) => (item.id || item[0]) === stage);
     const share = open.length > 1 && place >= 0 ? Math.round(((place + 1) / open.length) * 100) : 0;
     return { label, share };
+  }
+
+  function finalStageIds() {
+    return state.stages.map((item) => item.id || item[0]).filter((id) => !["won", "lost"].includes(id)).slice(-2);
   }
 
   function dealRows(now) {
@@ -330,8 +341,15 @@ html[data-theme="dark"] #workspace-overview .lt-deal .lt-bar i{background:#F08A8
       : extra ? `${extra} · указана по ${filled} из ${rows.length}`
       : `указана по ${filled} из ${rows.length} сделок`);
 
+    const finals = finalStageIds();
+    const atFinal = rows.filter((row) => finals.includes(row.item.stage)).length;
+    dealsPanel.subtitle.textContent = atFinal
+      ? `Ближайшее действие сверху · ${atFinal} на финальной стадии`
+      : "Ближайшее действие сверху";
+
     renderDeals(rows);
     renderTasks(tasks, now);
+    if (state.ready) hideLegacyDay();
   }
 
   window.addEventListener("liberterra:crm-loading", () => { state.ready = false; state.loading = true; render(); });
