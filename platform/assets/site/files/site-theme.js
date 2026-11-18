@@ -793,7 +793,10 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
   var s = document.createElement('style');
   document.addEventListener('click', function(ev){
     var t = ev.target; if (!t || !t.closest) return;
-    if (!t.closest('.crm-home-primary') && !t.closest('#crm-deals-tab')) return;
+    var primary = t.closest('.crm-home-primary');
+    if (!primary && !t.closest('#crm-deals-tab')) return;
+    // Главная кнопка уводит в сделки, только когда её цель — сделки; заявки, задачи и клиентов кабинет открывает сам.
+    if (primary && primary.dataset.target && primary.dataset.target !== 'deals') return;
     var c = document.getElementById('crmClientsTab'); if (!c) return;
     ev.preventDefault(); ev.stopPropagation();
     c.click();
