@@ -22,8 +22,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/configure-pages@v5
+      # Публикуется только то, что перечислено здесь. Прежде стояло path: .,
+      # и Pages отдавал весь репозиторий, включая platform/ — исходники боевых
+      # Worker и Apps Script. Новый файл на сайте появляется только после того,
+      # как его добавят в этот список.
+      - name: Собрать содержимое сайта
+        run: |
+          mkdir -p _site
+          cp index.html _site/
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: .
+          path: _site
       - id: deployment
         uses: actions/deploy-pages@v4
