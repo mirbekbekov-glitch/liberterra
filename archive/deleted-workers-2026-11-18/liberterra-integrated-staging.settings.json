@@ -1,0 +1,36 @@
+{
+  "placement": {},
+  "compatibility_date": "2026-07-03",
+  "compatibility_flags": [],
+  "usage_model": "standard",
+  "tags": [],
+  "tail_consumers": [],
+  "logpush": false,
+  "annotations": {
+    "workers/triggered_by": "upload"
+  },
+  "bindings": [
+    {
+      "name": "GUEST_REQUEST_HASH_KEY",
+      "text": "synthetic-test-only-key-at-least-32-characters",
+      "type": "plain_text"
+    },
+    {
+      "class_name": "GuestRequestLimiter",
+      "name": "GUEST_REQUEST_LIMITER",
+      "namespace_id": "03e7af714b8b446ab1c9162cf06d9fde",
+      "type": "durable_object_namespace"
+    },
+    {
+      "name": "SHEETS_WRITE_SECRET",
+      "text": "synthetic-test-only-not-a-secret",
+      "type": "plain_text"
+    },
+    {
+      "class_name": "StagingSubmissionStore",
+      "name": "STAGING_SUBMISSION_STORE",
+      "namespace_id": "b6c84e411ac64168b5c2de82af0ec7fb",
+      "type": "durable_object_namespace"
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "placement": {},
+  "compatibility_date": "2026-10-27",
+  "compatibility_flags": [],
+  "usage_model": "standard",
+  "tags": [],
+  "tail_consumers": [],
+  "logpush": false,
+  "observability": {
+    "enabled": true,
+    "head_sampling_rate": 1,
+    "redact_query_string": false,
+    "logs": {
+      "enabled": true,
+      "head_sampling_rate": 1,
+      "persist": true,
+      "invocation_logs": true
+    },
+    "traces": {
+      "enabled": false,
+      "persist": true,
+      "head_sampling_rate": 1
+    }
+  },
+  "annotations": {
+    "workers/alias": "claim-safe-20261106",
+    "workers/message": "Synthetic request claim isolated candidate",
+    "workers/triggered_by": "version_upload"
+  },
+  "bindings": [
+    {
+      "name": "SANDBOX_SHARED_SECRET",
+      "type": "secret_text"
+    },
+    {
+      "name": "SANDBOX_WEBHOOK_URL",
+      "text": "https://script.google.com/macros/s/AKfycbyrnHxge2PzCdx1NlA5cK9DkrJDtsAIhk3liyn5_eeDY5x5glEmfEKaCkmX5pTFMUE/exec",
+      "type": "plain_text"
+    }
+  ]
+}
