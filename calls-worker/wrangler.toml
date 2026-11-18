@@ -1,0 +1,18 @@
+name = "liberterra-calls"
+main = "src/index.mjs"
+compatibility_date = "2026-11-01"
+
+[vars]
+MZ_DOMAIN = "liberterra"      # liberterra.moizvonki.ru
+MZ_USER = ""                  # email администратора в «Мои Звонки»
+MZ_ACCOUNT_ID = "39009"       # ID аккаунта из Настройки → Интеграция
+
+[triggers]
+crons = ["*/15 * * * *"]      # догрузка пропущенных звонков
+
+[[d1_databases]]
+binding = "DB"
+database_name = "liberterra-calls"
+database_id = ""              # заполнить после: wrangler d1 create liberterra-calls
+
+# Секреты (в файл не писать): wrangler secret put WEBHOOK_TOKEN | API_TOKEN | MZ_API_KEY
