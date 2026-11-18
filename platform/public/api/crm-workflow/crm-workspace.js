@@ -150,6 +150,7 @@
     const objects = Array.isArray(input?.objects) ? input.objects : [];
     const tasks = Array.isArray(input?.tasks) ? input.tasks : [];
     const tasksReady = input?.tasksReady === true;
+    const requests = Number.isFinite(input?.requests) ? input.requests : 0;
     const now = Number.isFinite(nowValue) ? nowValue : Date.now();
     const clients = records.filter((item) => item.kind === "client" && item.role !== "owner");
     const owners = records.filter((item) => item.kind === "client" && item.role === "owner");
@@ -182,9 +183,11 @@
       tasksReady,
       primary: attention > 0
         ? { kind: "attention", target: overdueTasks.length ? "tasks" : "deals", label: `Разобрать просроченное · ${attention}` }
-        : activeClients.length === 0
-          ? { kind: "client", target: "clients", label: "Добавить первого клиента" }
-          : { kind: "deal", target: "deals", label: "Открыть воронку сделок" },
+        : requests > 0
+          ? { kind: "requests", target: "requests", label: `Принять заявки · ${requests}` }
+          : activeClients.length === 0
+            ? { kind: "client", target: "clients", label: "Добавить первого клиента" }
+            : { kind: "deal", target: "deals", label: "Открыть воронку сделок" },
     };
   }
 
@@ -286,6 +289,10 @@
       selectTab(target === "tasks" ? "tasks" : "deals");
       return;
     }
+    if (kind === "requests") {
+      selectTab("requests");
+      return;
+    }
     if (kind === "client") {
       if (selectTab("clients")) root.querySelector('[data-crm-panel="clients"] input[name="name"]')?.focus();
       return;
@@ -308,7 +315,7 @@
     if (state.loading) finding.textContent = "Загружаем клиентов, сделки и задачи…";
     else if (!state.ready) finding.textContent = "CRM недоступна. Обновите данные и повторите попытку.";
     else if (overdue) finding.textContent = `Нужно проверить просроченные задачи и действия по сделкам: ${overdue}.`;
-    else if (state.requests) finding.textContent = `Заявок без первого ответа: ${state.requests}. Откройте «Заявки» и примите их в работу.`;
+    else if (state.requests) finding.textContent = "Заявки ждут первого ответа. Примите их в работу — счёт на кнопке справа.";
     else if (!summary.tasksReady) finding.textContent = "Сделки загружены. Ждём задачи, чтобы завершить сводку дня.";
     else if (!summary.counts.activeClients) finding.textContent = "Клиентов пока нет. Примите заявку или добавьте клиента — здесь появится сводка по работе.";
     else finding.textContent = "Просроченных действий нет. Можно продолжать работу.";
