@@ -336,7 +336,7 @@
  const el=(tag,text,cls)=>{const n=document.createElement(tag);if(text!==undefined)n.textContent=text;if(cls)n.className=cls;return n;};
  const button=(text,fn,cls='crm-secondary-button')=>{const b=el('button',text,cls);b.type='button';b.addEventListener('click',fn);return b;};
  const uuid=()=>crypto.randomUUID();
- const money=(value,currency)=>value===''||value===undefined?'Не указана':new Intl.NumberFormat('ru-RU',{style:'currency',currency,maximumFractionDigits:2}).format(value);
+ const money=(value,currency)=>{if(value===''||value===undefined||value===null)return'Не указана';const amount=Number(value);if(!Number.isFinite(amount))return'Не указана';const text=new Intl.NumberFormat('ru-RU',{maximumFractionDigits:Number.isInteger(amount)?0:2}).format(amount);return currency==='USD'?'$'+text:currency==='KGS'||!currency?text+' сом':text+' '+currency;};
  const date=value=>value?new Intl.DateTimeFormat('ru-RU',{timeZone:'Asia/Bishkek',dateStyle:'medium',timeStyle:'short'}).format(new Date(value)):'Не указана';
  const localDate=value=>{if(!value)return '';const parts=new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Bishkek',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).formatToParts(new Date(value)),part=key=>parts.find(p=>p.type===key)?.value||'';return `${part('year')}-${part('month')}-${part('day')}T${part('hour')}:${part('minute')}`};
  const isoDate=value=>value?new Date(value+':00+06:00').toISOString():'';
@@ -350,7 +350,7 @@
  const tab=el('button','Сделки','crm-tab');tab.type='button';tab.dataset.crmTab='deals';tab.id='crm-deals-tab';tab.setAttribute('role','tab');tab.setAttribute('aria-selected','false');tab.setAttribute('aria-controls','crm-deals-panel');tab.tabIndex=-1;
  nav.querySelector('[data-crm-tab="clients"]').after(tab);
  const panel=el('section',undefined,'crm-panel crm-deals');panel.dataset.crmPanel='deals';panel.id='crm-deals-panel';panel.setAttribute('role','tabpanel');panel.setAttribute('aria-labelledby',tab.id);panel.hidden=true;content.append(panel);
- const head=el('div',undefined,'crm-deal-heading'),headCopy=el('div');headCopy.append(el('h2','Сделки'),el('p','Откройте карточку или перенесите сделку на доступный этап.','crm-deal-muted'));
+ const head=el('div',undefined,'crm-deal-heading'),headCopy=el('div');const headSummary=el('p','Откройте карточку или перенесите сделку на доступный этап.','crm-deal-muted');headCopy.append(el('h2','Сделки'),headSummary);
  const create=button('Новая сделка',()=>openForm(null),'crm-primary-button');create.disabled=true;head.append(headCopy,create);panel.append(head);
  const status=el('p','Загружаем сделки…','crm-workflow-status');status.setAttribute('role','status');panel.append(status);
  const tools=el('div',undefined,'crm-deal-tools'),search=el('input');search.type='search';search.placeholder='Название или клиент';search.setAttribute('aria-label','Поиск сделки');
@@ -358,6 +358,7 @@
  tools.append(search,mobileStage,button('Обновить',()=>window.LiberterraCrmWorkflow.reload()));panel.append(tools);
  const stageRail=el('nav',undefined,'crm-stage-rail');stageRail.setAttribute('aria-label','Этапы воронки');panel.append(stageRail);
  const board=el('div',undefined,'crm-deal-board');board.setAttribute('aria-label','Сделки по этапам');panel.append(board);
+ if(!document.getElementById('lt-deals-20261118')){const dealsStyle=document.createElement('style');dealsStyle.id='lt-deals-20261118';dealsStyle.textContent="@media (min-width:901px){\nbody.v20.agent-crm-page #crmClientsPanel:not(#lt0) .crm-deal-board{display:flex!important;flex-wrap:wrap!important;gap:12px!important;align-items:flex-start!important;overflow:visible!important;padding:4px 2px 10px!important;grid-template-columns:none!important;background:transparent!important;border:0!important;box-shadow:none!important}\nbody.v20.agent-crm-page #crmClientsPanel:not(#lt0) .crm-deal-board>.crm-deal-column{flex:1 1 0!important;min-width:180px!important;min-height:220px!important;margin:0!important;padding:12px!important;display:flex!important;flex-direction:column!important;gap:10px!important;background:#F4F2F1!important;border:0!important;border-radius:14px!important;box-shadow:none!important}\nbody.v20.agent-crm-page #crmClientsPanel:not(#lt0) .crm-deal-board>.crm-deal-column[data-terminal=\"true\"]{flex:1 1 calc(50% - 6px)!important;min-height:0!important;display:grid!important;grid-template-columns:repeat(auto-fill,minmax(190px,1fr))!important;align-content:start;background:transparent!important;border:1px solid var(--v20-line,#E3E8EE)!important}\nbody.v20.agent-crm-page #crmClientsPanel:not(#lt0) .crm-deal-column[data-terminal=\"true\"]>:is(h3,.crm-deal-col-sum,.crm-deal-empty){grid-column:1/-1}\nbody.v20.agent-crm-page #crmClientsPanel:not(#lt0) .crm-deal-column[data-terminal=\"true\"] .crm-deal-card>:not(.crm-deal-open):not(.crm-deal-client):not(.crm-deal-amount){display:none!important}\nbody.v20.agent-crm-page #crmClientsPanel:not(#lt0) .crm-deal-column[data-terminal=\"true\"] .crm-deal-empty{padding:8px 10px!important}\n}\n}\nbody.v20.agent-crm-page #crmClientsPanel:not(#lt0) .crm-deal-column>h3{margin:0 4px!important;font:600 14px/1.35 'Onest',system-ui,sans-serif!important;color:var(--v20-ink,#252A31)!important;display:flex;align-items:center;gap:6px}\nbody.v20.agent-crm-page #crmClientsPanel:not(#lt0) .crm-deal-col-sum{margin:-6px 4px 2px!important;font-size:12px!important;line-height:1.3!important;color:var(--v20-muted,#6B6560)!important}\nbody.v20.agent-crm-page #crmClientsPanel:not(#lt0) .crm-deal-empty{margin:0!important;padding:14px 10px!important;border:1px dashed #DCD6D4!important;border-radius:12px!important;background:transparent!important;font-size:12px!important;color:var(--v20-muted,#6B6560)!important;text-align:center}\nbody.v20.agent-crm-page #crmClientsPanel:not(#lt0) .crm-deal-card{margin:0!important;padding:12px!important;display:flex!important;flex-direction:column!important;gap:6px!important;background:#fff!important;border:1px solid var(--v20-line,#E3E8EE)!important;border-radius:12px!important;box-shadow:none!important}\nbody.v20.agent-crm-page #crmClientsPanel:not(#lt0) .crm-deal-card:hover{border-color:#D8C9C7!important}\nbody.v20.agent-crm-page #crmClientsPanel:not(#lt0) .crm-deal-card>*{margin:0!important}\nbody.v20.agent-crm-page #crmClientsPanel:not(#lt0) .crm-deal-card .crm-deal-open{display:block;width:100%;padding:0!important;min-height:0!important;border:0!important;background:none!important;text-align:left!important;font:600 14px/1.35 'Onest',system-ui,sans-serif!important;color:var(--v20-ink,#252A31)!important;cursor:pointer;overflow-wrap:anywhere}\nbody.v20.agent-crm-page #crmClientsPanel:not(#lt0) .crm-deal-card .crm-deal-open:hover{color:#BE2C28!important}\nbody.v20.agent-crm-page #crmClientsPanel:not(#lt0) .crm-deal-card .crm-deal-client{font-size:12px!important;line-height:1.3!important;color:var(--v20-muted,#6B6560)!important}\nbody.v20.agent-crm-page #crmClientsPanel:not(#lt0) .crm-deal-card .crm-deal-amount{display:block;font:650 16px/1.2 'Onest',system-ui,sans-serif!important;color:var(--v20-ink,#252A31)!important;font-variant-numeric:tabular-nums}\nbody.v20.agent-crm-page #crmClientsPanel:not(#lt0) .crm-deal-card .crm-deal-next{padding-top:8px!important;border-top:1px solid var(--v20-line,#ECE3E2)!important;font-size:13px!important;line-height:1.35!important}\nbody.v20.agent-crm-page #crmClientsPanel:not(#lt0) .crm-deal-card .crm-deal-next span{display:block;font-size:11px!important;letter-spacing:.02em;text-transform:none!important;color:var(--v20-muted,#6B6560)!important}\nbody.v20.agent-crm-page #crmClientsPanel:not(#lt0) .crm-deal-card .crm-deal-next strong{font-weight:600!important}\nbody.v20.agent-crm-page #crmClientsPanel:not(#lt0) .crm-deal-card :is(.crm-deal-due,.crm-deal-commission){font-size:12px!important;line-height:1.35!important;color:var(--v20-muted,#6B6560)!important}\nbody.v20.agent-crm-page #crmClientsPanel:not(#lt0) .crm-deal-card .crm-fast-deal-actions{display:flex!important;flex-wrap:wrap;gap:6px!important;margin-top:4px!important}\nbody.v20.agent-crm-page #crmClientsPanel:not(#lt0) .crm-deal-card .crm-fast-deal-actions button{flex:1 1 auto;min-height:36px!important;padding:6px 10px!important;border-radius:9px!important;font-size:13px!important;line-height:1.2!important}\nbody.v20.agent-crm-page #crmClientsPanel:not(#lt0) .crm-deal-card .crm-deal-tag{align-self:flex-start}\nbody.v20.agent-crm-page #crmClientsPanel:not(#lt0) .crm-deal-card .crm-deal-tag[data-kind=\"late\"]{background:rgba(190,44,40,.12)!important;color:#9E231F!important}\nhtml[data-theme=\"dark\"] body.v20.agent-crm-page #crmClientsPanel:not(#lt0) .crm-deal-board>.crm-deal-column{background:rgba(255,255,255,.04)!important}\nhtml[data-theme=\"dark\"] body.v20.agent-crm-page #crmClientsPanel:not(#lt0) .crm-deal-card{background:#20252C!important;border-color:#424A53!important}\nhtml[data-theme=\"dark\"] body.v20.agent-crm-page #crmClientsPanel:not(#lt0) :is(.crm-deal-column>h3,.crm-deal-card .crm-deal-open,.crm-deal-card .crm-deal-amount){color:#F1F3F5!important}\nhtml[data-theme=\"dark\"] body.v20.agent-crm-page #crmClientsPanel:not(#lt0) :is(.crm-deal-col-sum,.crm-deal-empty,.crm-deal-card .crm-deal-client,.crm-deal-card .crm-deal-next span,.crm-deal-card .crm-deal-due,.crm-deal-card .crm-deal-commission){color:#C4CBD4!important}\nhtml[data-theme=\"dark\"] body.v20.agent-crm-page #crmClientsPanel:not(#lt0) .crm-deal-card .crm-deal-next{border-top-color:#424A53!important}\nhtml[data-theme=\"dark\"] body.v20.agent-crm-page #crmClientsPanel:not(#lt0) .crm-deal-empty{border-color:#424A53!important}\nhtml[data-theme=\"dark\"] body.v20.agent-crm-page #crmClientsPanel:not(#lt0) .crm-deal-card .crm-deal-tag[data-kind=\"late\"]{background:rgba(240,138,130,.16)!important;color:#F08A82!important}";document.head.append(dealsStyle);}
  search.addEventListener('input',renderBoard);mobileStage.addEventListener('change',renderBoard);
  stageRail.addEventListener('click',event=>{const chip=event.target.closest('button[data-stage]');if(!chip||!state.ready)return;mobileStage.value=chip.dataset.stage;renderBoard();chip.focus();});
  const day=el('section',undefined,'crm-day');
@@ -386,7 +387,27 @@
  function syncStageChoices(){stageChoices.replaceChildren();for(const option of inputs.stage.options){const choice=button(option.textContent,()=>{},'crm-deal-stage-choice');choice.type='button';choice.dataset.stage=option.value;choice.setAttribute('aria-pressed',String(option.value===inputs.stage.value));stageChoices.append(choice);}}
  const submit=el('button','Сохранить сделку','crm-primary-button');submit.type='submit';
  const result=el('p','','crm-deal-result');result.setAttribute('role','status');const footer=el('div',undefined,'crm-deal-footer');footer.append(el('p','Плановая комиссия — ожидаемая сумма, не полученный доход.','crm-deal-muted'),submit,result);form.append(footer);dialog.append(form);
- const history=el('section',undefined,'crm-deal-history');dialog.append(history);document.body.append(dialog);
+ const history=el('section',undefined,'crm-deal-history');dialog.append(history);
+ // Звонки клиента из телефонии. Запрос идёт через сервер CRM: он проверяет, что клиент принадлежит агенту.
+ const callsBox=el('section',undefined,'crm-deal-history crm-deal-calls');dialog.append(callsBox);document.body.append(dialog);
+ let callsToken=0;
+ const callNotes={not_configured:'Телефония не подключена.',no_phone:'У клиента не указан телефон.',no_agent_email:'В профиле нет email, поэтому звонки не найти.',unavailable:'Звонки временно недоступны. Закройте и снова откройте карточку.'};
+ const talk=seconds=>seconds>=60?`${Math.floor(seconds/60)} мин ${seconds%60} с`:`${seconds} с`;
+ async function loadCalls(clientId){
+  const mine=++callsToken,fresh=()=>mine===callsToken&&dialog.open;
+  callsBox.replaceChildren(el('h3','Звонки'),el('p','Загружаем звонки…','crm-deal-muted'));
+  try{
+   const response=await window.LiberterraAgentAccess.request('list_crm_workflow',{data:{calls:{client_id:clientId}}});
+   if(!fresh())return;
+   const callsPage=response.calls_page||{status:'unavailable',items:[]};callsBox.replaceChildren(el('h3','Звонки'));
+   if(callsPage.status!=='ok'){callsBox.append(el('p',callNotes[callsPage.status]||callNotes.unavailable,'crm-deal-muted'));return;}
+   if(!callsPage.items.length){callsBox.append(el('p','Звонков с этим клиентом пока нет.','crm-deal-muted'));return;}
+   const list=el('ol');
+   for(const call of callsPage.items){const row=el('li');row.append(el('strong',(call.direction==='out'?'Исходящий':'Входящий')+(call.answered?'':', без ответа')),el('small',`${date(call.started_at)} · ${call.answered?talk(call.duration):'не отвечен'}${call.has_recording?' · есть запись':''}`));list.append(row);}
+   callsBox.append(list);
+  }catch(error){if(fresh())callsBox.replaceChildren(el('h3','Звонки'),el('p',errors[error.code]||callNotes.unavailable,'crm-deal-muted'));}
+ }
+ dialog.addEventListener('close',()=>{callsToken++;});
  function terminalFields(){const stage=inputs.stage.value,lost=stage==='lost',order=['new','qualification','selection','viewing_scheduled','viewing_done','negotiation','agreement','documents','won'],index=order.indexOf(stage),sale=inputs.deal_type.value==='sell';fieldLabels.lost_reason.hidden=!lost;inputs.lost_reason.required=lost;inputs.object_id.required=stage==='won'||index>=3||sale&&index>=2;inputs.viewing_at.required=index>=3;inputs.viewing_result.required=index>=4;inputs.agreed_price.required=index>=6;inputs.deposit_amount.required=index>=7;inputs.deposit_at.required=index>=7;inputs.documents_confirmed.required=stage==='won';inputs.next_action_at.required=!lost&&stage!=='won'&&Boolean(editing);inputs.amount.required=stage==='won';for(const [name,show]of [['viewing_at',index>=3],['viewing_result',index>=4],['agreed_price',index>=6],['deposit_amount',index>=7],['deposit_at',index>=7],['documents_confirmed',stage==='won']])fieldLabels[name].hidden=!show;stageDetails.hidden=![...stageDetails.querySelectorAll('label')].some(label=>!label.hidden);datePresets.hidden=lost||stage==='won';for(const choice of stageChoices.querySelectorAll('button[data-stage]'))choice.setAttribute('aria-pressed',String(choice.dataset.stage===stage));}
  inputs.stage.addEventListener('change',terminalFields);form.addEventListener('input',()=>{pendingId='';});
  inputs.deal_type.addEventListener('change',terminalFields);
@@ -404,7 +425,9 @@
   terminalFields();dialogTitle.textContent=record?'Карточка сделки':'Новая сделка';history.replaceChildren();
   if(record){history.append(el('h3','История изменений'));const list=el('ol');for(const event of [...(record.history||[])].reverse()){const row=el('li');row.append(el('strong',event.type==='created'?'Сделка создана':event.type==='stage_changed'?`${stageLabel(event.from)} → ${stageLabel(event.to)}`:'Карточка обновлена'),el('small',`${date(event.at)} · Автор: ${event.author_id}`));list.append(row);}history.append(list);}
   if(!records('client').length)result.textContent='Сначала добавьте клиента в разделе «Клиенты».';
+  callsBox.replaceChildren();callsToken++;
   submit.disabled=false;dialog.showModal();inputs.title.focus();
+  if(record?.client_id)loadCalls(record.client_id);
  }
  window.addEventListener('liberterra:new-deal-for-client',event=>{if(!state.ready||content.hidden)return;const client=records('client').find(item=>String(item.id)===String(event.detail?.client_id)&&item.role!=='owner');if(!client)return;tab.click();openForm(null);inputs.client_id.value=client.id;inputs.title.value=`Сделка: ${client.name}`;inputs.title.focus();});
  async function persist(record,data,id,mutation){
@@ -482,6 +505,8 @@
  function tagNode(text,kind,hint){const tag=el('span',text,'crm-deal-tag');tag.dataset.kind=kind;tag.title=hint;return tag;}
  function renderBoard(){
   syncStageRail();
+  if(state.ready){const live=records('deal').filter(d=>!['won','lost'].includes(d.stage)),plan=new Map();for(const d of live){const v=Number(d.planned_commission);if(d.planned_commission!==''&&d.planned_commission!==undefined&&Number.isFinite(v)&&v>0)plan.set(d.currency||'KGS',(plan.get(d.currency||'KGS')||0)+v);}
+   headSummary.textContent=live.length?`В работе: ${live.length} · плановая комиссия ${plan.size?[...plan].map(([c,v])=>money(v,c)).join(' · '):'не указана'}. Карточку можно перетащить на другой этап.`:'Сделок в работе нет. Создайте первую кнопкой «Новая сделка».';}
   board.replaceChildren();create.disabled=!state.ready||!state.stages.length;
   if(!state.ready){board.append(el('p','Сделки недоступны до успешной загрузки CRM.'));return;}
   if(!state.stages.length){board.append(el('p','Для работы со сделками требуется обновление сервера CRM.'));return;}
@@ -490,6 +515,8 @@
    const deals=records('deal').filter(d=>d.stage===stage.id&&(!query||(d.title+' '+clientName(d.client_id)).toLocaleLowerCase('ru').includes(query)));
    const column=el('section',undefined,'crm-deal-column');column.dataset.stage=stage.id;column.dataset.mobileHidden=String(mobileStage.value!==stage.id);column.dataset.terminal=String(['won','lost'].includes(stage.id));
    column.append(el('h3',`${stage.label} · ${deals.length}`));
+   {const sums=new Map();for(const d of deals){const v=Number(d.amount);if(d.amount!==''&&d.amount!==undefined&&Number.isFinite(v)&&v>0)sums.set(d.currency||'KGS',(sums.get(d.currency||'KGS')||0)+v);}
+    column.append(el('p',sums.size?[...sums].map(([c,v])=>money(v,c)).join(' · '):'—','crm-deal-col-sum'));}
    column.addEventListener('dragover',event=>{const record=records('deal').find(d=>d.id===dragging);if(record&&stageInfo(record.stage)?.transitions.includes(stage.id)){event.preventDefault();event.dataTransfer.dropEffect='move';}});
    column.addEventListener('drop',event=>{event.preventDefault();const record=records('deal').find(d=>d.id===event.dataTransfer.getData('text/plain'));if(record&&stageInfo(record.stage)?.transitions.includes(stage.id))move(record,stage.id);dragging='';});
    if(!deals.length)column.append(el('p','Нет сделок','crm-deal-empty'));
@@ -625,7 +652,8 @@
     const amount = Number(value);
     if (!Number.isFinite(amount)) return "Не указана";
     try {
-      return new Intl.NumberFormat("ru-RU", { style: "currency", currency: currency || "USD", maximumFractionDigits: 2 }).format(amount);
+      const text = new Intl.NumberFormat("ru-RU", { maximumFractionDigits: Number.isInteger(amount) ? 0 : 2 }).format(amount);
+      return currency === "USD" ? "$" + text : currency === "KGS" || !currency ? text + " сом" : text + " " + currency;
     } catch (_) {
       return `${amount.toLocaleString("ru-RU")} ${currency || ""}`.trim();
     }
@@ -1227,12 +1255,12 @@ if(typeof module==='object'&&module.exports)module.exports={report,activityRepor
     }catch(_){if(active&&version===detailVersion)detail.replaceChildren(element('h4',names[kind]),element('p','Не удалось загрузить обращения. Повторите выбор показателя.'));}
   }
   async function load(){
-    if(!active||loading)return;const version=++loadVersion;loading=true;period.disabled=true;refresh.disabled=true;status.textContent='Обновляем сводку…';detailVersion++;
+    if(!active||loading)return;const version=++loadVersion;loading=true;period.disabled=true;refresh.disabled=true;refresh.textContent='Обновляем…';status.textContent='Обновляем сводку…';detailVersion++;
     try{const result=await window.LiberterraAgentAccess.request('get_team_first_response',{period_days:Number(period.value)});if(!active||version!==loadVersion)return;render(result.first_response);lastLoaded=Date.now();status.textContent='Сводка обновлена.';}
     catch(_){if(active&&version===loadVersion)status.textContent='Не удалось загрузить командную сводку. Повторите обновление.';}
-    finally{if(version===loadVersion){loading=false;period.disabled=false;refresh.disabled=false;}}
+    finally{if(version===loadVersion){loading=false;period.disabled=false;refresh.disabled=false;refresh.textContent='Обновить сводку';}}
   }
   period.addEventListener('change',()=>{activeDetail=null;load();});refresh.addEventListener('click',load);
   window.addEventListener('liberterra:crm-data',event=>{active=event.detail?.ready===true&&event.detail?.canManageResources===true;section.hidden=!active;if(active&&Date.now()-lastLoaded>60000)load();});
-  window.addEventListener('liberterra:crm-loading',()=>{active=false;section.hidden=true;content.replaceChildren();detail.replaceChildren();detailVersion++;loadVersion++;loading=false;period.disabled=false;refresh.disabled=false;lastLoaded=0;status.textContent='Ожидаем данные CRM…';});
+  window.addEventListener('liberterra:crm-loading',()=>{active=false;section.hidden=true;content.replaceChildren();detail.replaceChildren();detailVersion++;loadVersion++;loading=false;period.disabled=false;refresh.disabled=false;refresh.textContent='Обновить сводку';lastLoaded=0;status.textContent='Ожидаем данные CRM…';});
 })();

@@ -18,7 +18,7 @@ Several sessions edit these Workers at the same time. On 2026-11-18 a deploy bui
 
 - **The user authorizes every deploy, in their own words, in the session that deploys.** Another session relaying "the user approved" is not authorization. Say what you are about to PUT before you PUT it.
 - **One session deploys a Worker at a time.** Announce the target before starting and say when you release it. If another session holds it, wait.
-- **The base is the live file, read by site URL, immediately before PUT** — not the captured template, not a base read earlier in the session, and not `GET /workers/scripts/<name>`, which returns the last *uploaded* version while traffic may run on a different *deployed* one.
+- **The base is the live file, read by site URL, immediately before PUT** — not the captured template, not a base read earlier in the session, and not `GET /workers/scripts/<name>`, which returns the last *uploaded* version. Upload and deployment usually coincide, so the two agree most of the time; they diverge once a version other than the newest upload is deployed — after a rollback through the deployments API, for instance, as on 2026-11-18 between 18:33 and 18:41. Read the site URL and you are never wrong.
 - **Whoever deploys, builds.** A build handed over by another session is already stale; rebuild on the base you just read.
 - **Compare lengths and content, not feature markers.** Markers survive both versions and hide what a stale base drops. Diff the built value against the live file and look at what is missing, not only at what is new.
 - **After PUT, read the same URL again and verify.** For CSS the only proof is computed style on the live page: pages apply inline `criticalStyles` copies while the linked files are `media="print"`.

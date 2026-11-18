@@ -3,7 +3,7 @@
   "bundles": [
     {
       "name": "site",
-      "sha256": "7629e6dc96dcbd279034b5100918cab644ac7c202f4a3008c958a5d8bb1640dd",
+      "sha256": "5cfe5901ad2823221c273d4f3afce86ded57d0b2ad957537552cce2ece9b3a08",
       "entries": [
         {
           "map": "files",
@@ -86,7 +86,7 @@
     },
     {
       "name": "backend",
-      "sha256": "2cc69a2d37a654df62328767b395172d69fb24d9d54c2b3abf8d4d4510a1896c",
+      "sha256": "acf3371d0c9b61a76f3cfecbeeddadffb601c7216e45b9ce7a6ca942a4a0238a",
       "entries": [
         {
           "map": "crmWorkflowAssets",
@@ -99,8 +99,8 @@
           "map": "crmWorkflowAssets",
           "key": "crm-workspace.js",
           "file": "assets/backend/assign/crmWorkflowAssets/crm-workspace.js",
-          "sha256": "d19d2999ebf39deb25669f99bf53a5beb2802b07ddb3eeca962c8d901c244aa4",
-          "bytes": 46117
+          "sha256": "9216f83e82db1ea96ead3bc84b2e2859f8790b95d9f07d382ec839beab7bd197",
+          "bytes": 46398
         },
         {
           "map": "crmWorkflowAssets",
@@ -113,8 +113,8 @@
           "map": "crmWorkflowAssets",
           "key": "crm-workflow.js",
           "file": "assets/backend/assign/crmWorkflowAssets/crm-workflow.js",
-          "sha256": "b540eb41e03a62bd0ed0e0baed02e0c7fc494e0abb6c1601d44a571dd9586bb2",
-          "bytes": 162580
+          "sha256": "9a89f3dabd354171b56a90d2c11d41f80806fb966c37411c281230febb36d93d",
+          "bytes": 172947
         },
         {
           "map": "crmAssetPatch",
