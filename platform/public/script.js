@@ -315,7 +315,7 @@ function restoreCatalogFilters() {
   const savedDeals = Array.isArray(saved.deals) ? saved.deals.join(",") : saved.deals ?? saved.deal;
   const dealValue = params.has("deal") ? params.get("deal") : savedDeals;
   const deals = String(dealValue || "").split(",").map(part => part.trim().toLowerCase()).filter(part => DEALS.includes(part));
-  if (deals.length) state.deals = DEALS.filter(deal => deals.includes(deal));
+  if (deals.length) state.deals = [DEALS.find(deal => deals.includes(deal))];
   const savedSource = Array.isArray(saved.source) ? saved.source.join(",") : saved.source;
   const sourceValue = params.has("source") ? params.get("source") : savedSource;
   state.source = String(sourceValue || "").split(",").map((part) => part.trim()).filter((part) => SOURCE_GROUPS.includes(part));
@@ -2128,8 +2128,7 @@ function initFieldFilters() {
   document.querySelectorAll("[data-hero-deal]").forEach((button) => {
     button.addEventListener("click", () => {
       const value = button.dataset.heroDeal || "аренда";
-      const next = dealSelected(value) ? state.deals.filter(deal => deal !== value) : [...state.deals, value];
-      state.deals = next.length ? DEALS.filter(deal => next.includes(deal)) : [value];
+      state.deals = [value];
       if (!dealSelected("аренда")) state.occupancy = "all";
       render();
     });
@@ -2138,7 +2137,7 @@ function initFieldFilters() {
   document.querySelectorAll("[data-rent-term]").forEach((button) => {
     button.addEventListener("click", () => {
       state.rentTerm = button.dataset.rentTerm || "monthly";
-      if (!dealSelected("аренда")) state.deals = DEALS.filter(deal => state.deals.includes(deal) || deal === "аренда");
+      if (!dealSelected("аренда")) state.deals = ["аренда"];
       render();
     });
   });
