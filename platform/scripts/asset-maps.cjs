@@ -48,4 +48,33 @@ function maps(source){
  }
  return found;
 }
-module.exports={maps,sha};
+// Below the maps the Worker reassigns single keys: files["/path"]="…". The last
+// assignment wins at runtime, so for those keys the map literal is never served.
+// Reads the same string forms as the maps; matches inside a map literal are
+// skipped, because there they are asset text, not code.
+function assignments(source,known=maps(source)){
+ const found=[];
+ for(const match of source.matchAll(/\b(files|crmAssetPatch|crmWorkflowAssets)\s*\[\s*(?=["'])/g)){
+  const at=match.index;
+  if(known.some(map=>at>=map.start&&at<map.end))continue;
+  let i=match.index+match[0].length;
+  const key=readString(source,i);if(!key)continue;i=key.next;
+  while(/\s/.test(source[i]))i++;
+  if(source[i]!==']')continue;i++;
+  while(/\s/.test(source[i]))i++;
+  if(source[i]!=='='||source[i+1]==='=')continue;i++;
+  while(/\s/.test(source[i]))i++;
+  if(!'"\'`'.includes(source[i]))continue;
+  const start=i,item=readString(source,i);if(!item)continue;
+  found.push({name:match[1],key:key.value,start,end:item.next,value:item.value,literal:source.slice(start,item.next)});
+ }
+ return found;
+}
+// What the Worker actually serves per key: the last assignment, else the map.
+function served(source){
+ const found=maps(source),list=assignments(source,found),out=new Map();
+ for(const map of found)for(const [key,value] of Object.entries(map.value))out.set(map.name+'\u0000'+key,{name:map.name,key,value,from:'map'});
+ for(const item of list)out.set(item.name+'\u0000'+item.key,{name:item.name,key:item.key,value:item.value,from:'assignment'});
+ return out;
+}
+module.exports={maps,assignments,served,sha};

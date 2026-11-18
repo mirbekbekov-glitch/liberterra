@@ -1,0 +1,262 @@
+{
+  "version": 1,
+  "bundles": [
+    {
+      "name": "site",
+      "sha256": "4bece8e91c4bc69ed1f5f82a2fdc425868774fc93eb55720a26d1b63d5118005",
+      "entries": [
+        {
+          "map": "files",
+          "key": "/contact-gate.js",
+          "file": "assets/site/assign/files/contact-gate.js",
+          "sha256": "c0f4afc4a24efac119bb2322f4a07585d611cfd56d1e1fa3e7a2f307d088a3eb",
+          "bytes": 5433
+        },
+        {
+          "map": "files",
+          "key": "/index.html",
+          "file": "assets/site/assign/files/index.html",
+          "sha256": "1a6e6659e60528b66d94028a82a520e6f33f4f85903a487cd13b2fccde0bfe87",
+          "bytes": 157885
+        },
+        {
+          "map": "files",
+          "key": "/",
+          "file": "assets/site/assign/files/__root__",
+          "sha256": "1a6e6659e60528b66d94028a82a520e6f33f4f85903a487cd13b2fccde0bfe87",
+          "bytes": 157885
+        },
+        {
+          "map": "files",
+          "key": "/login.html",
+          "file": "assets/site/assign/files/login.html",
+          "sha256": "604e3e22a00d8a53665ba70bfe9a8a7d1e076235c35d7e65b71168a815f0cbce",
+          "bytes": 48212
+        },
+        {
+          "map": "files",
+          "key": "/profile",
+          "file": "assets/site/assign/files/profile",
+          "sha256": "31f70010f15e66a405706d6a4f4d85f4642c64fb6619d0210946ac0f7c718dad",
+          "bytes": 96378
+        },
+        {
+          "map": "files",
+          "key": "/profile.html",
+          "file": "assets/site/assign/files/profile.html",
+          "sha256": "4c21ca2fb209cc173d73c67c9613604c8540492a05175c14dd8536f8a1cb8bc1",
+          "bytes": 98432
+        },
+        {
+          "map": "files",
+          "key": "/profile.js",
+          "file": "assets/site/assign/files/profile.js",
+          "sha256": "9bc9fe5c0f7ba60dbdfd4b49fba1a95d9b793b430ac8904ef5d6fb46e2b55db4",
+          "bytes": 72906
+        },
+        {
+          "map": "files",
+          "key": "/user-registration.js",
+          "file": "assets/site/assign/files/user-registration.js",
+          "sha256": "b7344855736e8df56c31a79186df4403b8d341e8053cb08777873565ffe2b7f6",
+          "bytes": 31221
+        },
+        {
+          "map": "files",
+          "key": "/onboarding.js",
+          "file": "assets/site/assign/files/onboarding.js",
+          "sha256": "bd728af54910a40e840eabee98e8a5a32b5c249caf1df6a97db5b21530c92e2e",
+          "bytes": 14868
+        },
+        {
+          "map": "files",
+          "key": "/onboarding.css",
+          "file": "assets/site/assign/files/onboarding.css",
+          "sha256": "e1f6d52b979a82d77cd082d6fe159f9bbbe947b96e37556f61598377e68ff1d6",
+          "bytes": 2864
+        },
+        {
+          "map": "files",
+          "key": "/telegram-membership.js",
+          "file": "assets/site/assign/files/telegram-membership.js",
+          "sha256": "55a1048747270812ba7abbcb24c543eff1f2e966057550429a050138362affe7",
+          "bytes": 7378
+        }
+      ]
+    },
+    {
+      "name": "backend",
+      "sha256": "f1f464172615e2cce9c774241d2853726c3632168fcf1dcfa0b330d27b89dc04",
+      "entries": [
+        {
+          "map": "crmWorkflowAssets",
+          "key": "agent-cabinet.html",
+          "file": "assets/backend/assign/crmWorkflowAssets/agent-cabinet.html",
+          "sha256": "23b1e0ec814022abd269e3a69783007b7bbf307ea5b6e37b9227931301fd173f",
+          "bytes": 43621
+        },
+        {
+          "map": "crmWorkflowAssets",
+          "key": "crm-workspace.js",
+          "file": "assets/backend/assign/crmWorkflowAssets/crm-workspace.js",
+          "sha256": "7cc1ae552311e77bb29c50a3fc88904f585a4052252251f05e4a57b98895275b",
+          "bytes": 27017
+        },
+        {
+          "map": "crmWorkflowAssets",
+          "key": "crm-workspace.css",
+          "file": "assets/backend/assign/crmWorkflowAssets/crm-workspace.css",
+          "sha256": "dbed6eb0240929c8e23e6cbc2e66792215cd5bdb73807b1371e63ad84de8ccc7",
+          "bytes": 31521
+        },
+        {
+          "map": "crmWorkflowAssets",
+          "key": "crm-workflow.js",
+          "file": "assets/backend/assign/crmWorkflowAssets/crm-workflow.js",
+          "sha256": "a85724a91036812d0f9284e957c41e73268e22deaeed9775c349f1618dbcf6ac",
+          "bytes": 162728
+        },
+        {
+          "map": "crmAssetPatch",
+          "key": "/profile.html",
+          "file": "assets/backend/assign/crmAssetPatch/profile.html",
+          "sha256": "55b276c873b06721866afacc8693428317e62153ad073c3e6c6d408ce91b1748",
+          "bytes": 9185
+        },
+        {
+          "map": "crmAssetPatch",
+          "key": "/profile.js",
+          "file": "assets/backend/assign/crmAssetPatch/profile.js",
+          "sha256": "797dec7636754db1f8a7f99eeb6e4d56a4b238630e3d4b745bdd4667c62b6feb",
+          "bytes": 53802
+        },
+        {
+          "map": "crmWorkflowAssets",
+          "key": "login.html",
+          "file": "assets/backend/assign/crmWorkflowAssets/login.html",
+          "sha256": "fa060a2bc4775fb24e7c126d1b359c034d31f1b7e97ad4212fb9978aa01de361",
+          "bytes": 59780
+        },
+        {
+          "map": "crmAssetPatch",
+          "key": "/onboarding.js",
+          "file": "assets/backend/assign/crmAssetPatch/onboarding.js",
+          "sha256": "3e72176142b14ae0644fb3a92ae8394c4dcdf07e10b2efcad5648730ebdf0cf5",
+          "bytes": 15380
+        },
+        {
+          "map": "crmAssetPatch",
+          "key": "/onboarding.css",
+          "file": "assets/backend/assign/crmAssetPatch/onboarding.css",
+          "sha256": "e1f6d52b979a82d77cd082d6fe159f9bbbe947b96e37556f61598377e68ff1d6",
+          "bytes": 2864
+        },
+        {
+          "map": "crmAssetPatch",
+          "key": "/user-registration.js",
+          "file": "assets/backend/assign/crmAssetPatch/user-registration.js",
+          "sha256": "b7344855736e8df56c31a79186df4403b8d341e8053cb08777873565ffe2b7f6",
+          "bytes": 31221
+        },
+        {
+          "map": "crmAssetPatch",
+          "key": "/agent-rules.html",
+          "file": "assets/backend/assign/crmAssetPatch/agent-rules.html",
+          "sha256": "d85609f1fdf84596d98b2ebaa84343bcf2b7fa541e326b7eb1c2c8390e7db31d",
+          "bytes": 10237
+        },
+        {
+          "map": "crmAssetPatch",
+          "key": "/agent-onboarding.js",
+          "file": "assets/backend/assign/crmAssetPatch/agent-onboarding.js",
+          "sha256": "3e72176142b14ae0644fb3a92ae8394c4dcdf07e10b2efcad5648730ebdf0cf5",
+          "bytes": 15380
+        },
+        {
+          "map": "crmAssetPatch",
+          "key": "/agent-onboarding.css",
+          "file": "assets/backend/assign/crmAssetPatch/agent-onboarding.css",
+          "sha256": "97719d415d6a90397e1256376a44436dd1e2faa4909d76ecf907a91349227c36",
+          "bytes": 2864
+        },
+        {
+          "map": "crmAssetPatch",
+          "key": "/web-registration.js",
+          "file": "assets/backend/assign/crmAssetPatch/web-registration.js",
+          "sha256": "b7344855736e8df56c31a79186df4403b8d341e8053cb08777873565ffe2b7f6",
+          "bytes": 31221
+        },
+        {
+          "map": "files",
+          "key": "/contact-gate.js",
+          "file": "assets/backend/assign/files/contact-gate.js",
+          "sha256": "c0f4afc4a24efac119bb2322f4a07585d611cfd56d1e1fa3e7a2f307d088a3eb",
+          "bytes": 5433
+        },
+        {
+          "map": "files",
+          "key": "/index.html",
+          "file": "assets/backend/assign/files/index.html",
+          "sha256": "1efabfec819807c6b06b58dba7b035d3cd933e5e0cd5443f624b8230413ba6fc",
+          "bytes": 156997
+        },
+        {
+          "map": "files",
+          "key": "/",
+          "file": "assets/backend/assign/files/__root__",
+          "sha256": "1efabfec819807c6b06b58dba7b035d3cd933e5e0cd5443f624b8230413ba6fc",
+          "bytes": 156997
+        },
+        {
+          "map": "files",
+          "key": "/login.html",
+          "file": "assets/backend/assign/files/login.html",
+          "sha256": "604e3e22a00d8a53665ba70bfe9a8a7d1e076235c35d7e65b71168a815f0cbce",
+          "bytes": 48212
+        },
+        {
+          "map": "files",
+          "key": "/profile",
+          "file": "assets/backend/assign/files/profile",
+          "sha256": "55b276c873b06721866afacc8693428317e62153ad073c3e6c6d408ce91b1748",
+          "bytes": 9185
+        },
+        {
+          "map": "files",
+          "key": "/profile.html",
+          "file": "assets/backend/assign/files/profile.html",
+          "sha256": "55b276c873b06721866afacc8693428317e62153ad073c3e6c6d408ce91b1748",
+          "bytes": 9185
+        },
+        {
+          "map": "files",
+          "key": "/profile.js",
+          "file": "assets/backend/assign/files/profile.js",
+          "sha256": "797dec7636754db1f8a7f99eeb6e4d56a4b238630e3d4b745bdd4667c62b6feb",
+          "bytes": 53802
+        },
+        {
+          "map": "files",
+          "key": "/user-registration.js",
+          "file": "assets/backend/assign/files/user-registration.js",
+          "sha256": "b7344855736e8df56c31a79186df4403b8d341e8053cb08777873565ffe2b7f6",
+          "bytes": 31221
+        },
+        {
+          "map": "files",
+          "key": "/onboarding.js",
+          "file": "assets/backend/assign/files/onboarding.js",
+          "sha256": "bd728af54910a40e840eabee98e8a5a32b5c249caf1df6a97db5b21530c92e2e",
+          "bytes": 14868
+        },
+        {
+          "map": "files",
+          "key": "/onboarding.css",
+          "file": "assets/backend/assign/files/onboarding.css",
+          "sha256": "e1f6d52b979a82d77cd082d6fe159f9bbbe947b96e37556f61598377e68ff1d6",
+          "bytes": 2864
+        }
+      ]
+    }
+  ]
+}
