@@ -2267,10 +2267,12 @@ async function createSubmission(request, env) {
       return respond(result, upstream.ok && result.ok ? 201 : 503);
     } catch (_) {
       const attemptId = String(form.get("submission_id") || "");
+      const recoveryDeadline = Date.now() + 2e4;
       for (let tries = 0; tries < 4; tries++) {
         if (tries) await new Promise((resolve) => setTimeout(resolve, 4000));
         const confirmed = await confirmSavedSubmission(env, authorResult.webUserId, attemptId);
         if (confirmed) return respond({ ok: true, id: confirmed, recovered: true }, 201);
+        if (Date.now() > recoveryDeadline) break;
       }
       return respond({ ok: false, error: "submission_unconfirmed" }, 503);
     }

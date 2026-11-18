@@ -24,9 +24,9 @@
     },
     {
       "name": "hidden-pine-cbff",
-      "version": "787947d0-fcf9-4da5-8f8a-d2c8bcec02b5",
-      "capturedAt": "2026-11-18T14:53:36Z",
-      "sha256": "1d5b8e124c04379abd58ad6fd7dca3366e0f03213bc4c96bcc965167c02a6d9a",
+      "version": "d2ebd844-63ee-4a6d-9b0b-7bf87bbb9b2d",
+      "capturedAt": "2026-11-18T14:55:43Z",
+      "sha256": "bef81c29c3736d4976fbf271bf0b0662c6113847e57759fb07452017bb028072",
       "compatibilityDate": "2026-07-03",
       "bindings": [
         {
@@ -120,8 +120,8 @@
     },
     {
       "path": "workers/backend.mjs",
-      "sha256": "1d5b8e124c04379abd58ad6fd7dca3366e0f03213bc4c96bcc965167c02a6d9a",
-      "bytes": 9489188,
+      "sha256": "bef81c29c3736d4976fbf271bf0b0662c6113847e57759fb07452017bb028072",
+      "bytes": 9489287,
       "verification": "active Cloudflare version export"
     },
     {
