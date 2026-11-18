@@ -49,3 +49,9 @@ node --test platform/tests/client-calls.test.cjs
 node platform/scripts/build.cjs
 ```
 Публикация изменений в production (Apps Script и Worker) требует отдельного решения владельца, см. `platform/AGENTS.md`. Тест `reproducible build with frozen Worker templates` падает и на чистой ветке платформы, к патчу это не относится.
+
+## Выкатка в production (18.11.2026)
+- `hidden-pine-cbff`: версия `4486d197-e470-4bee-aa04-9dbde26d1f9f` (развёртывание `5bee4c05…`) — точечная вставка блока «Звонки» из `crm-patch/deal-card-calls.patch` (только `features/deals.js`) в рабочую версию `4aa49e17-67cc-4dff-9073-bf24b6340ec4`. Привязки, секреты и настройки ассетов не менялись.
+- Откат: Cloudflare → Workers → hidden-pine-cbff → Deployments → версия `4aa49e17…`.
+- Рабочий бандл содержит изменения, которых нет в ветке платформы (~44 КБ). Перед следующей сборкой из исходников их нужно занести в репозиторий, иначе сборка их затрёт.
+- Apps Script (блок `crm-patch/apps-script-addition.gs`) не выкачен: нет доступа. До его выкатки раздел «Звонки» показывает «временно недоступны».
