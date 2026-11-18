@@ -1,5 +1,5 @@
 /* Approved v20 presentation, scoped to existing homepage and agent workspace. */
-body.concept-v20 { --red:#7b233f; --red-hover:#601a31; --ink:#242321; --muted:#69645e; --line:#e4dfd8; background:#F5F7FA; }
+body.concept-v20 { --red:#BE2C28; --red-hover:#8F1918; --ink:#242321; --muted:#69645e; --line:#e4dfd8; background:#F5F7FA; }
 .concept-v20 .brand-wordmark { color:#7b233f; font:850 28px/1.1 'Segoe UI',sans-serif; letter-spacing:-1.4px; }
 body.concept-v20 main :is(h1,h2,h3) { font-family:Onest,'Segoe UI',sans-serif; font-weight:750; }
 body.concept-v20 .home-hero { background:#F5F7FA; text-align:left; }
@@ -23,7 +23,7 @@ body.concept-v20 .card { border:1px solid var(--line); border-radius:20px; }
 }
 
 /* v20 visual parity: compact search using the existing live filter controls. */
-body.home-redesign.concept-v20 { font-family:'Segoe UI',Arial,sans-serif; --red:#7b233f; --red-hover:#601a31; }
+body.home-redesign.concept-v20 { font-family:'Segoe UI',Arial,sans-serif; --red:#BE2C28; --red-hover:#8F1918; }
 body.home-redesign.concept-v20 main > .wrap,
 body.home-redesign.concept-v20 .home-hero-inner { width:calc(100% - 48px); max-width:1152px; margin-inline:auto; }
 body.home-redesign.concept-v20 .home-hero-inner { padding:30px 0 0; }
@@ -84,7 +84,7 @@ body.home-redesign.concept-v20 .concept-best { padding-top:34px; }
   body.concept-v20 #heroShowButton { width:100%; margin:8px 0 0; }
 }
 @media(prefers-color-scheme:dark) {
-  body.concept-v20 { --ink:#f4eee7; --muted:#c6bbb5; --line:#51434a; --red:#edb5c6; background:#241e21; color:var(--ink); }
+  body.concept-v20 { --ink:#f4eee7; --muted:#c6bbb5; --line:#51434a; --red:#FFA89B; background:#241e21; color:var(--ink); }
   body.concept-v20 .home-hero { background:#241e21; }
   body.concept-v20 :is(.catalog-toolbar,.toolbar-field,.home-rooms-menu,.card,.home-advanced-content) { background:#30272b; color:var(--ink); }
   body.concept-v20 :is(input,select) { color:var(--ink); background:#30272b; }

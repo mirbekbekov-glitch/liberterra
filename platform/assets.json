@@ -3,7 +3,7 @@
   "bundles": [
     {
       "name": "backend",
-      "sha256": "f1f464172615e2cce9c774241d2853726c3632168fcf1dcfa0b330d27b89dc04",
+      "sha256": "2cc69a2d37a654df62328767b395172d69fb24d9d54c2b3abf8d4d4510a1896c",
       "maps": [
         {
           "name": "crmAssetPatch",
@@ -678,7 +678,7 @@
     },
     {
       "name": "site",
-      "sha256": "4bece8e91c4bc69ed1f5f82a2fdc425868774fc93eb55720a26d1b63d5118005",
+      "sha256": "7629e6dc96dcbd279034b5100918cab644ac7c202f4a3008c958a5d8bb1640dd",
       "maps": [
         {
           "name": "files",
@@ -698,7 +698,7 @@
             {
               "key": "/listing-format.js",
               "file": "assets/site/files/listing-format.js",
-              "sha256": "fa6e91fe5ba92977d0f7ffec682c8349f317e2af0cc842aefdc55352b0cc32b6",
+              "sha256": "a2b0399ff8fbeac09c188ba9962793a2c4d2b884a566b644e6d46f790210968d",
               "append": []
             },
             {
@@ -716,7 +716,7 @@
             {
               "key": "/style.css",
               "file": "assets/site/files/style.css",
-              "sha256": "3869e452e11b78b22bd6b656d3aecc37a29b1063e65d19c76f0812a9c2fb6a19",
+              "sha256": "c29cf12ca9b9d5416672f175447debe276eb66305415756d8c3253b6aad6de68",
               "append": []
             },
             {
@@ -734,7 +734,7 @@
             {
               "key": "/site-theme.css",
               "file": "assets/site/files/site-theme.css",
-              "sha256": "3555303cce44542230a953c268e7c2dae70a1fdedf9d1f0dcbea69c1c37c2a24",
+              "sha256": "16ffd5646dcadf9cafb4eedccd231b43f68d18b7f044d882f7e53a3e9933e338",
               "append": []
             },
             {
@@ -752,19 +752,19 @@
             {
               "key": "/index.html",
               "file": "assets/site/files/index.html",
-              "sha256": "0d0bb8ae6811b3f4fdc95a5467f5c29a2823f850f3601f4455b563d63208c39b",
+              "sha256": "46ce77bd7960e6ee5aef42b1b42dfc6db90e5de60f453d4891cf7e59dbdee10e",
               "append": []
             },
             {
               "key": "/miniapp.html",
               "file": "assets/site/files/miniapp.html",
-              "sha256": "f79ca7d388d81e6cb6a73a3262c6bb5fc845c378054792675982adec93dcbb56",
+              "sha256": "f6b3756ca1896e0603b2d42dda381ab69b0085dc5ce263984cefdc972fe089c8",
               "append": []
             },
             {
               "key": "/concept-v20.css",
               "file": "assets/site/files/concept-v20.css",
-              "sha256": "cba4a8393dafaccdf5be2ddc29df7cebb3ff5672c2769e4f50c3bb6fe6df381e",
+              "sha256": "28ccb38d38117f59050846282ed54c7774c8f7beb36661c7315447abb0f5c600",
               "append": []
             },
             {
@@ -782,91 +782,91 @@
             {
               "key": "/",
               "file": "assets/site/files/_root.html",
-              "sha256": "0fb28dee35b62c87209ed276c864567453649c6f89f772f845b8361fcd95dcb2",
+              "sha256": "5c7f4c941146245c6f872b3a5a036244a9e788ad34312ad6fc6e4f11e8182eaa",
               "append": []
             },
             {
               "key": "/catalog.html",
               "file": "assets/site/files/catalog.html",
-              "sha256": "13b4ec7b759e241446270d6aefe4ef008e3875b37ccfd436cac8a63a7c3847c9",
+              "sha256": "f274bf0a340f4e261aeba8f710407e1459eed29d94596d4b278585fe51cd22ce",
               "append": []
             },
             {
               "key": "/requests.html",
               "file": "assets/site/files/requests.html",
-              "sha256": "e4967b34916b755ce9438545f5f0472af5caa2d0906bef2c7cbe483a6835aa08",
+              "sha256": "45db14abd0fba6c22cd6f90b46bf9f3a78831acb5c03cad43edbb7de85ad1f63",
               "append": []
             },
             {
               "key": "/agents.html",
               "file": "assets/site/files/agents.html",
-              "sha256": "727ae32620f69ce46e8439186f48c24808c5787b8f10cb051087fb744aaf8787",
+              "sha256": "7b92d1056eee381612298f0c6dfe159883dc53863112d89176edfd683b741b7d",
               "append": []
             },
             {
               "key": "/agent-public.html",
               "file": "assets/site/files/agent-public.html",
-              "sha256": "85f44928b5927db15861f82d1078be40910ebf363022b36a3f44129cc9f69f8f",
+              "sha256": "4336b132944960e7571e0836ee11ff2bce567fc8064d47b7f0c06b9582ea8feb",
               "append": []
             },
             {
               "key": "/object.html",
               "file": "assets/site/files/object.html",
-              "sha256": "ac63c13ba2ea211f2df4a01676b0ea652b4bf187bad42bc68ba9df754872b165",
+              "sha256": "67a24430cc0787575175b45bd4b6cc1b08511c2d9d5afd90638c28e10819a5bc",
               "append": []
             },
             {
               "key": "/object-map.html",
               "file": "assets/site/files/object-map.html",
-              "sha256": "57af7d66544cb02f7f774073712fd9a55706868f41a246eb7c4fe874885b526f",
+              "sha256": "8f4738eacb82d007be86c226596a16ec63e0761bdc4f385c3bb90d51c76436ee",
               "append": []
             },
             {
               "key": "/district-map.html",
               "file": "assets/site/files/district-map.html",
-              "sha256": "b9aee3307485333b9357c81587a35b74119f6501e072fbba8c13eea01ab2b44a",
+              "sha256": "72e5192af13b6a1a1f32a18d3cab031f1e7410c3f1e00f250864190addbb5f2e",
               "append": []
             },
             {
               "key": "/newbuildings.html",
               "file": "assets/site/files/newbuildings.html",
-              "sha256": "bba4eae19d4346b0a77e63d5a2de0993e3216692060a06269f53a8889a363510",
+              "sha256": "32a607e91a98fc474ddf937a73759780a02f47aaf0f5fdd8be3a6eed69328159",
               "append": []
             },
             {
               "key": "/newbuilding.html",
               "file": "assets/site/files/newbuilding.html",
-              "sha256": "c5a0287e32d43b2b24ae3ca73e78235108c2f9a257a748811aaac3f016c55172",
+              "sha256": "98f70424282295f70ab663077986c08a2c39a000860339590afa08ebf652c097",
               "append": []
             },
             {
               "key": "/mortgage.html",
               "file": "assets/site/files/mortgage.html",
-              "sha256": "6f98421733358515335f58bf438c68e86df5afaa6ec69d75d5b3e650cc4c9e8f",
+              "sha256": "e2e09df8cae5468e57e854a1e92ab92df3c15771bf18ee57adab6417cd4d2e93",
               "append": []
             },
             {
               "key": "/calculator.html",
               "file": "assets/site/files/calculator.html",
-              "sha256": "09331f7253701545a2906740e7d6f07fd48dc24c64e8cdc110de26159a049320",
+              "sha256": "8ed16e42b76ed4f6c9072338df458e557d9781b42cabe9267efc736ca0392125",
               "append": []
             },
             {
               "key": "/add-object.html",
               "file": "assets/site/files/add-object.html",
-              "sha256": "b50d1b8a29e700fd4b53c66869e26f7f12262693642b6838d034f262deca6332",
+              "sha256": "ef7195619767e42024949119dd1ee970199f05b224e9d8073315526a7ff2deae",
               "append": []
             },
             {
               "key": "/add-request.html",
               "file": "assets/site/files/add-request.html",
-              "sha256": "2c6392bd54fec8e22b27359213aeae33baa830b6b8f1c20553ceef2f22868a8c",
+              "sha256": "12da39dcf30ab49479404a2be51f24df47fdc245403961ecfbbc77e7035de799",
               "append": []
             },
             {
               "key": "/contract-help.html",
               "file": "assets/site/files/contract-help.html",
-              "sha256": "b0cc5e1e904233f4fdd1b1f7d2204dac9c3fe21f0ea27a9feff1ebd7061394a8",
+              "sha256": "15d1d6c1d0ade1a8f3cc425a32db15a0571fec0299ce13c1d211ed3129dbce62",
               "append": []
             },
             {
@@ -1004,7 +1004,7 @@
             {
               "key": "/v20-global.css",
               "file": "assets/site/files/v20-global.css",
-              "sha256": "6cb0e00fe981d47e8062609d143ceda5451b9144a872413a44c315b5d56994bc",
+              "sha256": "f99c43414ca9bda150ba2fb93148efaca15dd9623883a4840a442a040d5113db",
               "append": []
             },
             {
@@ -1016,13 +1016,13 @@
             {
               "key": "/api/crm/agent-cabinet",
               "file": "assets/site/files/api/crm/agent-cabinet",
-              "sha256": "d14c47c38e44c46c15e89bbf11d7846211ececb6579fb9b9393db73631067b02",
+              "sha256": "ded7eee351b87508f054154017d3667d903c2b881f0e3a3d7d116b96cdbd6f22",
               "append": []
             },
             {
               "key": "/agent-cabinet.html",
               "file": "assets/site/files/agent-cabinet.html",
-              "sha256": "21d28f2e5b440a83a7ccbc1a5be4b403a84970a9a9eb7d91dc52ffa234ce8542",
+              "sha256": "101106d30fe548289c3dc871c2a80146f58cb2bec338122dcbdfd97cdacf5d37",
               "append": []
             },
             {
@@ -1046,19 +1046,19 @@
             {
               "key": "/profile",
               "file": "assets/site/files/profile",
-              "sha256": "56d66e3d1ad8f5e36369cc8e33a9b6ec96a31e29c0f1f5ac0d6af1e7bb76276b",
+              "sha256": "2ba7a40428bb588dbacb826d0f6e72af6ffe8aae308ba33e732a2cf026892930",
               "append": []
             },
             {
               "key": "/profile.html",
               "file": "assets/site/files/profile.html",
-              "sha256": "d8e46a6af8c18384538821845f3d74b366f205cf88820c434aa3d2ededbfed3e",
+              "sha256": "a6f0589964ad254cf8099fa20be76faad1d88d29cd74f0f144a8e2d0dd8ea440",
               "append": []
             },
             {
               "key": "/profile-v2.css",
               "file": "assets/site/files/profile-v2.css",
-              "sha256": "b10c7ab675ebd7c0abb87c79dcb25be30c2ff2e5ecce5fa0c7b85a332e66afa9",
+              "sha256": "2be4af03e12acfd1a7604e1948e7b0b3f6418e30dff2969c817dacccf148f7d7",
               "append": []
             },
             {
@@ -1070,7 +1070,7 @@
             {
               "key": "/my-listings.html",
               "file": "assets/site/files/my-listings.html",
-              "sha256": "c269fec1f6f2e3a722db98b964561c1ab970032fd12d42867b9e92c49bb0c6cb",
+              "sha256": "191ad6c80ca5a3bf6c365235b1f02339849d0398878ebe70f003ca9aa557b809",
               "append": []
             },
             {
@@ -1082,13 +1082,13 @@
             {
               "key": "/my-listings",
               "file": "assets/site/files/my-listings",
-              "sha256": "806a8aab59309a2ca7857703e55f5e2f78239820d8bd49bd0e467c7ecd6d9a33",
+              "sha256": "781fff79842295a7e32d58452ff83085ca700095c87c280eb8838141368a2bd7",
               "append": []
             },
             {
               "key": "/my-requests.html",
               "file": "assets/site/files/my-requests.html",
-              "sha256": "ca4f108c0f58fbab5df81d42f6c816bad9d4675820757df5a0eae4b05adc6ebd",
+              "sha256": "4eb40043c6ea0c46c5ad1a99a1c0e0fc64151c697c4ade861f1a3710e36c3177",
               "append": []
             },
             {
@@ -1100,7 +1100,7 @@
             {
               "key": "/viewing-history.html",
               "file": "assets/site/files/viewing-history.html",
-              "sha256": "2bc5cdd55ec66aab2f7f719612141970f10750ee5a8f834ad152fec51ea41400",
+              "sha256": "cff5f0986736c02905c9be4b6eb9675112c2ffe40626ac00cd765f11d1d27eec",
               "append": []
             },
             {
@@ -1118,19 +1118,19 @@
             {
               "key": "/my-requests",
               "file": "assets/site/files/my-requests",
-              "sha256": "f36217d51d2024692a0ddbb772646611938738dd1d25a2aabafb64cd6766cd1c",
+              "sha256": "e1f0daa2e53aa92e1a06ee475df78e005a4d11cc1bd61a24dc615f3215f53930",
               "append": []
             },
             {
               "key": "/viewing-history",
               "file": "assets/site/files/viewing-history",
-              "sha256": "5b6638e90ab1bb450a0bc9300147ac9bb98cccf097e16369ce3bcefb64ff0e1a",
+              "sha256": "723ba80678ad1b638be2e69ca19b69b74ef11ee8229c601f0f252687d93f6780",
               "append": []
             },
             {
               "key": "/owners.html",
               "file": "assets/site/files/owners.html",
-              "sha256": "2e771779a9520099dafc2aa9c156f024b49178719684e9f162adccab6f8629ea",
+              "sha256": "840bd67576b43e4fe2c58d24cee7bb681a2b935af004aa7424b22230c8c55a4c",
               "append": []
             },
             {
@@ -1178,7 +1178,7 @@
             {
               "key": "/partners.html",
               "file": "assets/site/files/partners.html",
-              "sha256": "9b3e5fbb0ffa2c050b1d6e0219d57848b6bb9ea75efe25abf1465f78b8ace624",
+              "sha256": "2fdc694753322021cf4070ba007ffc6dd61b6a4ac8f3842cebd7d2fb22c32a34",
               "append": []
             }
           ]
