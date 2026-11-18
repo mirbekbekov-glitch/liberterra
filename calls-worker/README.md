@@ -34,3 +34,18 @@ curl -sS https://liberterra.moizvonki.ru/api/v1 -H 'content-type: application/js
 - Приходит ли `recording` на ваших телефонах, как долго живёт ссылка, нужна ли авторизация для её скачивания (документация не описывает).
 - Вебхуки «Мои Звонки» не подписываются: защита только секретным `token` в URL, `WEBHOOK_TOKEN` хранить как секрет и менять при утечке.
 - Предупреждение собеседнику о записи и срок хранения согласовать с юристом (закон КР о персональной информации).
+
+## Звонки в карточке сделки (CRM)
+Исходники кабинета лежат в ветке `crm/production-baseline-20261027` (каталог `platform/`). Изменения оформлены патчем `crm-patch/deal-card-calls.patch`:
+- `apps-script/crm-workflow-server.gs`: чтение `list_crm_workflow` с `data.calls.client_id`. Сервер CRM проверяет, что клиент принадлежит агенту, и запрашивает этот Worker. Адрес и токен берутся только из Script Properties: `CALLS_API_URL` (https://liberterra-calls.<субдомен>.workers.dev) и `CALLS_API_TOKEN` (= `API_TOKEN` Worker). Агент определяется по email его веб-аккаунта, он должен совпадать с логином в «Мои Звонки».
+- `features/deals.js`: раздел «Звонки» в карточке сделки (направление, дата, длительность, пометка «есть запись»). Ссылки на записи в браузер не отдаются.
+- `tests/client-calls.test.cjs` и расширенный стенд: изоляция агентов, проекция полей, деградация при сбоях.
+
+Применение (в ветке платформы), без деплоя:
+```bash
+git checkout crm/production-baseline-20261027
+git apply calls-worker/crm-patch/deal-card-calls.patch
+node --test platform/tests/client-calls.test.cjs
+node platform/scripts/build.cjs
+```
+Публикация изменений в production (Apps Script и Worker) требует отдельного решения владельца, см. `platform/AGENTS.md`. Тест `reproducible build with frozen Worker templates` падает и на чистой ветке платформы, к патчу это не относится.

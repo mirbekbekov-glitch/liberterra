@@ -1,0 +1,227 @@
+From c5bbd91e835cd1f6a861f07474594cbc5784d4f6 Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Wed, 18 Nov 2026 18:09:59 +0000
+Subject: [PATCH] =?UTF-8?q?feat(crm):=20=D0=B7=D0=B2=D0=BE=D0=BD=D0=BA?=
+ =?UTF-8?q?=D0=B8=20=D0=BA=D0=BB=D0=B8=D0=B5=D0=BD=D1=82=D0=B0=20=D0=B2=20?=
+ =?UTF-8?q?=D0=BA=D0=B0=D1=80=D1=82=D0=BE=D1=87=D0=BA=D0=B5=20=D1=81=D0=B4?=
+ =?UTF-8?q?=D0=B5=D0=BB=D0=BA=D0=B8=20(=D0=9C=D0=BE=D0=B8=20=D0=97=D0=B2?=
+ =?UTF-8?q?=D0=BE=D0=BD=D0=BA=D0=B8)?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Новое чтение list_crm_workflow {data:{calls:{client_id}}}: сервер CRM проверяет,
+что клиент принадлежит агенту, и запрашивает calls-worker с токеном из Script
+Properties (CALLS_API_URL, CALLS_API_TOKEN). Браузер получает только проекцию без
+ссылок на записи. В карточке сделки добавлен раздел «Звонки». backend.mjs не менялся.
+
+Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_011fXYgbsMB5x2kdg9inoyRw
+---
+ platform/apps-script/crm-workflow-server.gs   | 41 +++++++++++++++
+ platform/features/deals.js                    | 24 ++++++++-
+ platform/tests/client-calls.test.cjs          | 52 +++++++++++++++++++
+ .../tests/helpers/crm-workflow-harness.cjs    |  8 +--
+ 4 files changed, 121 insertions(+), 4 deletions(-)
+ create mode 100644 platform/tests/client-calls.test.cjs
+
+diff --git a/platform/apps-script/crm-workflow-server.gs b/platform/apps-script/crm-workflow-server.gs
+index 7f66a4c..958d19b 100644
+--- a/platform/apps-script/crm-workflow-server.gs
++++ b/platform/apps-script/crm-workflow-server.gs
+@@ -192,6 +192,7 @@ function crmWorkflowAction_(payload, action) {
+   const actor = crmWorkflowContext_(payload);
+   if (!actor.ok) return actor;
+   if (action === "list_crm_workflow" && payload.data && payload.data.history !== undefined) return crmHistoryPage_(actor, payload.data.history);
++  if (action === "list_crm_workflow" && payload.data && payload.data.calls !== undefined) return crmClientCalls_(actor, payload.data.calls);
+   if (action === "list_crm_workflow") {
+     try {
+       const workflowRows = crmWorkflowRows_(crmWorkflowSheet_(false));
+@@ -405,6 +406,46 @@ function crmResultRecord_(record, events) {
+ 
+ // Read-only client timeline. Filtering happens BEFORE paging, including entries
+ // older than the 100-result summary returned by the ordinary CRM listing.
++// Звонки клиента из «Мои Звонки» (сервис calls-worker). Адрес и токен лежат только в
++// Script Properties: CALLS_API_URL (https://…) и CALLS_API_TOKEN. Браузер их не получает.
++// Звонки агента ищутся по email его веб-аккаунта: он должен совпадать с логином в «Мои Звонки».
++function crmAgentEmail_(actor) {
++  const id = cleanText_(actor.webUserId);
++  if (!id) return "";
++  const account = passwordAccounts_().find((row) => cleanText_(row.web_user_id) === id);
++  return account ? cleanText_(account.Email).toLowerCase() : "";
++}
++
++function crmClientCalls_(actor, input) {
++  try {
++    if (!input || typeof input !== "object" || Array.isArray(input)) throw Error("crm_invalid_fields");
++    const clientId = crmString_(input.client_id, 36, true);
++    // Права проверяем по записи клиента: чужой client_id даёт crm_client_not_found.
++    const client = crmWorkflowRows_(crmWorkflowSheet_(false)).map((row) => row.record)
++      .find((record) => record.kind === "client" && record.id === clientId && actor.crmKeys.includes(record.agent_key));
++    if (!client) throw Error("crm_client_not_found");
++    const page = (status, items) => ({ ok: true, calls_page: { status: status, items: items || [] } });
++    const props = PropertiesService.getScriptProperties();
++    const base = cleanText_(props.getProperty("CALLS_API_URL")).replace(/\/+$/, ""), token = cleanText_(props.getProperty("CALLS_API_TOKEN"));
++    if (!/^https:\/\//.test(base) || !token) return page("not_configured");
++    const phone = cleanText_(client.phone), email = crmAgentEmail_(actor);
++    if (!phone) return page("no_phone");
++    if (!email) return page("no_agent_email");
++    let data;
++    try {
++      const response = UrlFetchApp.fetch(base + "/api/calls?limit=50&agent=" + encodeURIComponent(email) + "&client_phone=" + encodeURIComponent(phone),
++        { method: "get", headers: { Authorization: "Bearer " + token }, muteHttpExceptions: true });
++      if (response.getResponseCode() !== 200) return page("unavailable");
++      data = JSON.parse(response.getContentText());
++    } catch (_) { return page("unavailable"); }
++    // Явная проекция: ссылка на запись наружу не уходит, только признак has_recording.
++    return page("ok", (Array.isArray(data.results) ? data.results : []).slice(0, 50).map((call) => ({
++      id: cleanText_(call.id), direction: call.direction === "out" ? "out" : "in", answered: Number(call.answered) === 1,
++      started_at: Number(call.start_time) > 0 ? new Date(Number(call.start_time) * 1000).toISOString() : "",
++      duration: Math.max(0, Math.floor(Number(call.duration) || 0)), has_recording: call.has_recording === true })));
++  } catch (error) { return { ok: false, error: /^crm_/.test(error.message) ? error.message : "crm_storage_error" }; }
++}
++
+ function crmHistoryPage_(actor, input) {
+   try {
+     if (!input || typeof input !== "object" || Array.isArray(input)) throw Error("crm_invalid_fields");
+diff --git a/platform/features/deals.js b/platform/features/deals.js
+index c839cf6..8ffa4ef 100644
+--- a/platform/features/deals.js
++++ b/platform/features/deals.js
+@@ -40,7 +40,27 @@
+  inputs.currency.append(new Option('USD','USD'),new Option('KGS','KGS'));
+  const submit=el('button','Сохранить сделку','crm-primary-button');submit.type='submit';
+  const result=el('p','','crm-deal-result');result.setAttribute('role','status');form.append(el('p','Плановая комиссия — ожидаемая сумма, не полученный доход.','crm-deal-muted'),submit,result);dialog.append(form);
+- const history=el('section',undefined,'crm-deal-history');dialog.append(history);document.body.append(dialog);
++ const history=el('section',undefined,'crm-deal-history');dialog.append(history);
++ // Звонки клиента из телефонии. Запрос идёт через сервер CRM: он проверяет, что клиент принадлежит агенту.
++ const callsBox=el('section',undefined,'crm-deal-history crm-deal-calls');dialog.append(callsBox);document.body.append(dialog);
++ let callsToken=0;
++ const callNotes={not_configured:'Телефония не подключена.',no_phone:'У клиента не указан телефон.',no_agent_email:'В профиле нет email, поэтому звонки не найти.',unavailable:'Звонки временно недоступны. Закройте и снова откройте карточку.'};
++ const talk=seconds=>seconds>=60?`${Math.floor(seconds/60)} мин ${seconds%60} с`:`${seconds} с`;
++ async function loadCalls(clientId){
++  const mine=++callsToken,fresh=()=>mine===callsToken&&dialog.open;
++  callsBox.replaceChildren(el('h3','Звонки'),el('p','Загружаем звонки…','crm-deal-muted'));
++  try{
++   const response=await window.LiberterraAgentAccess.request('list_crm_workflow',{data:{calls:{client_id:clientId}}});
++   if(!fresh())return;
++   const callsPage=response.calls_page||{status:'unavailable',items:[]};callsBox.replaceChildren(el('h3','Звонки'));
++   if(callsPage.status!=='ok'){callsBox.append(el('p',callNotes[callsPage.status]||callNotes.unavailable,'crm-deal-muted'));return;}
++   if(!callsPage.items.length){callsBox.append(el('p','Звонков с этим клиентом пока нет.','crm-deal-muted'));return;}
++   const list=el('ol');
++   for(const call of callsPage.items){const row=el('li');row.append(el('strong',(call.direction==='out'?'Исходящий':'Входящий')+(call.answered?'':', без ответа')),el('small',`${date(call.started_at)} · ${call.answered?talk(call.duration):'не отвечен'}${call.has_recording?' · есть запись':''}`));list.append(row);}
++   callsBox.append(list);
++  }catch(error){if(fresh())callsBox.replaceChildren(el('h3','Звонки'),el('p',errors[error.code]||callNotes.unavailable,'crm-deal-muted'));}
++ }
++ dialog.addEventListener('close',()=>{callsToken++;});
+  function terminalFields(){const lost=inputs.stage.value==='lost';inputs.lost_reason.closest('label').hidden=!lost;inputs.lost_reason.required=lost;inputs.object_id.required=inputs.stage.value==='won';inputs.amount.required=inputs.stage.value==='won';}
+  inputs.stage.addEventListener('change',terminalFields);form.addEventListener('input',()=>{pendingId='';});
+  function selectOptions(select,options,current){select.replaceChildren();for(const [value,label]of options)select.add(new Option(label,value));select.value=current||'';}
+@@ -54,7 +74,9 @@
+   terminalFields();dialogTitle.textContent=record?'Карточка сделки':'Новая сделка';history.replaceChildren();
+   if(record){history.append(el('h3','История изменений'));const list=el('ol');for(const event of [...(record.history||[])].reverse()){const row=el('li');row.append(el('strong',event.type==='created'?'Сделка создана':event.type==='stage_changed'?`${stageLabel(event.from)} → ${stageLabel(event.to)}`:'Карточка обновлена'),el('small',`${date(event.at)} · Автор: ${event.author_id}`));list.append(row);}history.append(list);}
+   if(!records('client').length)result.textContent='Сначала добавьте клиента в разделе «Клиенты».';
++  callsBox.replaceChildren();callsToken++;
+   submit.disabled=false;dialog.showModal();inputs.title.focus();
++  if(record?.client_id)loadCalls(record.client_id);
+  }
+  async function persist(record,data,id,mutation){
+   const requestEpoch=epoch;
+diff --git a/platform/tests/client-calls.test.cjs b/platform/tests/client-calls.test.cjs
+new file mode 100644
+index 0000000..849a372
+--- /dev/null
++++ b/platform/tests/client-calls.test.cjs
+@@ -0,0 +1,52 @@
++const test=require('node:test'),assert=require('node:assert/strict'),{randomUUID:uuid}=require('node:crypto');
++const harness=require('./helpers/crm-workflow-harness.cjs');
++// Синтетические данные: настоящие телефоны, токены и ответы телефонии не используются.
++function setup(phone='0555 000 111'){
++ const h=harness();
++ const client=h.request('save_crm_record',{kind:'client',id:uuid(),version:0,mutation_id:uuid(),data:{name:'Synthetic buyer',phone,role:'buyer',stage:'new',city:'',district:'',property_type:'',rooms:'',budget_min:'',budget_max:'',currency:'USD',notes:''}});
++ assert.equal(client.ok,true,JSON.stringify(client));
++ h.props.CALLS_API_URL='https://calls.example.test/';h.props.CALLS_API_TOKEN='synthetic-token';
++ return {h,client:client.record};
++}
++const plain=value=>JSON.parse(JSON.stringify(value));
++const calls=(h,client_id)=>plain(h.request('list_crm_workflow',{data:{calls:{client_id}}}));
++const json=body=>()=>({getResponseCode:()=>200,getContentText:()=>JSON.stringify(body)});
++
++test('calls: agent email, phone and token go only to the server-side request',()=>{
++ const {h,client}=setup();
++ h.setFetch(json({results:[{id:'1:7',direction:'out',answered:1,start_time:1700000000,duration:75.9,has_recording:true,recording_url:'https://secret.example.test/r.mp3',client_phone:'+996555000111'}]}));
++ const r=calls(h,client.id);
++ assert.equal(r.ok,true,JSON.stringify(r));assert.equal(r.calls_page.status,'ok');
++ assert.deepEqual(r.calls_page.items[0],{id:'1:7',direction:'out',answered:true,started_at:'2023-11-14T22:13:20.000Z',duration:75,has_recording:true});
++ assert.ok(!JSON.stringify(r).includes('secret.example.test'),'recording URL must not reach the browser');
++ assert.equal(h.fetches.length,1);const {url,options}=h.fetches[0];
++ assert.ok(url.startsWith('https://calls.example.test/api/calls?'));
++ assert.ok(url.includes('agent=agent.a%40example.com'));assert.ok(url.includes('client_phone=0555%20000%20111'));
++ assert.equal(options.headers.Authorization,'Bearer synthetic-token');
++});
++test('calls: another agent cannot read a client by id',()=>{
++ const {h,client}=setup();h.setActor('b');
++ const r=calls(h,client.id);
++ assert.equal(r.ok,false);assert.equal(r.error,'crm_client_not_found');assert.equal(h.fetches.length,0);
++});
++test('calls: invalid input is refused before any outgoing request',()=>{
++ const {h}=setup();
++ for(const bad of [null,[],'x',{},{client_id:''},{client_id:'x'.repeat(37)}]){const r=plain(h.request('list_crm_workflow',{data:{calls:bad}}));assert.equal(r.ok,false);assert.equal(r.error,'crm_invalid_fields',JSON.stringify(bad));}
++ assert.equal(calls(h,uuid()).error,'crm_client_not_found');assert.equal(h.fetches.length,0);
++});
++test('calls: unconfigured, no phone and service failures degrade without errors',()=>{
++ const {h,client}=setup();
++ h.props.CALLS_API_URL='http://insecure.example.test';assert.equal(calls(h,client.id).calls_page.status,'not_configured');
++ h.props.CALLS_API_URL='https://calls.example.test';h.props.CALLS_API_TOKEN='';assert.equal(calls(h,client.id).calls_page.status,'not_configured');
++ h.props.CALLS_API_TOKEN='synthetic-token';
++ h.setFetch(()=>({getResponseCode:()=>500,getContentText:()=>'boom'}));assert.equal(calls(h,client.id).calls_page.status,'unavailable');
++ h.setFetch(()=>{throw Error('network');});assert.equal(calls(h,client.id).calls_page.status,'unavailable');
++ h.setFetch(()=>({getResponseCode:()=>200,getContentText:()=>'<html>'}));assert.equal(calls(h,client.id).calls_page.status,'unavailable');
++ const none=setup('');assert.equal(calls(none.h,none.client.id).calls_page.status,'no_phone');assert.equal(none.h.fetches.length,0);
++});
++test('calls: result list is capped and malformed fields are normalised',()=>{
++ const {h,client}=setup();
++ h.setFetch(json({results:Array.from({length:80},(_,i)=>({id:'a:'+i,direction:'weird',answered:0,start_time:'x',duration:-5,has_recording:'yes'}))}));
++ const items=calls(h,client.id).calls_page.items;
++ assert.equal(items.length,50);assert.deepEqual(items[0],{id:'a:0',direction:'in',answered:false,started_at:'',duration:0,has_recording:false});
++});
+diff --git a/platform/tests/helpers/crm-workflow-harness.cjs b/platform/tests/helpers/crm-workflow-harness.cjs
+index ea65690..f8d55b0 100644
+--- a/platform/tests/helpers/crm-workflow-harness.cjs
++++ b/platform/tests/helpers/crm-workflow-harness.cjs
+@@ -1,6 +1,7 @@
+ const fs=require('node:fs'),vm=require('node:vm');
+ module.exports=function harness(){
+   let actor='a',approved=true,registered=true,locked=false,specialization='sale';
++  const props={},fetches=[];let fetchResult=()=>({getResponseCode:()=>200,getContentText:()=>'{"results":[]}'});
+   const sheets=new Map();
+   function sheet(){const rows=[];return {rows,getLastRow:()=>rows.length,getLastColumn:()=>rows[0]?.length||0,
+     getRange:(row,col,height=1,width=1)=>({
+@@ -15,13 +16,14 @@ module.exports=function harness(){
+   const book={getSheetByName:name=>sheets.get(name)||null,insertSheet(name){const value=sheet();sheets.set(name,value);return value;}};
+   const ensure=(sheet,headers)=>{if(!sheet.rows.length)sheet.rows.push([...headers]);headers.forEach(header=>{if(!sheet.rows[0].includes(header))sheet.rows[0].push(header);});return Object.fromEntries(sheet.rows[0].map((key,i)=>[key,i+1]));};
+   const c=vm.createContext({console,Date,JSON,Set,Map,
+-    PropertiesService:{getScriptProperties:()=>({getProperty:()=> 'private-book'})},
++    PropertiesService:{getScriptProperties:()=>({getProperty:key=>key==='AGENT_PRIVATE_SPREADSHEET_ID'?'private-book':props[key]??''})},
++    UrlFetchApp:{fetch:(url,options)=>{fetches.push({url,options});return fetchResult();}},
+     getAgentPrivateBook_:()=>book,
+     registeredUserContext_:()=>registered?{ok:true,telegramId:actor,webUserId:actor==='a'?'web-a':undefined}:{ok:false,error:'registration_required'},
+     approvedAgentContext_:(_,context)=>approved?{...context,specialization}:{ok:false,error:'agent_not_approved'},
+     normalizeAgentSpecialization_:value=>['sale','rent'].includes(value)?value:'',
+     requestRows_:catalog=>catalog.filter(row=>row.deal==='Запрос'),publicCatalogContactPhone_:row=>row.public_contact_phone||'',
+-    passwordAccounts_:()=>[{telegram_id:'a',web_user_id:'web-a',_account_type:'Агент'}],passwordAccountActive_:()=>true,
++    passwordAccounts_:()=>[{telegram_id:'a',web_user_id:'web-a',_account_type:'Агент',Email:'Agent.A@Example.com'}],passwordAccountActive_:()=>true,
+     ensureHeaders_:ensure,
+     sheetRowsAsObjects_:(sheet,headers)=>{ensure(sheet,headers);return sheet.rows.slice(1).map((row,i)=>({_row:i+2,...Object.fromEntries(headers.map(header=>[header,String(row[sheet.rows[0].indexOf(header)]??'')]))}));},
+     cleanText_:value=>String(value??'').trim(),normalizeObjectId_:value=>String(value??'').trim(),safeSheetValue_:value=>String(value??''),
+@@ -40,6 +42,6 @@ module.exports=function harness(){
+   ['public-resources.gs','service-requests.gs','crm-workflow-server.gs'].forEach(name=>{
+     vm.runInContext(fs.readFileSync(require('node:path').resolve(__dirname,'../../apps-script/'+name),'utf8'),c);
+   });
+-  return {c,objects,sheets,setSpecialization(value){specialization=value;},setActor(value){actor=value;},setApproved(value){approved=value;},setRegistered(value){registered=value;},setLocked(value){locked=value;},
++  return {c,objects,sheets,props,fetches,setFetch(fn){fetchResult=fn;},setSpecialization(value){specialization=value;},setActor(value){actor=value;},setApproved(value){approved=value;},setRegistered(value){registered=value;},setLocked(value){locked=value;},
+     request(action,payload={}){if(action==='get_public_crm_selection')return c.getPublicCrmSelection_(payload);if(['list_agent_tasks','save_agent_task'].includes(action))return c.agentTasksAction_(payload,action);return c.crmWorkflowAction_(payload,action);}};
+ };
+-- 
+2.43.0
+
