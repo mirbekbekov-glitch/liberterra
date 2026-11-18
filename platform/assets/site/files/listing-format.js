@@ -4,7 +4,7 @@
 
   // Presentation only. Never infer a different currency, amount or price period.
   function price(value) {
-    return text(value).replace(/(^|\s)(сом|USD|KGS)(?:\s+\2)+(?=\s|$)/gi, "$1$2").replace(/\$(\d{4,9})(?![\d.,])/g, (_, digits) => `$${digits.replace(/\B(?=(\d{3})+(?!\d))/g, " ")}`);
+    return text(value).replace(/(^|\s)(сом|USD|KGS)(?:\s+\2)+(?=\s|$)/gi, "$1$2").replace(/\$(\d{4,9})(?![\d.,])/g, (_, digits) => `$${digits.replace(/\B(?=(\d{3})+(?!\d))/g, " ")}`).replace(/(\d+)(\s*)(сом|KGS)(?![\wА-Яа-яЁё])/gi, (_, digits, gap, unit) => (digits.length > 3 && digits.length < 10 ? digits.replace(/\B(?=(\d{3})+(?!\d))/g, " ") : digits) + gap + unit);
   }
 
   function floor(value) {
