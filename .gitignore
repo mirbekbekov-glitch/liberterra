@@ -18,3 +18,17 @@ Thumbs.db
 
 .agents/skills/liberterra-moderation-telegram/SKILL.md
 .claude/skills/liberterra-moderation-telegram/SKILL.md
+
+# impeccable-ignore-start
+# Ephemeral output, runtime state, and per-dev overrides.
+# Shared artifacts stay tracked: config.json, design.json, surfaces/*.md, critique/*.md.
+**/.impeccable/config.local.json
+**/.impeccable/hook.cache.json
+**/.impeccable/hook.pending.json
+**/.impeccable/*.png
+**/.impeccable/review/
+**/.impeccable/questions/
+**/.impeccable/live/
+# Downloaded engine binary (platform-specific, fetched on demand)
+.claude/skills/impeccable/scripts/bin/
+# impeccable-ignore-end
