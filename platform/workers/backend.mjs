@@ -2261,7 +2261,8 @@ async function createSubmission(request, env) {
           submission_id: String(form.get("submission_id") || ""),
           row,
           photos: encodedPhotos
-        })
+        }),
+        signal: AbortSignal.timeout(45e3)
       });
       const result = await upstream.json();
       return respond(result, upstream.ok && result.ok ? 201 : 503);

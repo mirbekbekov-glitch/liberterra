@@ -6,9 +6,9 @@
   "workers": [
     {
       "name": "liberterra-listing-ui",
-      "version": "25e24eb7-4d91-44e6-bdbc-f99a2beb2faf",
-      "capturedAt": "2026-11-18T14:31:23Z",
-      "sha256": "390974d2adb0eee75dac2fd17d4218b6f541b6fbf28127f8edba3b8499011b87",
+      "version": "3f1af912-242e-4b47-a12b-e8932b10b0fb",
+      "capturedAt": "2026-11-18T15:08:44Z",
+      "sha256": "4bece8e91c4bc69ed1f5f82a2fdc425868774fc93eb55720a26d1b63d5118005",
       "compatibilityDate": "2026-07-03",
       "bindings": [
         {
@@ -24,9 +24,9 @@
     },
     {
       "name": "hidden-pine-cbff",
-      "version": "d2ebd844-63ee-4a6d-9b0b-7bf87bbb9b2d",
-      "capturedAt": "2026-11-18T14:55:43Z",
-      "sha256": "bef81c29c3736d4976fbf271bf0b0662c6113847e57759fb07452017bb028072",
+      "version": "9ac37304-6b93-4112-b9df-29e76239b2aa",
+      "capturedAt": "2026-11-18T15:08:44Z",
+      "sha256": "f1f464172615e2cce9c774241d2853726c3632168fcf1dcfa0b330d27b89dc04",
       "compatibilityDate": "2026-07-03",
       "bindings": [
         {
@@ -114,14 +114,14 @@
   "files": [
     {
       "path": "workers/site.mjs",
-      "sha256": "390974d2adb0eee75dac2fd17d4218b6f541b6fbf28127f8edba3b8499011b87",
-      "bytes": 8091667,
+      "sha256": "4bece8e91c4bc69ed1f5f82a2fdc425868774fc93eb55720a26d1b63d5118005",
+      "bytes": 8092111,
       "verification": "active Cloudflare version export"
     },
     {
       "path": "workers/backend.mjs",
-      "sha256": "bef81c29c3736d4976fbf271bf0b0662c6113847e57759fb07452017bb028072",
-      "bytes": 9489287,
+      "sha256": "f1f464172615e2cce9c774241d2853726c3632168fcf1dcfa0b330d27b89dc04",
+      "bytes": 9489330,
       "verification": "active Cloudflare version export"
     },
     {
@@ -231,8 +231,8 @@
     },
     {
       "path": "public/add-object.js",
-      "sha256": "dcd10c09ae3b7563864816590239ca3d01af907c20bc48f9bd1366fdb082b2bc",
-      "bytes": 22084,
+      "sha256": "a38533368c0bbb669d773f36799a038c8bffc72ea3aa5c7e18582e6ead529e6c",
+      "bytes": 22518,
       "url": "https://liberterra.kg/add-object.js",
       "verification": "HTTP GET 200"
     },
@@ -343,7 +343,7 @@
     },
     {
       "path": "public/agents.html",
-      "sha256": "ecf3ddbbf1bab734136e7c165cf695e49dff111f6073f0a70940a36326c09e0f",
+      "sha256": "4c730bb04467434a2f32c9adef803683c95f685894639b5d669aecafc6c20886",
       "bytes": 377805,
       "url": "https://liberterra.kg/agents.html",
       "verification": "HTTP GET 200"
@@ -658,7 +658,7 @@
     },
     {
       "path": "public/district-map.html",
-      "sha256": "8eb2b9e51acc829df6c02b01ac9d8845f91ac05943ae64690e8a64eff33f4cfb",
+      "sha256": "07b23f52c81ae86bf5881fbc05acf22fd7acfa3efc3730b8a855adc637083708",
       "bytes": 371062,
       "url": "https://liberterra.kg/district-map.html",
       "verification": "HTTP GET 200"
@@ -728,7 +728,7 @@
     },
     {
       "path": "public/index.html",
-      "sha256": "7aebd5897700f5a472e16b121eea5b97b5f73b1e9fb3083a9875f6695232f8e3",
+      "sha256": "b3c241706a2b516e1fab2aa3075c7d98f14a2a0d1f64be301d7be915622ee7ac",
       "bytes": 509932,
       "url": "https://liberterra.kg/index.html",
       "verification": "HTTP GET 200"
@@ -770,7 +770,7 @@
     },
     {
       "path": "public/mortgage.html",
-      "sha256": "5bcd3fd0b20e6a55bc1d9c08c5910b19594779487b2def283ff68813c80b4be3",
+      "sha256": "3e70011f183a2e49dabad2dbba8e1f17de2269cc326ef4858238995d2d3ac041",
       "bytes": 390753,
       "url": "https://liberterra.kg/mortgage.html",
       "verification": "HTTP GET 200"
@@ -840,7 +840,7 @@
     },
     {
       "path": "public/newbuilding.html",
-      "sha256": "1e6139437c65404a9d16007c7058d5b52c8e0ac967732f84858f840450e2678a",
+      "sha256": "d01d6ffa0501975b654b73ef38b5462cf98d539076bfbf07090db0bfcc4a878c",
       "bytes": 193984,
       "url": "https://liberterra.kg/newbuilding.html",
       "verification": "HTTP GET 200"
@@ -861,7 +861,7 @@
     },
     {
       "path": "public/newbuildings.html",
-      "sha256": "36fe1f12fb40cbee6097293204ebe9320b64e8eca39bf317b04e0ab85d94cbe6",
+      "sha256": "0a87ffbfc241ffdfc1ad53ab023bc77e93029d70c3602d9008626b1d7f86e781",
       "bytes": 374729,
       "url": "https://liberterra.kg/newbuildings.html",
       "verification": "HTTP GET 200"
@@ -1022,7 +1022,7 @@
     },
     {
       "path": "public/requests.html",
-      "sha256": "e1d56d1078d4c8f7e74a3c0622ccad8cb10290196208127393271ed628fc068d",
+      "sha256": "f50d29159321ec3e00d2b87382d977b51463ae84c4a7e3892ff50c9e46678d98",
       "bytes": 372985,
       "url": "https://liberterra.kg/requests.html",
       "verification": "HTTP GET 200"

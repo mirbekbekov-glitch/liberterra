@@ -343,6 +343,8 @@ submissionForm.addEventListener("submit", async (event) => {
   button.disabled = true;
   button.textContent = "Подготавливаем фото…";
   submissionResult.hidden = true;
+  let photoNotice = 0;
+  let checkNotice = 0;
   try {
     const { prepareListingPhoto } = await import("/listing-photo-resize.js");
     const preparedPhotos = [];
@@ -355,6 +357,8 @@ submissionForm.addEventListener("submit", async (event) => {
     const telegram = window.Telegram?.WebApp;
     if (telegram?.initData) formData.set("telegram_init_data", telegram.initData);
     button.textContent = "Отправляем…";
+    photoNotice = window.setTimeout(() => { button.textContent = "Отправляем фотографии, это может занять до минуты…"; }, 1e4);
+    checkNotice = window.setTimeout(() => { button.textContent = "Проверяем, сохранился ли объект…"; }, 45e3);
     const response = await fetch("/api/submissions", {
       method: "POST",
       credentials: "same-origin",
@@ -407,6 +411,8 @@ submissionForm.addEventListener("submit", async (event) => {
       : "Не удалось подтвердить отправку объявления. Данные формы не удалены. Перед повторной отправкой проверьте «Мои объявления», чтобы не создать дубликат.");
     submissionResult.hidden = false;
   } finally {
+    window.clearTimeout(photoNotice);
+    window.clearTimeout(checkNotice);
     button.disabled = false;
     button.textContent = "Отправить на проверку";
   }

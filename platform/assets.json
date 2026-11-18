@@ -3,7 +3,7 @@
   "bundles": [
     {
       "name": "backend",
-      "sha256": "bef81c29c3736d4976fbf271bf0b0662c6113847e57759fb07452017bb028072",
+      "sha256": "f1f464172615e2cce9c774241d2853726c3632168fcf1dcfa0b330d27b89dc04",
       "maps": [
         {
           "name": "crmAssetPatch",
@@ -678,7 +678,7 @@
     },
     {
       "name": "site",
-      "sha256": "390974d2adb0eee75dac2fd17d4218b6f541b6fbf28127f8edba3b8499011b87",
+      "sha256": "4bece8e91c4bc69ed1f5f82a2fdc425868774fc93eb55720a26d1b63d5118005",
       "maps": [
         {
           "name": "files",
@@ -686,7 +686,7 @@
             {
               "key": "/add-object.js",
               "file": "assets/site/files/add-object.js",
-              "sha256": "dcd10c09ae3b7563864816590239ca3d01af907c20bc48f9bd1366fdb082b2bc",
+              "sha256": "a38533368c0bbb669d773f36799a038c8bffc72ea3aa5c7e18582e6ead529e6c",
               "append": []
             },
             {
