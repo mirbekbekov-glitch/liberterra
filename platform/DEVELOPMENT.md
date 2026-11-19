@@ -213,7 +213,16 @@ PUT  https://script.googleapis.com/v1/projects/{scriptId}/deployments/{deploymen
 
 `formatListingText` (разделение разрядов, единицы, «сом»/USD) 19 ноября встречается в обоих Worker девять раз: четыре в `site.mjs`, пять в `backend.mjs`. Проверяется поиском характерной строки правки, например `replace(/(\d+)(\s*)(сом|KGS)`.
 
-Из них из карты ресурсов приходят четыре — по одной на `/script.js` и `/listing-format.js` в каждом бандле. Остальные пять вшиты в тела Worker: две в `site.mjs` и три в `backend.mjs`.
+Из них из карты ресурсов приходят четыре — по одной на `/script.js` и `/listing-format.js` в каждом бандле. Остальные пять вшиты в тела Worker, и найти их проще всего по ближайшему маркеру:
+
+| Worker | откуда | маркер рядом |
+| --- | --- | --- |
+| `site.mjs` | карта `files` | `/listing-format.js`, `/script.js` |
+| `site.mjs` | вшито ×2 | `data-lt-object-critical`, `data-lt-catalog-critical` |
+| `backend.mjs` | карта `files` | `/listing-format.js`, `/script.js` |
+| `backend.mjs` | вшито ×3 | `data-lt-object-critical` дважды, `data-lt-catalog-critical` один раз |
+
+Страниц с форматтером три — `/`, `/catalog.html` и `/object.html`, — а вшитых копий пять: один и тот же блок лежит в обоих Worker, а в `backend.mjs` блок объекта встречается дважды.
 
 Два следствия, оба неочевидны.
 
