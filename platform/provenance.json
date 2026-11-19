@@ -7,7 +7,7 @@
     {
       "name": "liberterra-listing-ui",
       "version": "81142034-8328-4f49-a6bd-4a34af78a184",
-      "capturedAt": "2026-11-19T04:01:56Z",
+      "capturedAt": "2026-11-19T04:18:24Z",
       "sha256": "58252508cf7aede28f2d4773d60f3c85158b97177818b3f824f92dfd5158d67d",
       "compatibilityDate": "2026-07-03",
       "bindings": [
@@ -24,9 +24,9 @@
     },
     {
       "name": "hidden-pine-cbff",
-      "version": "7ac152bb-9114-4cff-88e2-dc2f94dcc922",
-      "capturedAt": "2026-11-19T04:01:56Z",
-      "sha256": "6123a07b816622029688671d4abf43a46790c6c085ededea5a194ca573bbe060",
+      "version": "490e107f-1c1b-437a-a9aa-57411cb7701d",
+      "capturedAt": "2026-11-19T04:18:24Z",
+      "sha256": "2ded7f94a9a1f58e134551cac1b425f1ec1ab44836c7fe30a3a543041a857fc6",
       "compatibilityDate": "2026-07-03",
       "bindings": [
         {
@@ -120,8 +120,8 @@
     },
     {
       "path": "workers/backend.mjs",
-      "sha256": "6123a07b816622029688671d4abf43a46790c6c085ededea5a194ca573bbe060",
-      "bytes": 9521280,
+      "sha256": "2ded7f94a9a1f58e134551cac1b425f1ec1ab44836c7fe30a3a543041a857fc6",
+      "bytes": 9528457,
       "verification": "active Cloudflare version export"
     },
     {
@@ -420,8 +420,8 @@
     },
     {
       "path": "public/api/crm-workflow/crm-workflow.js",
-      "sha256": "9a89f3dabd354171b56a90d2c11d41f80806fb966c37411c281230febb36d93d",
-      "bytes": 172947,
+      "sha256": "e862799750815796dd4db6c4befd7cb1294182da94c81e970868e3800e27431e",
+      "bytes": 180009,
       "url": "https://liberterra.kg/api/crm-workflow/crm-workflow.js",
       "verification": "HTTP GET 200"
     },

@@ -209,6 +209,26 @@ PUT  https://script.googleapis.com/v1/projects/{scriptId}/deployments/{deploymen
 
 Правка колонок агента применена этим путём 18 ноября: телефон в `agentRecordById_`, `listing_agent_name` и `listing_agent_agency` в `OBJECT_HEADERS` и на обоих путях публикации, `backfillListingAgentColumns`. Тогда же восстановлены `profileEmailStart_` и `profileEmailVerify_` в `profile-update.gs` и две строки диспетчера: смена email на сайте была выложена 17 ноября, но серверной части в проекте не оказалось, и кнопка возвращала «не включена».
 
+## Пять ресурсов кабинета собираются не из `assets/`
+
+`crmWorkflowAssets` в репозитории — карта из шестнадцати ресурсов, но отдаются из неё не все. Пять ключей перекрыты присваиваниями в теле `workers/backend.mjs`, и правка соответствующего файла в `assets/backend/crmWorkflowAssets/` до кабинета не доходит.
+
+Замерено 19 ноября (ассет → что даёт сборка → что отдаёт бой):
+
+| Ресурс | `assets/` | сборка | бой |
+| --- | ---: | ---: | ---: |
+| `crm-workflow.js` | 31 454 | 48 009 | 180 009 |
+| `login.html` | 2 127 | 2 127 | 59 780 |
+| `crm-workspace.js` | 14 107 | 14 107 | 46 398 |
+| `agent-cabinet.html` | 8 649 | 8 649 | 43 621 |
+| `crm-workspace.css` | 8 003 | 12 719 | 31 521 |
+
+Остальные одиннадцать сходятся побайтно: `agent-access.js`, `agent-cabinet.js`, `auth-entry.css`, `auth-entry.js`, `concept-v20.css`, `concept-v20.js`, `crm-draft-model.js`, `login-entry.js`, `selection.css`, `selection.html`, `selection.js`. Для них `assets/` — настоящий источник.
+
+Разница у `crm-workflow.js` и `crm-workspace.css` между ассетом и сборкой — это `features.json`, он дописывает `features/deals.js` и `features/deals.css`. Разница между сборкой и боем — присваивание.
+
+Проверить за один раз: собрать и сравнить `dist/public/api/crm-workflow/*` с `public/api/crm-workflow/*`. Совпали — ресурс живой, разошлись — его правят в теле Worker. `verify-source --baseline` этого не ловит: он сверяет файлы со снимком, а не сборку со снимком.
+
 ## Форматтер цен живёт в девяти местах
 
 `formatListingText` (разделение разрядов, единицы, «сом»/USD) 19 ноября встречается в обоих Worker девять раз: четыре в `site.mjs`, пять в `backend.mjs`. Проверяется поиском характерной строки правки, например `replace(/(\d+)(\s*)(сом|KGS)`.
