@@ -2,16 +2,30 @@
 import { parseCSV, normalize } from './data.mjs';
 import { listPage, objectPage, agentsPage, notFound } from './views.mjs';
 
-const UPSTREAM_DEFAULT = 'https://liberterra.kg/api/public-catalog';
+// Источник данных — старый бэкенд. Обращаемся к нему привязкой BACKEND:
+// Worker не может вызвать другой Worker по внешнему адресу, Cloudflare это блокирует.
+const UPSTREAM_PATH = '/api/public-catalog';
+const AGENTS_PATH = '/api/public-agents';
+const UPSTREAM_ORIGIN = 'https://liberterra.kg';
 const TTL_MS = 120000;
 let cache = { at: 0, items: [] };
+
+// Привязка, если она есть; иначе обычный запрос — так удобно гонять код локально.
+function backendFetch(env, url, init = {}) {
+  const request = new Request(url, { ...init, signal: AbortSignal.timeout(8000) });
+  return env.BACKEND ? env.BACKEND.fetch(request) : fetch(request, { cf: { cacheTtl: 60 } });
+}
 
 async function load(env, ctx) {
   const now = Date.now();
   if (cache.items.length && now - cache.at < TTL_MS) return cache.items;
-  const url = env.CATALOG_SOURCE || UPSTREAM_DEFAULT;
-  const response = await fetch(url, { cf: { cacheTtl: 60 }, headers: { accept: 'text/csv' } });
-  if (!response.ok) throw new Error('upstream_' + response.status);
+  const stale = cache.items;
+  const url = env.CATALOG_SOURCE || UPSTREAM_ORIGIN + UPSTREAM_PATH;
+  const response = await backendFetch(env, url, { headers: { accept: 'text/csv' } });
+  if (!response.ok) {
+    if (stale.length) return stale;            // источник прилёг — лучше показать прежние данные
+    throw new Error('upstream_' + response.status);
+  }
   const items = normalize(parseCSV(await response.text()));
   cache = { at: now, items };
   return items;
@@ -49,7 +63,8 @@ export default {
     try {
       items = await load(env, ctx);
     } catch (error) {
-      return html(`<!doctype html><meta charset="utf-8"><title>Каталог временно недоступен</title>
+      if (cache.items.length) items = cache.items;
+      else return html(`<!doctype html><meta charset="utf-8"><title>Каталог временно недоступен</title>
         <body style="font:16px system-ui;padding:40px;max-width:640px;margin:auto">
         <h1 style="font-size:22px">Каталог временно недоступен</h1>
         <p>Не удалось получить данные объявлений. Обновите страницу через минуту.</p></body>`, 503);
@@ -70,8 +85,8 @@ export default {
     if (url.pathname === '/agents') {
       let agents = [];
       try {
-        const source = env.AGENTS_SOURCE || 'https://liberterra.kg/api/public-agents';
-        const response = await fetch(source, { cf: { cacheTtl: 300 } });
+        const source = env.AGENTS_SOURCE || UPSTREAM_ORIGIN + AGENTS_PATH;
+        const response = await backendFetch(env, source);
         if (response.ok) agents = (await response.json()).agents || [];
       } catch (_) { agents = []; }
       return html(agentsPage({ agents, canonical: url.origin + '/agents' }));
