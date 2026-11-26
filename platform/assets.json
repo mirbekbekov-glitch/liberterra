@@ -3,7 +3,7 @@
   "bundles": [
     {
       "name": "backend",
-      "sha256": "acf3371d0c9b61a76f3cfecbeeddadffb601c7216e45b9ce7a6ca942a4a0238a",
+      "sha256": "2792fab7836c2195201c521a99772ffde5bee66e4dd953e33db0e7629ac0cd82",
       "maps": [
         {
           "name": "crmAssetPatch",
@@ -189,13 +189,13 @@
             {
               "key": "/listing-format.js",
               "file": "assets/backend/files/listing-format.js",
-              "sha256": "fa6e91fe5ba92977d0f7ffec682c8349f317e2af0cc842aefdc55352b0cc32b6",
+              "sha256": "a2b0399ff8fbeac09c188ba9962793a2c4d2b884a566b644e6d46f790210968d",
               "append": []
             },
             {
               "key": "/script.js",
               "file": "assets/backend/files/script.js",
-              "sha256": "ccf37ded477114806252186652e6725541db38c776906a64fbd1c3f11b1cc94a",
+              "sha256": "df59ffb65144a1775664e7ebab4eec13bd3b0747b12bcdadb667843cdb4d70c6",
               "append": []
             },
             {
@@ -678,7 +678,7 @@
     },
     {
       "name": "site",
-      "sha256": "5cfe5901ad2823221c273d4f3afce86ded57d0b2ad957537552cce2ece9b3a08",
+      "sha256": "58252508cf7aede28f2d4773d60f3c85158b97177818b3f824f92dfd5158d67d",
       "maps": [
         {
           "name": "files",
@@ -704,7 +704,7 @@
             {
               "key": "/script.js",
               "file": "assets/site/files/script.js",
-              "sha256": "f790e434ddbda2375f6a7a49ef6ee069f160bb323ad2742ac5a5f2057a617473",
+              "sha256": "b1ff774a0752bdbad1a6af959bfef4772699dd0da0d16a2e0f4503b6ee13fc8c",
               "append": []
             },
             {

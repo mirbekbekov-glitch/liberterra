@@ -1,0 +1,1 @@
+{"main_module": "worker.mjs", "compatibility_date": "2026-07-03", "bindings": [{"type": "service", "name": "BACKEND", "service": "hidden-pine-cbff", "environment": "production"}]}
