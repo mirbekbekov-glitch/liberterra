@@ -38,6 +38,16 @@ var private_listing_contacts_default = {
 };
 var PUBLIC_CATALOG_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQLuXrGqbh_4ntwRLXn3_jrbO_MdAYlcBYwJGSM8sTXgpW9u-Rri696yqWiIIvFWIbSREGwoZ5fbYiF/pub?gid=832519304&single=true&output=csv";
 var publicReadInFlight = /* @__PURE__ */ new Map();
+// Пауза уведомлений: переменная TELEGRAM_NOTIFICATIONS=off выключает отправку
+// сообщений и фотографий. Проверка подписки и скачивание файлов продолжают работать.
+function telegramMuted(env) {
+  return String(env && env.TELEGRAM_NOTIFICATIONS || "").trim().toLowerCase() === "off";
+}
+function mutedTelegramResponse() {
+  return new Response(JSON.stringify({ ok: true, muted: true, result: { message_id: 0 } }), {
+    status: 200, headers: { "content-type": "application/json" },
+  });
+}
 async function servePublicReadCache(request, env = {}) {
   const incoming = new URL(request.url);
   const catalogue = incoming.pathname === "/api/public-catalog";
@@ -1249,11 +1259,11 @@ async function notifyAdminAboutAccessClaim(env, email) {
     "\u041E\u0442\u043A\u0440\u043E\u0439\u0442\u0435 \u0442\u0430\u0431\u043B\u0438\u0446\u0443 Liberterra Objects \u2192 \u043B\u0438\u0441\u0442 \xAB\u0417\u0430\u044F\u0432\u043A\u0438 \u0434\u043E\u0441\u0442\u0443\u043F\u0430\xBB \u0438 \u0438\u0437\u043C\u0435\u043D\u0438\u0442\u0435 \u0441\u0442\u0430\u0442\u0443\u0441 \u043D\u0430 \xAB\u043E\u0434\u043E\u0431\u0440\u0435\u043D\xBB."
   ].join("\n");
   try {
-    const response = await fetch(`https://api.telegram.org/bot${env.BOT_TOKEN}/sendMessage`, {
+    const response = await (telegramMuted(env) ? mutedTelegramResponse() : fetch(`https://api.telegram.org/bot${env.BOT_TOKEN}/sendMessage`, {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ chat_id: env.ADMIN_CHAT_ID, text, disable_web_page_preview: true })
-    });
+    }));
     return response.ok;
   } catch (_) {
     return false;
@@ -1426,7 +1436,7 @@ async function notifyObjectModeration(request, env) {
     `\u0420\u0430\u0439\u043E\u043D: ${String(item.district || "\u043D\u0435 \u0443\u043A\u0430\u0437\u0430\u043D").trim()}`,
     `\u0426\u0435\u043D\u0430: ${String(item.price || "\u043D\u0435 \u0443\u043A\u0430\u0437\u0430\u043D\u0430").trim()}`
   ].join("\n");
-  const telegramResponse = await fetch(`https://api.telegram.org/bot${env.BOT_TOKEN}/sendMessage`, {
+  const telegramResponse = await (telegramMuted(env) ? mutedTelegramResponse() : fetch(`https://api.telegram.org/bot${env.BOT_TOKEN}/sendMessage`, {
     method: "POST",
     headers: { "content-type": "application/json" },
     body: JSON.stringify({
@@ -1434,7 +1444,7 @@ async function notifyObjectModeration(request, env) {
       text: message,
       reply_markup: { inline_keyboard: [[{ text: "\u041E\u0442\u043A\u0440\u044B\u0442\u044C \u043E\u0431\u044A\u044F\u0432\u043B\u0435\u043D\u0438\u0435", web_app: { url: objectUrl } }]] }
     })
-  });
+  }));
   if (!telegramResponse.ok) {
     const telegramError = await telegramResponse.text().catch(() => "");
     console.error("Moderation fallback notification failed", telegramResponse.status, telegramError.slice(0, 300));
@@ -1499,7 +1509,7 @@ async function uploadObjectPhotos(request, env) {
     telegramForm.set("chat_id", String(env.ADMIN_CHAT_ID));
     telegramForm.set("photo", photo, photo.name);
     telegramForm.set("caption", `\u041D\u043E\u0432\u043E\u0435 \u0444\u043E\u0442\u043E \u0434\u043B\u044F \u043E\u0431\u044A\u0435\u043A\u0442\u0430 #${objectId}`);
-    const response = await fetch(`https://api.telegram.org/bot${env.BOT_TOKEN}/sendPhoto`, { method: "POST", body: telegramForm });
+    const response = await (telegramMuted(env) ? mutedTelegramResponse() : fetch(`https://api.telegram.org/bot${env.BOT_TOKEN}/sendPhoto`, { method: "POST", body: telegramForm }));
     const result = await response.json().catch(() => ({}));
     const fileId = result?.result?.photo?.at(-1)?.file_id;
     if (!response.ok || !fileId) return respond({ ok: false, error: "photo_upload_failed" }, 502);
@@ -1584,11 +1594,11 @@ async function createContractHelp(request, env) {
       `Telegram ID (\u043F\u043E\u0434\u0442\u0432\u0435\u0440\u0436\u0434\u0451\u043D): ${user.id}`,
       "\u041A\u043B\u0438\u0435\u043D\u0442 \u0441\u043E\u0433\u043B\u0430\u0441\u0435\u043D \u043D\u0430 \u043F\u0435\u0440\u0435\u0434\u0430\u0447\u0443 \u0437\u0430\u044F\u0432\u043A\u0438 \u0430\u0434\u043C\u0438\u043D\u0438\u0441\u0442\u0440\u0430\u0442\u043E\u0440\u0443 \u0438 \u043D\u0430\u0437\u043D\u0430\u0447\u0435\u043D\u043D\u043E\u043C\u0443 \u0430\u0433\u0435\u043D\u0442\u0443. \u0421\u0442\u043E\u0438\u043C\u043E\u0441\u0442\u044C \u0438 \u0441\u0440\u043E\u043A \u043D\u0435\u043E\u0431\u0445\u043E\u0434\u0438\u043C\u043E \u0441\u043E\u0433\u043B\u0430\u0441\u043E\u0432\u0430\u0442\u044C."
     ].join("\n");
-    const sent = await fetch(`https://api.telegram.org/bot${env.BOT_TOKEN}/sendMessage`, {
+    const sent = await (telegramMuted(env) ? mutedTelegramResponse() : fetch(`https://api.telegram.org/bot${env.BOT_TOKEN}/sendMessage`, {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ chat_id: env.ADMIN_CHAT_ID, text, disable_web_page_preview: true })
-    });
+    }));
     const result = await sent.json();
     if (!sent.ok || result.ok !== true) return reply({ ok: false, error: "delivery_unconfirmed" }, 502);
     return reply({ ok: true, id });
@@ -1686,11 +1696,11 @@ ${title}
   let adminNotified = false;
   for (let attempt = 0; attempt < 3 && !adminNotified; attempt += 1) {
     try {
-      const telegramResponse = await fetch(`https://api.telegram.org/bot${env.BOT_TOKEN}/sendMessage`, {
+      const telegramResponse = await (telegramMuted(env) ? mutedTelegramResponse() : fetch(`https://api.telegram.org/bot${env.BOT_TOKEN}/sendMessage`, {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ chat_id: env.ADMIN_CHAT_ID, text })
-      });
+      }));
       adminNotified = telegramResponse.ok;
     } catch (_) {
       adminNotified = false;
@@ -1711,11 +1721,11 @@ ${title}
     let sent = false;
     for (let attempt = 0; attempt < 2 && !sent; attempt += 1) {
       try {
-        const groupResponse = await fetch(`https://api.telegram.org/bot${env.BOT_TOKEN}/sendMessage`, {
+        const groupResponse = await (telegramMuted(env) ? mutedTelegramResponse() : fetch(`https://api.telegram.org/bot${env.BOT_TOKEN}/sendMessage`, {
           method: "POST",
           headers: { "content-type": "application/json" },
           body: JSON.stringify({ chat_id: chatId, text: groupText })
-        });
+        }));
         sent = groupResponse.ok;
       } catch (_) {
         sent = false;
@@ -1725,14 +1735,14 @@ ${title}
   }
   if (!adminNotified || groupResults.some((sent) => !sent)) {
     try {
-      await fetch(`https://api.telegram.org/bot${env.BOT_TOKEN}/sendMessage`, {
+      await (telegramMuted(env) ? mutedTelegramResponse() : fetch(`https://api.telegram.org/bot${env.BOT_TOKEN}/sendMessage`, {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({
           chat_id: env.ADMIN_CHAT_ID,
           text: `\u26A0\uFE0F \u0417\u0430\u044F\u0432\u043A\u0430 ${id.slice(0, 8).toUpperCase()} \u0441\u043E\u0445\u0440\u0430\u043D\u0435\u043D\u0430 \u043D\u0430 \u0441\u0430\u0439\u0442\u0435, \u043D\u043E \u0434\u043E\u0441\u0442\u0430\u0432\u043A\u0430 Telegram \u0432\u044B\u043F\u043E\u043B\u043D\u0435\u043D\u0430 \u043D\u0435 \u043F\u043E\u043B\u043D\u043E\u0441\u0442\u044C\u044E. \u0414\u0430\u043D\u043D\u044B\u0435 \u0437\u0430\u044F\u0432\u043A\u0438 \u043D\u0435 \u043F\u043E\u0442\u0435\u0440\u044F\u043D\u044B.`
         })
-      });
+      }));
     } catch (_) {
     }
   }
@@ -2288,7 +2298,7 @@ async function createSubmission(request, env) {
     mediaForm.set("media", JSON.stringify(preparedPhotos.map((_, index) => ({ type: "photo", media: `attach://photo${index + 1}` }))));
     preparedPhotos.forEach((photo, index) => mediaForm.set(`photo${index + 1}`, photo, photo.name));
   }
-  const mediaResponse = await fetch(`https://api.telegram.org/bot${env.BOT_TOKEN}/${mediaMethod}`, { method: "POST", body: mediaForm });
+  const mediaResponse = await (telegramMuted(env) ? mutedTelegramResponse() : fetch(`https://api.telegram.org/bot${env.BOT_TOKEN}/${mediaMethod}`, { method: "POST", body: mediaForm }));
   const mediaResult = await mediaResponse.json().catch(() => ({}));
   if (!mediaResponse.ok || mediaResult.ok !== true) {
     console.error("Telegram media upload failed", JSON.stringify(mediaResult).slice(0, 300));
@@ -2357,11 +2367,11 @@ async function createSubmission(request, env) {
   ] } };
   let notificationOk = false;
   for (let attempt = 0; attempt < 2 && !notificationOk; attempt += 1) {
-    const response = await fetch(`https://api.telegram.org/bot${env.BOT_TOKEN}/sendMessage`, {
+    const response = await (telegramMuted(env) ? mutedTelegramResponse() : fetch(`https://api.telegram.org/bot${env.BOT_TOKEN}/sendMessage`, {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify(notificationBody)
-    });
+    }));
     notificationOk = response.ok;
   }
   if (!notificationOk) return respond({ ok: false, error: "notification_failed" }, 502);

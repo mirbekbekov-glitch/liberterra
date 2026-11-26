@@ -3,7 +3,7 @@
   "bundles": [
     {
       "name": "backend",
-      "sha256": "2ded7f94a9a1f58e134551cac1b425f1ec1ab44836c7fe30a3a543041a857fc6",
+      "sha256": "2792fab7836c2195201c521a99772ffde5bee66e4dd953e33db0e7629ac0cd82",
       "maps": [
         {
           "name": "crmAssetPatch",
